@@ -1,2 +1,14 @@
 *.class
 *.log
+*.class
+**/.DS_Store
+.DS_Store
+.sbt
+.bsp
+.history
+.cache-main
+.scala_dependencies
+publish.sbt
+target/
+project/project/
+project/target/
