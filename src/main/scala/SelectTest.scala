@@ -39,7 +39,7 @@ object SelectTest extends zio.App {
 
   def getPrice(db: Kuzminki, symbol: String) = {
     db.query {
-      qb
+      sql
         .select(binancePrice)
         .cols3(t => (
           t.symbol,
@@ -54,7 +54,7 @@ object SelectTest extends zio.App {
   }
 
   val priceEth = {
-    qb
+    sql
       .select(binancePrice)
       .cols3(t => (
         t.symbol,

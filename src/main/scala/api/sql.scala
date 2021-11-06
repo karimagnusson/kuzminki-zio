@@ -26,12 +26,13 @@ import kuzminki.select.{
   Where,
   JoinOn
 }
+import kuzminki.delete.{Delete, DeleteWhere}
 //import kuzminki.insert.Insert
 //import kuzminki.operation.{Update, Delete, OperationWhere}
 //import kuzminki.fn.Count
 
 
-object qb {
+object sql {
 
   def select[M <: Model](model: M): Select[M] = {
     new Select(model)
@@ -44,15 +45,14 @@ object qb {
   def select[A <: Model, B <: Model](join: Join[A, B]): SelectJoin[A, B] = {
     new SelectJoin(join)
   }
-  /*
-  def update[M <: Model](model: M): Update[M] = {
-    new Update(model)
-  }
 
-  def delete[M <: Model](model: M): OperationWhere[M] = {
+  //def update[M <: Model](model: M): Update[M] = {
+  //  new Update(model)
+  //}
+
+  def delete[M <: Model](model: M): DeleteWhere[M] = {
     Delete.from(model)
   }
-  */
 }
 
 /*

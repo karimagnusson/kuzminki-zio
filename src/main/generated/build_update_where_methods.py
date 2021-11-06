@@ -16,12 +16,12 @@ import kuzminki.section.operation.UpdateCacheWhereSec
 import kuzminki.shape._
 
 
-abstract class BuildOperationWhereMethods[M](model: M, coll: OperationCollector) {
+abstract class BuildUpdateWhereMethods[M](model: M, coll: UpdateCollector) {
 
   private def next[A](filters: PartShape[A]) = {
     coll
       .add(UpdateCacheWhereSec(filters.parts))
-      .cacheOperation(model, filters)
+      .buildOperation(model, filters)
   }
 
   def buildWhere1[P](
@@ -54,6 +54,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/operation/BuildOperationWhereMethods.scala', 'w')
+f = open('../scala/update/BuildUpdateWhereMethods.scala', 'w')
 f.write(content)
 f.close()

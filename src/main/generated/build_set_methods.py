@@ -24,7 +24,6 @@ abstract class BuildSetMethods[M <: Model](model: M) {
     new UpdateCacheWhere(
       model,
       OperationCollector(
-        db,
         Array(
           UpdateSec(ModelTable(model)),
           UpdateCacheSetSec(changes.parts)

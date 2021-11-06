@@ -45,7 +45,9 @@ object Kuzminki {
   }
 
   def async(dbName: String): RIO[Blocking, Kuzminki] = {
-    effectBlockingInterrupt(blocking(dbName))
+    effectBlockingInterrupt {
+      blocking(dbName)
+    }
   }
 }
 
