@@ -23,26 +23,12 @@ import kuzminki.function.Aggregation
 import kuzminki.section.select._
 
 
-class RunSelect[M, R](
+class BuildSelect[M, R](
       model: M,
       coll: SelectCollector[R]
-    ) extends SelectCacheMethods(model, coll) {
+    ) extends SelectBuildMethods(model, coll) {
 
-  def cache = coll.cache
-  
-  def run() = cache.run()
-
-  def runAs[T](implicit custom: R => T) = cache.runAs(custom)
-
-  def headOpt() = cache.headOpt()
-
-  def headOptAs[T](implicit custom: R => T) = cache.headOptAs(custom)
-
-  def head() = cache.head()
-
-  def headAs[T](implicit custom: R => T) = cache.headOptAs(custom)
-
-  //def runCount() = cache.runCount()
+  def build = coll.build
 
   // subquery
 
@@ -81,7 +67,7 @@ class RunSelect[M, R](
   
   def args = coll.args
 
-  def sql(handler: String => Unit): RunSelect[M, R] = {
+  def sql(handler: String => Unit): BuildSelect[M, R] = {
     handler(render(coll.prefix))
     this
   }

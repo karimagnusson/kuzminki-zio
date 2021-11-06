@@ -19,10 +19,13 @@ package kuzminki.select
 import kuzminki.section.select.LimitSec
 
 
-class Limit[M, R](model: M, coll: SelectCollector[R]) extends RunSelect(model, coll) {
+class Limit[M, R](
+      model: M,
+      coll: SelectCollector[R]
+    ) extends BuildSelect(model, coll) {
 
   def limit(num: Int) = {
-    new RunSelect(
+    new BuildSelect(
       model,
       coll.add(
         LimitSec(num)

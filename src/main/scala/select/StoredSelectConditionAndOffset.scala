@@ -16,15 +16,12 @@
 
 package kuzminki.select
 
-import kuzminki.render.SqlWithParams
-import kuzminki.client.Driver
 import kuzminki.render.Prefix
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
 
 
 class StoredSelectConditionAndOffset[P, R](
-      db: Driver,
       template: String,
       cacheArgs: Tuple3[Vector[Any], Vector[Any], Vector[Any]],
       paramConv: ParamConv[P],
@@ -37,41 +34,10 @@ class StoredSelectConditionAndOffset[P, R](
     args1 ++ paramConv.fromShape(params) ++ args2 ++ Vector(offset) ++ args3
   }
 
-  private def statement(params: P, offset: Int) = {
-    SqlWithParams(
-      template,
-      transformParams(params, offset)
-    )
-  }
-
-  def run(params: P, offset: Int) = {
-    db.select(statement(params, offset), rowConv) 
-  }
-
-  def runAs[T](params: P, offset: Int)(implicit custom: R => T) = {
-    db.selectAs(statement(params, offset), rowConv, custom)  
-  }
-
-  def headOpt(params: P, offset: Int) = {
-    db.selectHeadOpt(statement(params, offset), rowConv)
-  }
-
-  def headOptAs[T](params: P, offset: Int)(implicit custom: R => T) = {
-    db.selectHeadOptAs(statement(params, offset), rowConv, custom)
-  }
-
-  def head(params: P, offset: Int) = {
-    db.selectHead(statement(params, offset), rowConv)
-  }
-
-  def headAs[T](params: P, offset: Int)(implicit custom: R => T) = {
-    db.selectHeadAs(statement(params, offset), rowConv, custom)
+  def prepare(params: P, offset: Int) = {
+    StoredSelect(template, transformParams(params, offset), rowConv)
   }
   
-  def render(prefix: Prefix) = template
-  
-  def args = args1 ++ args2 ++ args3
-
   def sql(handler: String => Unit): StoredSelectConditionAndOffset[P, R] = {
     handler(template)
     this

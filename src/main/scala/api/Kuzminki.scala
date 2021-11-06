@@ -20,8 +20,14 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent.duration._
 
 import kuzminki.api._
-import kuzminki.client.Driver
-import kuzminki.select.{Select, SelectJoin, Where, JoinOn}
+import kuzminki.jdbc.Driver
+import kuzminki.select.{
+  Select,
+  SelectJoin,
+  Where,
+  JoinOn,
+  StoredSelect
+}
 //import kuzminki.insert.Insert
 //import kuzminki.operation.{Update, Delete, OperationWhere}
 //import kuzminki.fn.Count
@@ -34,8 +40,8 @@ import zio.blocking._
 object Kuzminki {
 
   def blocking(dbName: String) = {
-    val db = new Driver(dbName)
-    new Kuzminki(db)
+    val driver = new Driver(dbName)
+    new Kuzminki(driver)
   }
 
   def async(dbName: String): RIO[Blocking, Kuzminki] = {
@@ -43,21 +49,103 @@ object Kuzminki {
   }
 }
 
-class Kuzminki(protected val db: Driver) {
+class Kuzminki(driver: Driver) {
 
-  def select[M <: Model](model: M): Select[M] = {
-    new Select(model, db)
+  def query[R](stm: StoredSelect[R]): RIO[Blocking, Seq[R]] = {
+    for {
+      rows <- driver.query(stm)
+    } yield rows
   }
 
-  def select[A <: Model, B <: Model](a: A, b: B): SelectJoin[A, B] = {
-    select(DefaultJoin(a, b))
+  def query[R](build: => StoredSelect[R]): RIO[Blocking, Seq[R]] = {
+    for {
+      stm <- Task.effect { build }
+      rows <- driver.query(stm)
+    } yield rows
   }
 
-  def select[A <: Model, B <: Model](join: Join[A, B]): SelectJoin[A, B] = {
-    new SelectJoin(join, db)
+  def queryAs[R, T](stm: StoredSelect[R])
+                   (implicit modify: R => T): RIO[Blocking, Seq[T]] = {
+    for {
+      rows <- driver.query(stm)
+      modifiedRows <- Task.effect { rows.map(modify)}
+    } yield modifiedRows
   }
 
-  def close() = db.close()
+  def queryAs[R, T](build: => StoredSelect[R])
+                   (implicit modify: R => T): RIO[Blocking, Seq[T]] = {
+    for {
+      stm <- Task.effect { build }
+      rows <- driver.query(stm)
+      modifiedRows <- Task.effect { rows.map(modify)}
+    } yield modifiedRows
+  }
+
+  def queryHead[R](stm: StoredSelect[R]): RIO[Blocking, R] = {
+    for {
+      rows <- driver.query(stm)
+      head <- Task.effect { rows.head }
+    } yield head
+  }
+
+  def queryHead[R](build: => StoredSelect[R]): RIO[Blocking, R] = {
+    for {
+      stm <- Task.effect { build }
+      rows <- driver.query(stm)
+      head <- Task.effect { rows.head }
+    } yield head
+  }
+
+  def queryHeadAs[R, T](stm: StoredSelect[R])
+                       (implicit modify: R => T): RIO[Blocking, T] = {
+    for {
+      rows <- driver.query(stm)
+      modifiedHead <- Task.effect { modify(rows.head) }
+    } yield modifiedHead
+  }
+
+  def queryHeadAs[R, T](build: => StoredSelect[R])
+                       (implicit modify: R => T): RIO[Blocking, T] = {
+    for {
+      stm <- Task.effect { build }
+      rows <- driver.query(stm)
+      modifiedHead <- Task.effect { modify(rows.head) }
+    } yield modifiedHead
+  }
+
+   def queryHeadOpt[R](stm: StoredSelect[R]): RIO[Blocking, Option[R]] = {
+    for {
+      rows <- driver.query(stm)
+      headOpt <- Task.effect { rows.headOption }
+    } yield headOpt
+  }
+
+  def queryHeadOpt[R](build: => StoredSelect[R]): RIO[Blocking, Option[R]] = {
+    for {
+      stm <- Task.effect { build }
+      rows <- driver.query(stm)
+      headOpt <- Task.effect { rows.headOption }
+    } yield headOpt
+  }
+
+  def queryHeadOptAs[R, T](stm: StoredSelect[R])
+                          (implicit modify: R => T): RIO[Blocking, Option[T]] = {
+    for {
+      rows <- driver.query(stm)
+      modifiedHeadOpt <- Task.effect { rows.headOption.map(modify) }
+    } yield modifiedHeadOpt
+  }
+
+  def queryHeadOptAs[R, T](build: => StoredSelect[R])
+                          (implicit modify: R => T): RIO[Blocking, Option[T]] = {
+    for {
+      stm <- Task.effect { build }
+      rows <- driver.query(stm)
+      modifiedHeadOpt <- Task.effect { rows.headOption.map(modify) }
+    } yield modifiedHeadOpt
+  }
+
+  def close() = driver.close()
 }
 
 /*

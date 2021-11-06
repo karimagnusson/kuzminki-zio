@@ -38,17 +38,33 @@ object SelectTest extends zio.App {
   def printThread = s"[${Thread.currentThread().getName}]"
 
   def getPrice(db: Kuzminki, symbol: String) = {
-    db
+    db.query {
+      qb
+        .select(binancePrice)
+        .cols3(t => (
+          t.symbol,
+          t.priceUsd,
+          t.rounded
+        ))
+        .whereOne(_.symbol === symbol)
+        .orderByOne(_.id.desc)
+        .limit(3)
+        .build
+    }
+  }
+
+  val priceEth = {
+    qb
       .select(binancePrice)
       .cols3(t => (
         t.symbol,
         t.priceUsd,
         t.rounded
       ))
-      .whereOne(_.symbol === symbol)
+      .whereOne(_.symbol === "ETH")
       .orderByOne(_.id.desc)
       .limit(3)
-      .run()
+      .build
   }
 
   def priceString: Tuple3[String, Double, Timestamp] => String = {
@@ -71,9 +87,9 @@ object SelectTest extends zio.App {
     _ <- putStrLn("Start")
     db <- Kuzminki.async("cointracker")
     _ <- putStrLn("Connected")
-    _ <- printManyPrices(db, List("BTC", "ETH", "DCR", "DOT"))
-    //_ <- printPrice(db, "BTC").debug(printThread)
-    //_ <- printPrice(db, "ETH").debug(printThread)
+    //_ <- printManyPrices(db, List("BTC", "ETH", "DCR", "DOT"))
+    _ <- printPrice(db, "BTC")
+    _ <- db.query(priceEth)
     _ <- db.close()
     _ <- putStrLn("Closed")
   } yield ()

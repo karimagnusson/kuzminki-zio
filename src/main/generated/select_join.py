@@ -16,20 +16,18 @@ template = """package kuzminki.select
 
 import kuzminki.api.{Model, Join}
 import kuzminki.model.ModelTable
-import kuzminki.rdbc.Driver
 import kuzminki.column.TypeCol
 import kuzminki.render.Prefix
 import kuzminki.section.select._
 import kuzminki.shape._
 
 
-class SelectJoin[A <: Model, B <: Model](val join: Join[A, B], db: Driver) {
+class SelectJoin[A <: Model, B <: Model](val join: Join[A, B]) {
 
   def next[R](outShape: RowShape[R]) = {
     new JoinOn(
       join,
       SelectCollector(
-        db,
         Prefix.forJoin(join),
         outShape,
         Array(
@@ -71,6 +69,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/kuzminki/select/SelectJoin.scala', 'w')
+f = open('../scala/select/SelectJoin.scala', 'w')
 f.write(content)
 f.close()

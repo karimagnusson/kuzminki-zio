@@ -16,20 +16,18 @@ template = """package kuzminki.select
 
 import kuzminki.api.Model
 import kuzminki.model.ModelTable
-import kuzminki.rdbc.Driver
 import kuzminki.column.TypeCol
 import kuzminki.render.Prefix
 import kuzminki.section.select._
 import kuzminki.shape._
 
 
-class Select[M <: Model](val model: M, db: Driver) {
+class Select[M <: Model](val model: M) {
 
   def next[R](rowShape: RowShape[R]) = {
     new Where(
       model,
       SelectCollector(
-        db,
         Prefix.forModel,
         rowShape,
         Array(
@@ -71,6 +69,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/kuzminki/select/Select.scala', 'w')
+f = open('../scala/select/Select.scala', 'w')
 f.write(content)
 f.close()

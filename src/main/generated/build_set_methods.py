@@ -2,7 +2,7 @@
 
 
 func = """
-  def cacheWhere%s[%s](
+  def buildSet%s[%s](
         pick: M => Tuple%s[%s]
       ) = {
     next(new PartShape%s(pick(model)))
@@ -12,21 +12,29 @@ func = """
 template = """package kuzminki.operation
 
 import kuzminki.api.Model
-import kuzminki.section.operation.UpdateCacheWhereSec
+import kuzminki.rdbc.Driver
+import kuzminki.model.ModelTable
+import kuzminki.section.operation.{UpdateSec, UpdateCacheSetSec}
 import kuzminki.shape._
 
 
-abstract class CacheOperationWhereMethods[M](model: M, coll: OperationCollector) {
+abstract class BuildSetMethods[M <: Model](model: M) {
 
-  private def next[A](filters: PartShape[A]) = {
-    coll
-      .add(UpdateCacheWhereSec(filters.parts))
-      .cacheOperation(model, filters)
+  private def next[S1](changes: PartShape[S1]) = {
+    new UpdateCacheWhere(
+      model,
+      OperationCollector(
+        db,
+        Array(
+          UpdateSec(ModelTable(model)),
+          UpdateCacheSetSec(changes.parts)
+        )
+      ),
+      changes
+    )
   }
 
-  def cacheWhere1[P](
-        pick: M => CachePart[P]
-      ) = {
+  def buildSet1[P](pick: M => CachePart[P]) = {
     next(new PartShapeSingle(pick(model)))
   }
 %s
@@ -54,6 +62,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/kuzminki/operation/CacheOperationWhereMethods.scala', 'w')
+f = open('../scala/operation/BuildSetMethods.scala', 'w')
 f.write(content)
 f.close()

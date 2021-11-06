@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package kuzminki.client
+package kuzminki.jdbc
 
 import java.util.Properties
 import java.sql.Connection
@@ -38,7 +38,7 @@ import zio.blocking._
 
 import kuzminki.api.KuzminkiError
 import kuzminki.shape.RowConv
-import kuzminki.render.SqlWithParams
+import kuzminki.select.StoredSelect
 
 object Driver {
 
@@ -54,7 +54,7 @@ object Driver {
 
 class Driver(dbName: String) {
 
-  val conn = {
+  private val conn = {
     val url = s"jdbc:postgresql://localhost/$dbName"
     val props = new Properties()
     props.setProperty("user","karimagnusson")
@@ -62,108 +62,49 @@ class Driver(dbName: String) {
     DriverManager.getConnection(url, props)
   }
 
-  private def setParam(stm: PreparedStatement, param: Any, index: Int): Unit = {
-    param match {
-      case value: String          => stm.setString(index, value)
-      case value: Boolean         => stm.setBoolean(index, value)
-      case value: Short           => stm.setShort(index, value)
-      case value: Int             => stm.setInt(index, value)
-      case value: Long            => stm.setLong(index, value)
-      case value: Float           => stm.setFloat(index, value)
-      case value: Double          => stm.setDouble(index, value)
-      case value: BigDecimal      => stm.setBigDecimal(index, value.bigDecimal)
-      case value: Time            => stm.setTime(index, value)
-      case value: Date            => stm.setDate(index, value)
-      case value: Timestamp       => stm.setTimestamp(index, value)
-      case _ => throw KuzminkiError(s"type not supported [$param]")
+  private def setArg(jdbcStm: PreparedStatement, arg: Any, index: Int): Unit = {
+    arg match {
+      case value: String      => jdbcStm.setString(index, value)
+      case value: Boolean     => jdbcStm.setBoolean(index, value)
+      case value: Short       => jdbcStm.setShort(index, value)
+      case value: Int         => jdbcStm.setInt(index, value)
+      case value: Long        => jdbcStm.setLong(index, value)
+      case value: Float       => jdbcStm.setFloat(index, value)
+      case value: Double      => jdbcStm.setDouble(index, value)
+      case value: BigDecimal  => jdbcStm.setBigDecimal(index, value.bigDecimal)
+      case value: Time        => jdbcStm.setTime(index, value)
+      case value: Date        => jdbcStm.setDate(index, value)
+      case value: Timestamp   => jdbcStm.setTimestamp(index, value)
+      case _ => throw KuzminkiError(s"type not supported [$arg]")
     }
   }
 
-  private def getStatement(statement: SqlWithParams) = {
-    val stm = conn.prepareStatement(statement.sql)
-    if (statement.params.nonEmpty) {
-      statement.params.zipWithIndex.foreach {
-        case (param, index) =>
-          setParam(stm, param, index + 1)
+  private def getStatement(sql: String, args: Seq[Any]) = {
+    val jdbcStm = conn.prepareStatement(sql)
+    if (args.nonEmpty) {
+      args.zipWithIndex.foreach {
+        case (arg, index) =>
+          setArg(jdbcStm, arg, index + 1)
       }
     }
-    stm
+    jdbcStm
   }
 
-  def select[R](
-        statement: SqlWithParams,
-        conv: RowConv[R]
-      ): RIO[Blocking, Seq[R]] = {
-
+  def query[R](stm: StoredSelect[R]): RIO[Blocking, Seq[R]] = {
     effectBlocking {
-      val stm = getStatement(statement)
-      val rs = stm.executeQuery()
+
+      println(s"<-- [${Thread.currentThread().getName}] -->")
+
+      val jdbcStm = getStatement(stm.template, stm.args)
+      val jdbcResultSet = jdbcStm.executeQuery()
       var rows = ImmutableSeq.empty[R]
-      while (rs.next()) {
-        rows = rows :+ conv.fromRow(rs)
+      while (jdbcResultSet.next()) {
+        rows = rows :+ stm.rowConv.fromRow(jdbcResultSet)
       }
-      rs.close()
-      stm.close()
+      jdbcResultSet.close()
+      jdbcStm.close()
       rows.toSeq
     }
-  }
-
-  def selectAs[R, T](
-        statement: SqlWithParams,
-        conv: RowConv[R],
-        custom: R => T
-      ): RIO[Blocking, Seq[T]] = {
-
-    for {
-      rows <- select(statement, conv)
-      modified <- Task.effect { rows.map(custom) }
-    } yield modified
-  }
-
-  def selectHeadOpt[R](
-        statement: SqlWithParams,
-        conv: RowConv[R]
-      ): RIO[Blocking, Option[R]] = {
-
-    for {
-      rows <- select(statement, conv)
-      headOpt <- Task.effect { rows.headOption }
-    } yield headOpt
-  }
-
-  def selectHeadOptAs[R, T](
-        statement: SqlWithParams,
-        conv: RowConv[R],
-        custom: R => T
-      ): RIO[Blocking, Option[T]] = {
-
-    for {
-      rows <- select(statement, conv)
-      modified <- Task.effect { rows.headOption.map(custom) }
-    } yield modified
-  }
-
-  def selectHead[R](
-        statement: SqlWithParams,
-        conv: RowConv[R]
-      ): RIO[Blocking, R] = {
-
-    for {
-      rows <- select(statement, conv)
-      head <- Task.effect { rows.head }
-    } yield head
-  }
-
-  def selectHeadAs[R, T](
-        statement: SqlWithParams,
-        conv: RowConv[R],
-        custom: R => T
-      ): RIO[Blocking, T] = {
-
-    for {
-      rows <- select(statement, conv)
-      modified <- Task.effect { custom(rows.head) }
-    } yield modified
   }
 
   def close() = {
@@ -180,8 +121,6 @@ class Driver(dbName: String) {
 
 
 /*
-
-
 
 case class DriverConf(host: String,
                       db: String,
