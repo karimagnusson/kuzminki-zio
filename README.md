@@ -30,6 +30,7 @@ val db = Kuzminki.blocking("<db-name>", "<username>", "<password>")
 #### Defining a model
 ```scala
 import kuzminki.api._
+import java.sql.Timestamp
 
 class User extends Model("user_profile") {
   val id = column[Int]("id")
@@ -42,11 +43,7 @@ class User extends Model("user_profile") {
   val city = column[String]("city")
   val discount = column[Int]("discount")
   val isActive = column[Boolean]("is_active")
-  val created = column[ZonedDateTime]("created")
-
-  val basic = (id, username)
-  val info = read[UserInfo](id, username, email)
-  val addUser = write[AddUser](username, email)
+  val created = column[Timestamp]("created")
 }
 
 Model.register[User]

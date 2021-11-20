@@ -29,8 +29,7 @@ import kuzminki.select.{
 import kuzminki.delete.{Delete, DeleteWhere}
 import kuzminki.insert.Insert
 import kuzminki.update.Update
-//import kuzminki.operation.{Update, Delete, OperationWhere}
-//import kuzminki.fn.Count
+import kuzminki.fn.Count
 
 
 object sql {
@@ -45,6 +44,18 @@ object sql {
 
   def select[A <: Model, B <: Model](join: Join[A, B]): SelectJoin[A, B] = {
     new SelectJoin(join)
+  }
+
+  def count[M <: Model](model: M): Where[M, Long] = {
+    new Select(model).cols1(t => Count.all)
+  }
+
+  def count[A <: Model, B <: Model](a: A, b: B): JoinOn[A, B, Long] = {
+    count(DefaultJoin(a, b))
+  }
+
+  def count[A <: Model, B <: Model](join: Join[A, B]): JoinOn[A, B, Long] = {
+    new SelectJoin(join, db).cols1(t => Count.all)
   }
 
   def insert[M <: Model](model: M): Insert[M] = {

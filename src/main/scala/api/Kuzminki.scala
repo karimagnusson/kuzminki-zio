@@ -179,60 +179,6 @@ class Kuzminki(driver: Driver) {
   def close() = driver.close()
 }
 
-/*
-trait KuzminkiApi {
-
-  protected val db: Driver
-
-  def select[M <: Model](model: M): Select[M] = {
-    new Select(model, db)
-  }
-
-  def select[A <: Model, B <: Model](a: A, b: B): SelectJoin[A, B] = {
-    select(DefaultJoin(a, b))
-  }
-
-  def select[A <: Model, B <: Model](join: Join[A, B]): SelectJoin[A, B] = {
-    new SelectJoin(join, db)
-  }
-
-  def insert[M <: Model](model: M): Insert[M] = {
-    new Insert(model, db)
-  }
-
-  def update[M <: Model](model: M): Update[M] = {
-    new Update(model, db)
-  }
-
-  def delete[M <: Model](model: M): OperationWhere[M] = {
-    Delete.from(model, db)
-  }
-
-  def count[M <: Model](model: M): Where[M, Long] = {
-    new Select(model, db).cols1(t => Count.all)
-  }
-
-  def count[A <: Model, B <: Model](a: A, b: B): JoinOn[A, B, Long] = {
-    count(DefaultJoin(a, b))
-  }
-
-  def count[A <: Model, B <: Model](join: Join[A, B]): JoinOn[A, B, Long] = {
-    new SelectJoin(join, db).cols1(t => Count.all)
-  }
-
-  def rawSelect(statement: SqlWithParams) = db.rawSelect(statement)
-
-  def rawSelectHead(statement: SqlWithParams) = db.rawSelectHead(statement)
-
-  def rawSelectHeadOpt(statement: SqlWithParams) = db.rawSelectHeadOpt(statement)
-
-  def rawExec(statement: SqlWithParams) = db.rawExec(statement)
-
-  def rawExecNum(statement: SqlWithParams) = db.rawExecNum(statement)
-
-  def close() = db.close()
-}
-*/
 
 
 
