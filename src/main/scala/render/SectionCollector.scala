@@ -14,19 +14,20 @@
 * limitations under the License.
 */
 
-package kuzminki.delete
+package kuzminki.render
 
-import kuzminki.render.{RenderCollector, Prefix}
 import kuzminki.section.Section
 
 
-case class DeleteCollector(
-      sections: Array[Section]
-    ) extends RenderCollector {
+case class SectionCollector(sections: Array[Section]) {
 
   val prefix = Prefix.forModel
 
   def add(section: Section) = this.copy(sections = sections :+ section)
 
   def extend(added: Array[Section]) = this.copy(sections = sections ++ added)
+
+  def render = sections.map(_.render(prefix)).mkString(" ")
+  
+  def args = sections.toSeq.map(_.args).flatten.toVector
 }

@@ -17,25 +17,19 @@
 package kuzminki.delete
 
 import kuzminki.shape.ParamConv
-import kuzminki.operation.StoredOperation
+import kuzminki.render.RenderedOperation
 
 
 class StoredDeleteCondition[P](
-      template: String,
+      statement: String,
       args: Seq[Any],
       paramConv: ParamConv[P]
     ) {
 
-  private def transformParams(params: P) = {
-    args ++ paramConv.fromShape(params)
-  }
-
-  def prepare(params: P) = {
-    StoredOperation(template, transformParams(params))
-  }
-
-  def sql(handler: String => Unit) = {
-    handler(template)
-    this
+  def render(params: P) = {
+    RenderedOperation(
+      statement,
+      args ++ paramConv.fromShape(params)
+    )
   }
 }

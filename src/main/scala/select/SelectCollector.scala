@@ -17,7 +17,7 @@
 package kuzminki.select
 
 import kuzminki.api.KuzminkiError
-import kuzminki.render.{RenderCollector, Prefix}
+import kuzminki.render.{RenderCollector, RenderedQuery, Prefix}
 import kuzminki.section._
 import kuzminki.section.select._
 import kuzminki.shape._
@@ -32,8 +32,6 @@ case class SelectCollector[R](
   def add(section: Section) = this.copy(sections = sections :+ section)
 
   def extend(added: Array[Section]) = this.copy(sections = sections ++ added)
-
-  def build = StoredSelect(render, args, rowShape.conv)
 
   private def validataWhere(): Unit = {
     
@@ -157,7 +155,7 @@ case class SelectCollector[R](
     (template, argsThreeParts)
   }
 
-  def buildWhere[P](partShape: PartShape[P]) = {
+  def cacheWhere[P](partShape: PartShape[P]) = {
 
     validataWhere()
 
@@ -168,7 +166,7 @@ case class SelectCollector[R](
     new StoredSelectCondition(template, args, partShape.conv, rowShape.conv)
   }
 
-  def buildWhereWithOffset[P](partShape: PartShape[P]) = {
+  def cacheWhereWithOffset[P](partShape: PartShape[P]) = {
 
     validataWhere()
     validataOffset()
@@ -182,7 +180,7 @@ case class SelectCollector[R](
     new StoredSelectConditionAndOffset(template, args, partShape.conv, rowShape.conv)
   }
 
-  def buildHaving[P](partShape: PartShape[P]) = {
+  def cacheHaving[P](partShape: PartShape[P]) = {
 
     validataHaving()
 
@@ -193,7 +191,7 @@ case class SelectCollector[R](
     new StoredSelectCondition(template, args, partShape.conv, rowShape.conv)
   }
 
-  def buildHavingWithOffset[P](partShape: PartShape[P]) = {
+  def cacheHavingWithOffset[P](partShape: PartShape[P]) = {
 
     validataHaving()
     validataOffset()

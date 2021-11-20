@@ -14,7 +14,18 @@
 * limitations under the License.
 */
 
-package kuzminki.render
+package kuzminki.update
+
+import kuzminki.shape.RowConv
+import kuzminki.render.{RenderedQuery, SectionCollector}
 
 
-trait UnderlyingRenderAndArgs extends UnderlyingRender with UnderlyingArgs
+class RenderUpdateReturning[R](coll: SectionCollector, rowConv: RowConv[R]) {
+  
+  def render = RenderedQuery(coll.render, coll.args, rowConv)
+
+  def sql(handler: String => Unit) = {
+    handler(coll.render)
+    this
+  }
+}

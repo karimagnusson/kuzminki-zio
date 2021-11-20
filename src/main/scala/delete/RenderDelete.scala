@@ -14,11 +14,15 @@
 * limitations under the License.
 */
 
-package kuzminki.render
+package kuzminki.delete
 
-import kuzminki.column.AnyCol
+import kuzminki.render.{RenderedOperation, SectionCollector}
 
 
-trait UnderlyingRef {
-  val underlying: AnyCol
+class RenderDelete[M](
+      model: M,
+      coll: SectionCollector
+    ) extends PickDeleteReturning(model, coll) {
+  
+  def render = RenderedOperation(coll.render, coll.args)
 }

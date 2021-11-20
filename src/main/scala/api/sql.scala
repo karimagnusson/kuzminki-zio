@@ -27,7 +27,8 @@ import kuzminki.select.{
   JoinOn
 }
 import kuzminki.delete.{Delete, DeleteWhere}
-//import kuzminki.insert.Insert
+import kuzminki.insert.Insert
+import kuzminki.update.Update
 //import kuzminki.operation.{Update, Delete, OperationWhere}
 //import kuzminki.fn.Count
 
@@ -46,9 +47,13 @@ object sql {
     new SelectJoin(join)
   }
 
-  //def update[M <: Model](model: M): Update[M] = {
-  //  new Update(model)
-  //}
+  def insert[M <: Model](model: M): Insert[M] = {
+    new Insert(model)
+  }
+
+  def update[M <: Model](model: M): Update[M] = {
+    new Update(model)
+  }
 
   def delete[M <: Model](model: M): DeleteWhere[M] = {
     Delete.from(model)

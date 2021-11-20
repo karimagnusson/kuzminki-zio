@@ -16,13 +16,13 @@
 
 package kuzminki.select
 
-import kuzminki.render.Prefix
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
+import kuzminki.render.RenderedQuery
 
 
 class StoredSelectConditionAndOffset[P, R](
-      template: String,
+      statement: String,
       cacheArgs: Tuple3[Vector[Any], Vector[Any], Vector[Any]],
       paramConv: ParamConv[P],
       rowConv: RowConv[R]
@@ -30,17 +30,12 @@ class StoredSelectConditionAndOffset[P, R](
 
   private val (args1, args2, args3) = cacheArgs
 
-  private def transformParams(params: P, offset: Int) = {
-    args1 ++ paramConv.fromShape(params) ++ args2 ++ Vector(offset) ++ args3
-  }
-
-  def prepare(params: P, offset: Int) = {
-    StoredSelect(template, transformParams(params, offset), rowConv)
-  }
-  
-  def sql(handler: String => Unit): StoredSelectConditionAndOffset[P, R] = {
-    handler(template)
-    this
+  def render(params: P, offset: Int) = {
+    RenderedQuery(
+      statement,
+      args1 ++ paramConv.fromShape(params) ++ args2 ++ Seq(offset) ++ args3,
+      rowConv
+    )
   }
 }
 

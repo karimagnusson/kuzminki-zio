@@ -2,28 +2,28 @@
 
 
 func = """
-  def buildWhere%s[%s](
+  def cacheWhere%s[%s](
         pick: M => Tuple%s[%s]
       ) = {
-    coll.buildWhere(new PartShape%s(pick(model)))
+    coll.cacheWhere(new PartShape%s(pick(model)))
   }
 
-  def buildWhereWithOffset%s[%s](
+  def cacheWhereWithOffset%s[%s](
         pick: M => Tuple%s[%s]
       ) = {
-    coll.buildWhereWithOffset(new PartShape%s(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape%s(pick(model)))
   }
 
-  def buildHaving%s[%s](
+  def cacheHaving%s[%s](
         pick: M => Tuple%s[%s]
       ) = {
-    coll.buildHaving(new PartShape%s(pick(model)))
+    coll.cacheHaving(new PartShape%s(pick(model)))
   }
 
-  def buildHavingWithOffset%s[%s](
+  def cacheHavingWithOffset%s[%s](
         pick: M => Tuple%s[%s]
       ) = {
-    coll.buildHavingWithOffset(new PartShape%s(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape%s(pick(model)))
   }"""
 
 
@@ -32,22 +32,22 @@ template = """package kuzminki.select
 import kuzminki.shape._
 
 
-abstract class SelectBuildMethods[M, R](model: M, coll: SelectCollector[R]) {
+abstract class SelectCacheMethods[M, R](model: M, coll: SelectCollector[R]) {
 
-  def buildWhere1[P](pick: M => CachePart[P]) = {
-    coll.buildWhere(new PartShapeSingle(pick(model)))
+  def cacheWhere1[P](pick: M => CachePart[P]) = {
+    coll.cacheWhere(new PartShapeSingle(pick(model)))
   }
 
-  def buildWhereWithOffset1[P](pick: M => CachePart[P]) = {
-    coll.buildWhereWithOffset(new PartShapeSingle(pick(model)))
+  def cacheWhereWithOffset1[P](pick: M => CachePart[P]) = {
+    coll.cacheWhereWithOffset(new PartShapeSingle(pick(model)))
   }
 
-  def buildHaving1[P](pick: M => CachePart[P]) = {
-    coll.buildHaving(new PartShapeSingle(pick(model)))
+  def cacheHaving1[P](pick: M => CachePart[P]) = {
+    coll.cacheHaving(new PartShapeSingle(pick(model)))
   }
 
-  def buildHavingWithOffset1[P](pick: M => CachePart[P]) = {
-    coll.buildHavingWithOffset(new PartShapeSingle(pick(model)))
+  def cacheHavingWithOffset1[P](pick: M => CachePart[P]) = {
+    coll.cacheHavingWithOffset(new PartShapeSingle(pick(model)))
   }
 %s
 }
@@ -89,7 +89,7 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/select/SelectBuildMethods.scala', 'w')
+f = open('../scala/select/SelectCacheMethods.scala', 'w')
 f.write(content)
 f.close()
 

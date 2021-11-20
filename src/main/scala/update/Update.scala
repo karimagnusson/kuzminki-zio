@@ -14,24 +14,63 @@
 * limitations under the License.
 */
 
-package kuzminki.delete
+package kuzminki.update
 
 import kuzminki.api.Model
 import kuzminki.model.ModelTable
+import kuzminki.assign.Assign
 import kuzminki.render.SectionCollector
-import kuzminki.section.operation.DeleteFromSec
+import kuzminki.section.operation.{UpdateSec, UpdateSetSec}
 
 
-object Delete {
+class Update[M <: Model](
+      model: M
+    ) extends UpdateCacheSetMethods(model) {
 
-  def from[M <: Model](model: M) = {
-    new DeleteWhere(
+  def set(pick: M => Seq[Assign]) = {
+    new UpdateWhere(
       model,
       SectionCollector(
         Array(
-          DeleteFromSec(ModelTable(model))
+          UpdateSec(ModelTable(model)),
+          UpdateSetSec(pick(model))
+        )
+      )
+    )
+  }
+
+  def setOne(pick: M => Assign) = {
+    new UpdateWhere(
+      model,
+      SectionCollector(
+        Array(
+          UpdateSec(ModelTable(model)),
+          UpdateSetSec(
+            Seq(pick(model))
+          )
         )
       )
     )
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

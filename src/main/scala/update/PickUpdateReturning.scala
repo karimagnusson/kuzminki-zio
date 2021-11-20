@@ -1,4 +1,4 @@
-package kuzminki.delete
+package kuzminki.update
 
 import kuzminki.column.TypeCol
 import kuzminki.render.SectionCollector
@@ -6,10 +6,10 @@ import kuzminki.section.operation.ReturningSec
 import kuzminki.shape._
 
 
-abstract class PickDeleteReturning[M](model: M, coll: SectionCollector) { 
+abstract class PickUpdateReturning[M](model: M, coll: SectionCollector) { 
 
-  private def next[R](rowShape: RowShape[R]) = {
-    new RenderDeleteReturning(
+  def next[R](rowShape: RowShape[R]) = {
+    new RenderUpdateReturning(
       coll.add(ReturningSec(rowShape.cols)),
       rowShape.conv
     )

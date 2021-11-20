@@ -2,29 +2,32 @@
 
 
 func = """
-  def buildWhere%s[%s](
+  def cacheWhere%s[%s](
         pick: M => Tuple%s[%s]
       ) = {
     next(new PartShape%s(pick(model)))
   }"""
 
 
-template = """package kuzminki.operation
+template = """package kuzminki.delete
 
 import kuzminki.api.Model
+import kuzminki.render.SectionCollector
 import kuzminki.section.operation.UpdateCacheWhereSec
 import kuzminki.shape._
 
 
-abstract class BuildUpdateWhereMethods[M](model: M, coll: UpdateCollector) {
+abstract class CacheDeleteWhereMethods[M](model: M, coll: SectionCollector) {
 
-  private def next[A](filters: PartShape[A]) = {
-    coll
-      .add(UpdateCacheWhereSec(filters.parts))
-      .buildOperation(model, filters)
+  private def next[A](paramConv: PartShape[A]) = {
+    new StoredDeleteCondition(
+      coll.add(UpdateCacheWhereSec(paramConv.parts)).render,
+      coll.args,
+      paramConv.conv
+    )
   }
 
-  def buildWhere1[P](
+  def cacheWhere1[P](
         pick: M => CachePart[P]
       ) = {
     next(new PartShapeSingle(pick(model)))
@@ -54,6 +57,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/update/BuildUpdateWhereMethods.scala', 'w')
+f = open('../scala/delete/CacheDeleteWhereMethods.scala', 'w')
 f.write(content)
 f.close()

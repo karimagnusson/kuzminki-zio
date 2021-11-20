@@ -53,9 +53,9 @@ package object api {
   implicit val toDoubleModelCol: TypeCol[Double] => DoubleModelCol = col => col.asInstanceOf[DoubleModelCol]
   implicit val toBigDecimalModelCol: TypeCol[BigDecimal] => BigDecimalModelCol = col => col.asInstanceOf[BigDecimalModelCol]
 
-  implicit val toTimeModelCol: TypeCol[Time] => TimeModelCol = col => col.asInstanceOf[TimeCol]
-  implicit val toDateModelCol: TypeCol[Date] => DateModelCol = col => col.asInstanceOf[DateCol]
-  implicit val toTimestampModelCol: TypeCol[Timestamp] => TimestampModelCol = col => col.asInstanceOf[TimestampCol]
+  implicit val toTimeModelCol: TypeCol[Time] => TimeModelCol = col => col.asInstanceOf[TimeModelCol]
+  implicit val toDateModelCol: TypeCol[Date] => DateModelCol = col => col.asInstanceOf[DateModelCol]
+  implicit val toTimestampModelCol: TypeCol[Timestamp] => TimestampModelCol = col => col.asInstanceOf[TimestampModelCol]
 
   // type col
 

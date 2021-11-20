@@ -14,22 +14,26 @@
 * limitations under the License.
 */
 
-package kuzminki.select
+package kuzminki.render
 
-import kuzminki.section.select.LimitSec
+import kuzminki.column.AnyCol
 
 
-class Limit[M, R](
-      model: M,
-      coll: SelectCollector[R]
-    ) extends RenderSelect(model, coll) {
-
-  def limit(num: Int) = {
-    new RenderSelect(
-      model,
-      coll.add(
-        LimitSec(num)
-      )
-    )
-  }
+trait UnderlyingRef {
+  val underlying: AnyCol
 }
+
+trait UnderlyingRender extends UnderlyingRef {
+  def render(prefix: Prefix) = underlying.render(prefix)
+}
+
+trait UnderlyingArgs extends UnderlyingRef {
+  def args = underlying.args
+}
+
+trait UnderlyingFunctionRender extends UnderlyingRef {
+  val template: String
+  def render(prefix: Prefix) = template.format(underlying.render(prefix))
+}
+
+trait UnderlyingRenderAndArgs extends UnderlyingRender with UnderlyingArgs

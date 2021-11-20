@@ -14,23 +14,23 @@
 * limitations under the License.
 */
 
-package kuzminki.delete
+package kuzminki.update
 
 import kuzminki.api.KuzminkiError
-import kuzminki.render.SectionCollector
 import kuzminki.section.operation.WhereSec
+import kuzminki.render.SectionCollector
 import kuzminki.filter.Filter
 
 
-class DeleteWhere[M](
+class UpdateWhere[M](
       model: M,
       coll: SectionCollector
-    ) extends CacheDeleteWhereMethods(model, coll) {
+    ) {
 
-  def all() = new RenderDelete(model, coll)
+  def all() = new RenderUpdate(model, coll)
 
   def whereOne(pick: M => Filter) = {
-    new RenderDelete(
+    new RenderUpdate(
       model,
       coll.add(
         WhereSec(
@@ -45,7 +45,7 @@ class DeleteWhere[M](
       case Nil =>
         throw KuzminkiError("WHERE conditions cannot be empty")
       case conds =>
-        new RenderDelete(
+        new RenderUpdate(
           model,
           coll.add(WhereSec(conds))
         )
@@ -55,9 +55,9 @@ class DeleteWhere[M](
   def whereOpts(pick: M => Seq[Option[Filter]]) = {
     pick(model).flatten match {
       case Nil =>
-        new RenderDelete(model, coll)
+        new RenderUpdate(model, coll)
       case filters =>
-        new RenderDelete(
+        new RenderUpdate(
           model,
           coll.add(WhereSec(filters))
         )
@@ -67,14 +67,14 @@ class DeleteWhere[M](
   def whereOpt(pick: M => Option[Filter]) = {
     pick(model) match {
       case Some(filter) =>
-        new RenderDelete(
+        new RenderUpdate(
           model,
           coll.add(
             WhereSec(Seq(filter))
           )
         )
       case None =>
-        new RenderDelete(model, coll)
+        new RenderUpdate(model, coll)
     }
   }
 }

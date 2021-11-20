@@ -8,16 +8,24 @@ func = """
 
 
 
-template = """package kuzminki.model
+template = """package kuzminki.insert
+
+import kuzminki.api.Model
+import kuzminki.model.ModelTable
+import kuzminki.column.TypeCol
+import kuzminki.assign.SetValue
+import kuzminki.render.SectionCollector
+import kuzminki.section.Section
+import kuzminki.section.insert._
+import kuzminki.shape._
 
 
-class Insert[M <: Model](model: M, db: Conn) {
+class Insert[M <: Model](model: M) {
 
   def data(pick: M => Seq[SetValue]) = {
-    new RunInsertDataOptions(
+    new InsertDataOptions(
       model,
-      InsertDataCollector(
-        db,
+      SectionCollector(
         Array(
           InsertIntoSec(ModelTable(model)),
           InsertDataSec(pick(model))
@@ -27,16 +35,15 @@ class Insert[M <: Model](model: M, db: Conn) {
   }
 
   private def next[P](paramShape: ParamShape[P]) = {
-    new RunInsert(
+    new InsertOptions(
       model,
-      InsertCollector(
-        db,
-        paramShape,
+      SectionCollector(
         Array(
           InsertIntoSec(ModelTable(model)),
           InsertColumnsSec(paramShape.cols)
         )
-      )
+      ),
+      paramShape
     )
   }
 
@@ -61,6 +68,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/kuzminki/model/insert/Insert.scala', 'w')
+f = open('../scala/insert/Insert.scala', 'w')
 f.write(content)
 f.close()

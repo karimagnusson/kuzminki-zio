@@ -2,7 +2,7 @@
 
 
 func = """
-  def buildWhere%s[%s](
+  def cacheWhere%s[%s](
         pick: M => Tuple%s[%s]
       ) = {
     next(new PartShape%s(pick(model)))
@@ -12,19 +12,26 @@ func = """
 template = """package kuzminki.update
 
 import kuzminki.api.Model
+import kuzminki.render.SectionCollector
 import kuzminki.section.operation.UpdateCacheWhereSec
 import kuzminki.shape._
 
 
-class UpdateBuildWhere[M, A](model: M, coll: OperationCollector, changes: PartShape[A]) {
+class UpdateCacheWhere[M, A](
+      model: M,
+      coll: SectionCollector,
+      changes: PartShape[A]
+    ) {
 
   private def next[B](filters: PartShape[B]) = {
-    coll
-      .add(UpdateCacheWhereSec(filters.parts))
-      .cacheUpdate(model, changes, filters)
+    new StoredUpdate(
+      coll.add(UpdateCacheWhereSec(filters.parts)).render,
+      changes.conv,
+      filters.conv
+    )
   }
 
-  def buildWhere1[P](
+  def cacheWhere1[P](
         pick: M => CachePart[P]
       ) = {
     next(new PartShapeSingle(pick(model)))
@@ -54,6 +61,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/update/UpdateBuildWhere.scala', 'w')
+f = open('../scala/update/UpdateCacheWhere.scala', 'w')
 f.write(content)
 f.close()

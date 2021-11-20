@@ -14,24 +14,37 @@
 * limitations under the License.
 */
 
-package kuzminki.delete
+package kuzminki.insert
 
-import kuzminki.api.Model
-import kuzminki.model.ModelTable
+import kuzminki.column.ModelCol
+import kuzminki.shape.ParamShape
 import kuzminki.render.SectionCollector
-import kuzminki.section.operation.DeleteFromSec
+import kuzminki.section.insert._
 
 
-object Delete {
+trait OnConflict[M, P] {
 
-  def from[M <: Model](model: M) = {
-    new DeleteWhere(
+  protected val model: M
+  protected val coll: SectionCollector
+  protected val paramShape: ParamShape[P]
+
+  def onConflictDoNothing = {
+    new RenderInsert(
+      coll.extend(Array(
+        InsertBlankValuesSec(paramShape.size),
+        InsertOnConflictSec,
+        InsertDoNothingSec
+      )),
+      paramShape.conv
+    )
+  }
+
+  def onConflictOnColumn(pick: M => ModelCol) = {
+    new DoUpdate(
       model,
-      SectionCollector(
-        Array(
-          DeleteFromSec(ModelTable(model))
-        )
-      )
+      coll,
+      paramShape,
+      pick(model)
     )
   }
 }

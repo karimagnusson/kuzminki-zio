@@ -14,30 +14,19 @@
 * limitations under the License.
 */
 
-package kuzminki.delete
+package kuzminki.render
 
 import kuzminki.shape.RowConv
-import kuzminki.render.Prefix
-import kuzminki.select.StoredSelect
 
 
-class BuildDeleteReturning[R](coll: DeleteCollector, rowConv: RowConv[R]) {
-  
-  def build = StoredSelect(coll.render, coll.args, rowConv)
+case class RenderedQuery[R](
+      statement: String,
+      args: Seq[Any],
+      rowConv: RowConv[R]
+    ) {
 
-  def sql(handler: String => Unit) = {
-    handler(coll.render)
+  def debugSql(handler: String => Unit) = {
+    handler(statement)
     this
   }
 }
-
-
-
-
-
-
-
-
-
-
-

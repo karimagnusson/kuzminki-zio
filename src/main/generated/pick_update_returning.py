@@ -12,17 +12,18 @@ func = """
 
 
 
-template = """package kuzminki.operation
+template = """package kuzminki.update
 
 import kuzminki.column.TypeCol
+import kuzminki.render.SectionCollector
 import kuzminki.section.operation.ReturningSec
 import kuzminki.shape._
 
 
-abstract class PickOperationReturning[M](model: M, coll: OperationCollector) { 
+abstract class PickUpdateReturning[M](model: M, coll: SectionCollector) { 
 
   def next[R](rowShape: RowShape[R]) = {
-    new RunOperationReturning(
+    new RenderUpdateReturning(
       coll.add(ReturningSec(rowShape.cols)),
       rowShape.conv
     )
@@ -59,6 +60,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/kuzminki/operation/PickOperationReturning.scala', 'w')
+f = open('../scala/update/PickUpdateReturning.scala', 'w')
 f.write(content)
 f.close()

@@ -14,23 +14,16 @@
 * limitations under the License.
 */
 
-package kuzminki.render
+package kuzminki.delete
+
+import kuzminki.shape.RowConv
+import kuzminki.render.{RenderedQuery, SectionCollector}
 
 
-case class SqlWithParams(sql: String, params: Seq[Any])
-
-
-
-
-
-
-
-
-
-
-
-
-
+class RenderDeleteReturning[R](coll: SectionCollector, rowConv: RowConv[R]) {
+  
+  def render = RenderedQuery(coll.render, coll.args, rowConv)
+}
 
 
 

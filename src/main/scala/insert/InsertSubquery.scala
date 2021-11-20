@@ -14,20 +14,24 @@
 * limitations under the License.
 */
 
-package kuzminki.delete
+package kuzminki.insert
 
-import kuzminki.operation.StoredOperation
+import kuzminki.shape.ParamShape
+import kuzminki.select.SelectSubquery
+import kuzminki.section.insert.InsertSubquerySec
+import kuzminki.render.SectionCollector
 
 
-class BuildDelete[M](
-      model: M,
-      coll: DeleteCollector
-    ) extends PickDeleteReturning(model, coll) {
+trait InsertSubquery[P] {
   
-  def build = StoredOperation(coll.render, coll.args)
+  protected val coll: SectionCollector
+  protected val paramShape: ParamShape[P]
 
-  def sql(handler: String => Unit) = {
-    handler(coll.render)
-    this
+  def fromSelect(sub: SelectSubquery[P]) = {
+    new RenderInsertNoCache(
+      coll.add(
+        InsertSubquerySec(sub)
+      )
+    )
   }
 }

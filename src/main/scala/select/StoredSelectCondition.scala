@@ -16,29 +16,24 @@
 
 package kuzminki.select
 
-import kuzminki.render.Prefix
+import kuzminki.render.RenderedQuery
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
 
 
 class StoredSelectCondition[P, R](
-      template: String,
+      statement: String,
       cacheArgs: Tuple2[Vector[Any], Vector[Any]],
       paramConv: ParamConv[P],
       rowConv: RowConv[R]
     ) {
 
-  private def transformParams(params: P) = {
-    cacheArgs._1 ++ paramConv.fromShape(params) ++ cacheArgs._2
-  }
-
-  def prepare(params: P) = {
-    StoredSelect(template, transformParams(params), rowConv)
-  }
-
-  def sql(handler: String => Unit): StoredSelectCondition[P, R] = {
-    handler(template)
-    this
+  def render(params: P) = {
+    RenderedQuery(
+      statement,
+      cacheArgs._1 ++ paramConv.fromShape(params) ++ cacheArgs._2,
+      rowConv
+    )
   }
 }
 

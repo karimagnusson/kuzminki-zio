@@ -3,525 +3,525 @@ package kuzminki.select
 import kuzminki.shape._
 
 
-abstract class SelectBuildMethods[M, R](model: M, coll: SelectCollector[R]) {
+abstract class SelectCacheMethods[M, R](model: M, coll: SelectCollector[R]) {
 
-  def buildWhere1[P](pick: M => CachePart[P]) = {
-    coll.buildWhere(new PartShapeSingle(pick(model)))
+  def cacheWhere1[P](pick: M => CachePart[P]) = {
+    coll.cacheWhere(new PartShapeSingle(pick(model)))
   }
 
-  def buildWhereWithOffset1[P](pick: M => CachePart[P]) = {
-    coll.buildWhereWithOffset(new PartShapeSingle(pick(model)))
+  def cacheWhereWithOffset1[P](pick: M => CachePart[P]) = {
+    coll.cacheWhereWithOffset(new PartShapeSingle(pick(model)))
   }
 
-  def buildHaving1[P](pick: M => CachePart[P]) = {
-    coll.buildHaving(new PartShapeSingle(pick(model)))
+  def cacheHaving1[P](pick: M => CachePart[P]) = {
+    coll.cacheHaving(new PartShapeSingle(pick(model)))
   }
 
-  def buildHavingWithOffset1[P](pick: M => CachePart[P]) = {
-    coll.buildHavingWithOffset(new PartShapeSingle(pick(model)))
+  def cacheHavingWithOffset1[P](pick: M => CachePart[P]) = {
+    coll.cacheHavingWithOffset(new PartShapeSingle(pick(model)))
   }
 
-  def buildWhere2[P1, P2](
+  def cacheWhere2[P1, P2](
         pick: M => Tuple2[CachePart[P1], CachePart[P2]]
       ) = {
-    coll.buildWhere(new PartShape2(pick(model)))
+    coll.cacheWhere(new PartShape2(pick(model)))
   }
 
-  def buildWhereWithOffset2[P1, P2](
+  def cacheWhereWithOffset2[P1, P2](
         pick: M => Tuple2[CachePart[P1], CachePart[P2]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape2(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape2(pick(model)))
   }
 
-  def buildHaving2[P1, P2](
+  def cacheHaving2[P1, P2](
         pick: M => Tuple2[CachePart[P1], CachePart[P2]]
       ) = {
-    coll.buildHaving(new PartShape2(pick(model)))
+    coll.cacheHaving(new PartShape2(pick(model)))
   }
 
-  def buildHavingWithOffset2[P1, P2](
+  def cacheHavingWithOffset2[P1, P2](
         pick: M => Tuple2[CachePart[P1], CachePart[P2]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape2(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape2(pick(model)))
   }
 
-  def buildWhere3[P1, P2, P3](
+  def cacheWhere3[P1, P2, P3](
         pick: M => Tuple3[CachePart[P1], CachePart[P2], CachePart[P3]]
       ) = {
-    coll.buildWhere(new PartShape3(pick(model)))
+    coll.cacheWhere(new PartShape3(pick(model)))
   }
 
-  def buildWhereWithOffset3[P1, P2, P3](
+  def cacheWhereWithOffset3[P1, P2, P3](
         pick: M => Tuple3[CachePart[P1], CachePart[P2], CachePart[P3]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape3(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape3(pick(model)))
   }
 
-  def buildHaving3[P1, P2, P3](
+  def cacheHaving3[P1, P2, P3](
         pick: M => Tuple3[CachePart[P1], CachePart[P2], CachePart[P3]]
       ) = {
-    coll.buildHaving(new PartShape3(pick(model)))
+    coll.cacheHaving(new PartShape3(pick(model)))
   }
 
-  def buildHavingWithOffset3[P1, P2, P3](
+  def cacheHavingWithOffset3[P1, P2, P3](
         pick: M => Tuple3[CachePart[P1], CachePart[P2], CachePart[P3]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape3(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape3(pick(model)))
   }
 
-  def buildWhere4[P1, P2, P3, P4](
+  def cacheWhere4[P1, P2, P3, P4](
         pick: M => Tuple4[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4]]
       ) = {
-    coll.buildWhere(new PartShape4(pick(model)))
+    coll.cacheWhere(new PartShape4(pick(model)))
   }
 
-  def buildWhereWithOffset4[P1, P2, P3, P4](
+  def cacheWhereWithOffset4[P1, P2, P3, P4](
         pick: M => Tuple4[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape4(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape4(pick(model)))
   }
 
-  def buildHaving4[P1, P2, P3, P4](
+  def cacheHaving4[P1, P2, P3, P4](
         pick: M => Tuple4[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4]]
       ) = {
-    coll.buildHaving(new PartShape4(pick(model)))
+    coll.cacheHaving(new PartShape4(pick(model)))
   }
 
-  def buildHavingWithOffset4[P1, P2, P3, P4](
+  def cacheHavingWithOffset4[P1, P2, P3, P4](
         pick: M => Tuple4[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape4(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape4(pick(model)))
   }
 
-  def buildWhere5[P1, P2, P3, P4, P5](
+  def cacheWhere5[P1, P2, P3, P4, P5](
         pick: M => Tuple5[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5]]
       ) = {
-    coll.buildWhere(new PartShape5(pick(model)))
+    coll.cacheWhere(new PartShape5(pick(model)))
   }
 
-  def buildWhereWithOffset5[P1, P2, P3, P4, P5](
+  def cacheWhereWithOffset5[P1, P2, P3, P4, P5](
         pick: M => Tuple5[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape5(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape5(pick(model)))
   }
 
-  def buildHaving5[P1, P2, P3, P4, P5](
+  def cacheHaving5[P1, P2, P3, P4, P5](
         pick: M => Tuple5[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5]]
       ) = {
-    coll.buildHaving(new PartShape5(pick(model)))
+    coll.cacheHaving(new PartShape5(pick(model)))
   }
 
-  def buildHavingWithOffset5[P1, P2, P3, P4, P5](
+  def cacheHavingWithOffset5[P1, P2, P3, P4, P5](
         pick: M => Tuple5[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape5(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape5(pick(model)))
   }
 
-  def buildWhere6[P1, P2, P3, P4, P5, P6](
+  def cacheWhere6[P1, P2, P3, P4, P5, P6](
         pick: M => Tuple6[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6]]
       ) = {
-    coll.buildWhere(new PartShape6(pick(model)))
+    coll.cacheWhere(new PartShape6(pick(model)))
   }
 
-  def buildWhereWithOffset6[P1, P2, P3, P4, P5, P6](
+  def cacheWhereWithOffset6[P1, P2, P3, P4, P5, P6](
         pick: M => Tuple6[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape6(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape6(pick(model)))
   }
 
-  def buildHaving6[P1, P2, P3, P4, P5, P6](
+  def cacheHaving6[P1, P2, P3, P4, P5, P6](
         pick: M => Tuple6[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6]]
       ) = {
-    coll.buildHaving(new PartShape6(pick(model)))
+    coll.cacheHaving(new PartShape6(pick(model)))
   }
 
-  def buildHavingWithOffset6[P1, P2, P3, P4, P5, P6](
+  def cacheHavingWithOffset6[P1, P2, P3, P4, P5, P6](
         pick: M => Tuple6[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape6(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape6(pick(model)))
   }
 
-  def buildWhere7[P1, P2, P3, P4, P5, P6, P7](
+  def cacheWhere7[P1, P2, P3, P4, P5, P6, P7](
         pick: M => Tuple7[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7]]
       ) = {
-    coll.buildWhere(new PartShape7(pick(model)))
+    coll.cacheWhere(new PartShape7(pick(model)))
   }
 
-  def buildWhereWithOffset7[P1, P2, P3, P4, P5, P6, P7](
+  def cacheWhereWithOffset7[P1, P2, P3, P4, P5, P6, P7](
         pick: M => Tuple7[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape7(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape7(pick(model)))
   }
 
-  def buildHaving7[P1, P2, P3, P4, P5, P6, P7](
+  def cacheHaving7[P1, P2, P3, P4, P5, P6, P7](
         pick: M => Tuple7[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7]]
       ) = {
-    coll.buildHaving(new PartShape7(pick(model)))
+    coll.cacheHaving(new PartShape7(pick(model)))
   }
 
-  def buildHavingWithOffset7[P1, P2, P3, P4, P5, P6, P7](
+  def cacheHavingWithOffset7[P1, P2, P3, P4, P5, P6, P7](
         pick: M => Tuple7[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape7(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape7(pick(model)))
   }
 
-  def buildWhere8[P1, P2, P3, P4, P5, P6, P7, P8](
+  def cacheWhere8[P1, P2, P3, P4, P5, P6, P7, P8](
         pick: M => Tuple8[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8]]
       ) = {
-    coll.buildWhere(new PartShape8(pick(model)))
+    coll.cacheWhere(new PartShape8(pick(model)))
   }
 
-  def buildWhereWithOffset8[P1, P2, P3, P4, P5, P6, P7, P8](
+  def cacheWhereWithOffset8[P1, P2, P3, P4, P5, P6, P7, P8](
         pick: M => Tuple8[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape8(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape8(pick(model)))
   }
 
-  def buildHaving8[P1, P2, P3, P4, P5, P6, P7, P8](
+  def cacheHaving8[P1, P2, P3, P4, P5, P6, P7, P8](
         pick: M => Tuple8[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8]]
       ) = {
-    coll.buildHaving(new PartShape8(pick(model)))
+    coll.cacheHaving(new PartShape8(pick(model)))
   }
 
-  def buildHavingWithOffset8[P1, P2, P3, P4, P5, P6, P7, P8](
+  def cacheHavingWithOffset8[P1, P2, P3, P4, P5, P6, P7, P8](
         pick: M => Tuple8[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape8(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape8(pick(model)))
   }
 
-  def buildWhere9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
+  def cacheWhere9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
         pick: M => Tuple9[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9]]
       ) = {
-    coll.buildWhere(new PartShape9(pick(model)))
+    coll.cacheWhere(new PartShape9(pick(model)))
   }
 
-  def buildWhereWithOffset9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
+  def cacheWhereWithOffset9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
         pick: M => Tuple9[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape9(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape9(pick(model)))
   }
 
-  def buildHaving9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
+  def cacheHaving9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
         pick: M => Tuple9[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9]]
       ) = {
-    coll.buildHaving(new PartShape9(pick(model)))
+    coll.cacheHaving(new PartShape9(pick(model)))
   }
 
-  def buildHavingWithOffset9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
+  def cacheHavingWithOffset9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
         pick: M => Tuple9[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape9(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape9(pick(model)))
   }
 
-  def buildWhere10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
+  def cacheWhere10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
         pick: M => Tuple10[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10]]
       ) = {
-    coll.buildWhere(new PartShape10(pick(model)))
+    coll.cacheWhere(new PartShape10(pick(model)))
   }
 
-  def buildWhereWithOffset10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
+  def cacheWhereWithOffset10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
         pick: M => Tuple10[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape10(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape10(pick(model)))
   }
 
-  def buildHaving10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
+  def cacheHaving10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
         pick: M => Tuple10[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10]]
       ) = {
-    coll.buildHaving(new PartShape10(pick(model)))
+    coll.cacheHaving(new PartShape10(pick(model)))
   }
 
-  def buildHavingWithOffset10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
+  def cacheHavingWithOffset10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
         pick: M => Tuple10[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape10(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape10(pick(model)))
   }
 
-  def buildWhere11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
+  def cacheWhere11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
         pick: M => Tuple11[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11]]
       ) = {
-    coll.buildWhere(new PartShape11(pick(model)))
+    coll.cacheWhere(new PartShape11(pick(model)))
   }
 
-  def buildWhereWithOffset11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
+  def cacheWhereWithOffset11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
         pick: M => Tuple11[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape11(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape11(pick(model)))
   }
 
-  def buildHaving11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
+  def cacheHaving11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
         pick: M => Tuple11[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11]]
       ) = {
-    coll.buildHaving(new PartShape11(pick(model)))
+    coll.cacheHaving(new PartShape11(pick(model)))
   }
 
-  def buildHavingWithOffset11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
+  def cacheHavingWithOffset11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
         pick: M => Tuple11[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape11(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape11(pick(model)))
   }
 
-  def buildWhere12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
+  def cacheWhere12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
         pick: M => Tuple12[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12]]
       ) = {
-    coll.buildWhere(new PartShape12(pick(model)))
+    coll.cacheWhere(new PartShape12(pick(model)))
   }
 
-  def buildWhereWithOffset12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
+  def cacheWhereWithOffset12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
         pick: M => Tuple12[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape12(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape12(pick(model)))
   }
 
-  def buildHaving12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
+  def cacheHaving12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
         pick: M => Tuple12[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12]]
       ) = {
-    coll.buildHaving(new PartShape12(pick(model)))
+    coll.cacheHaving(new PartShape12(pick(model)))
   }
 
-  def buildHavingWithOffset12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
+  def cacheHavingWithOffset12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
         pick: M => Tuple12[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape12(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape12(pick(model)))
   }
 
-  def buildWhere13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
+  def cacheWhere13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
         pick: M => Tuple13[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13]]
       ) = {
-    coll.buildWhere(new PartShape13(pick(model)))
+    coll.cacheWhere(new PartShape13(pick(model)))
   }
 
-  def buildWhereWithOffset13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
+  def cacheWhereWithOffset13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
         pick: M => Tuple13[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape13(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape13(pick(model)))
   }
 
-  def buildHaving13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
+  def cacheHaving13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
         pick: M => Tuple13[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13]]
       ) = {
-    coll.buildHaving(new PartShape13(pick(model)))
+    coll.cacheHaving(new PartShape13(pick(model)))
   }
 
-  def buildHavingWithOffset13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
+  def cacheHavingWithOffset13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
         pick: M => Tuple13[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape13(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape13(pick(model)))
   }
 
-  def buildWhere14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
+  def cacheWhere14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
         pick: M => Tuple14[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14]]
       ) = {
-    coll.buildWhere(new PartShape14(pick(model)))
+    coll.cacheWhere(new PartShape14(pick(model)))
   }
 
-  def buildWhereWithOffset14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
+  def cacheWhereWithOffset14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
         pick: M => Tuple14[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape14(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape14(pick(model)))
   }
 
-  def buildHaving14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
+  def cacheHaving14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
         pick: M => Tuple14[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14]]
       ) = {
-    coll.buildHaving(new PartShape14(pick(model)))
+    coll.cacheHaving(new PartShape14(pick(model)))
   }
 
-  def buildHavingWithOffset14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
+  def cacheHavingWithOffset14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
         pick: M => Tuple14[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape14(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape14(pick(model)))
   }
 
-  def buildWhere15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](
+  def cacheWhere15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](
         pick: M => Tuple15[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15]]
       ) = {
-    coll.buildWhere(new PartShape15(pick(model)))
+    coll.cacheWhere(new PartShape15(pick(model)))
   }
 
-  def buildWhereWithOffset15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](
+  def cacheWhereWithOffset15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](
         pick: M => Tuple15[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape15(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape15(pick(model)))
   }
 
-  def buildHaving15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](
+  def cacheHaving15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](
         pick: M => Tuple15[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15]]
       ) = {
-    coll.buildHaving(new PartShape15(pick(model)))
+    coll.cacheHaving(new PartShape15(pick(model)))
   }
 
-  def buildHavingWithOffset15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](
+  def cacheHavingWithOffset15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15](
         pick: M => Tuple15[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape15(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape15(pick(model)))
   }
 
-  def buildWhere16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](
+  def cacheWhere16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](
         pick: M => Tuple16[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16]]
       ) = {
-    coll.buildWhere(new PartShape16(pick(model)))
+    coll.cacheWhere(new PartShape16(pick(model)))
   }
 
-  def buildWhereWithOffset16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](
+  def cacheWhereWithOffset16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](
         pick: M => Tuple16[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape16(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape16(pick(model)))
   }
 
-  def buildHaving16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](
+  def cacheHaving16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](
         pick: M => Tuple16[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16]]
       ) = {
-    coll.buildHaving(new PartShape16(pick(model)))
+    coll.cacheHaving(new PartShape16(pick(model)))
   }
 
-  def buildHavingWithOffset16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](
+  def cacheHavingWithOffset16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16](
         pick: M => Tuple16[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape16(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape16(pick(model)))
   }
 
-  def buildWhere17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](
+  def cacheWhere17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](
         pick: M => Tuple17[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17]]
       ) = {
-    coll.buildWhere(new PartShape17(pick(model)))
+    coll.cacheWhere(new PartShape17(pick(model)))
   }
 
-  def buildWhereWithOffset17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](
+  def cacheWhereWithOffset17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](
         pick: M => Tuple17[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape17(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape17(pick(model)))
   }
 
-  def buildHaving17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](
+  def cacheHaving17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](
         pick: M => Tuple17[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17]]
       ) = {
-    coll.buildHaving(new PartShape17(pick(model)))
+    coll.cacheHaving(new PartShape17(pick(model)))
   }
 
-  def buildHavingWithOffset17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](
+  def cacheHavingWithOffset17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17](
         pick: M => Tuple17[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape17(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape17(pick(model)))
   }
 
-  def buildWhere18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](
+  def cacheWhere18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](
         pick: M => Tuple18[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18]]
       ) = {
-    coll.buildWhere(new PartShape18(pick(model)))
+    coll.cacheWhere(new PartShape18(pick(model)))
   }
 
-  def buildWhereWithOffset18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](
+  def cacheWhereWithOffset18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](
         pick: M => Tuple18[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape18(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape18(pick(model)))
   }
 
-  def buildHaving18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](
+  def cacheHaving18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](
         pick: M => Tuple18[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18]]
       ) = {
-    coll.buildHaving(new PartShape18(pick(model)))
+    coll.cacheHaving(new PartShape18(pick(model)))
   }
 
-  def buildHavingWithOffset18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](
+  def cacheHavingWithOffset18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18](
         pick: M => Tuple18[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape18(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape18(pick(model)))
   }
 
-  def buildWhere19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](
+  def cacheWhere19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](
         pick: M => Tuple19[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19]]
       ) = {
-    coll.buildWhere(new PartShape19(pick(model)))
+    coll.cacheWhere(new PartShape19(pick(model)))
   }
 
-  def buildWhereWithOffset19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](
+  def cacheWhereWithOffset19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](
         pick: M => Tuple19[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape19(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape19(pick(model)))
   }
 
-  def buildHaving19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](
+  def cacheHaving19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](
         pick: M => Tuple19[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19]]
       ) = {
-    coll.buildHaving(new PartShape19(pick(model)))
+    coll.cacheHaving(new PartShape19(pick(model)))
   }
 
-  def buildHavingWithOffset19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](
+  def cacheHavingWithOffset19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19](
         pick: M => Tuple19[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape19(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape19(pick(model)))
   }
 
-  def buildWhere20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](
+  def cacheWhere20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](
         pick: M => Tuple20[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20]]
       ) = {
-    coll.buildWhere(new PartShape20(pick(model)))
+    coll.cacheWhere(new PartShape20(pick(model)))
   }
 
-  def buildWhereWithOffset20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](
+  def cacheWhereWithOffset20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](
         pick: M => Tuple20[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape20(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape20(pick(model)))
   }
 
-  def buildHaving20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](
+  def cacheHaving20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](
         pick: M => Tuple20[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20]]
       ) = {
-    coll.buildHaving(new PartShape20(pick(model)))
+    coll.cacheHaving(new PartShape20(pick(model)))
   }
 
-  def buildHavingWithOffset20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](
+  def cacheHavingWithOffset20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20](
         pick: M => Tuple20[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape20(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape20(pick(model)))
   }
 
-  def buildWhere21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](
+  def cacheWhere21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](
         pick: M => Tuple21[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20], CachePart[P21]]
       ) = {
-    coll.buildWhere(new PartShape21(pick(model)))
+    coll.cacheWhere(new PartShape21(pick(model)))
   }
 
-  def buildWhereWithOffset21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](
+  def cacheWhereWithOffset21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](
         pick: M => Tuple21[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20], CachePart[P21]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape21(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape21(pick(model)))
   }
 
-  def buildHaving21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](
+  def cacheHaving21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](
         pick: M => Tuple21[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20], CachePart[P21]]
       ) = {
-    coll.buildHaving(new PartShape21(pick(model)))
+    coll.cacheHaving(new PartShape21(pick(model)))
   }
 
-  def buildHavingWithOffset21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](
+  def cacheHavingWithOffset21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21](
         pick: M => Tuple21[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20], CachePart[P21]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape21(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape21(pick(model)))
   }
 
-  def buildWhere22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](
+  def cacheWhere22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](
         pick: M => Tuple22[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20], CachePart[P21], CachePart[P22]]
       ) = {
-    coll.buildWhere(new PartShape22(pick(model)))
+    coll.cacheWhere(new PartShape22(pick(model)))
   }
 
-  def buildWhereWithOffset22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](
+  def cacheWhereWithOffset22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](
         pick: M => Tuple22[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20], CachePart[P21], CachePart[P22]]
       ) = {
-    coll.buildWhereWithOffset(new PartShape22(pick(model)))
+    coll.cacheWhereWithOffset(new PartShape22(pick(model)))
   }
 
-  def buildHaving22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](
+  def cacheHaving22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](
         pick: M => Tuple22[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20], CachePart[P21], CachePart[P22]]
       ) = {
-    coll.buildHaving(new PartShape22(pick(model)))
+    coll.cacheHaving(new PartShape22(pick(model)))
   }
 
-  def buildHavingWithOffset22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](
+  def cacheHavingWithOffset22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22](
         pick: M => Tuple22[CachePart[P1], CachePart[P2], CachePart[P3], CachePart[P4], CachePart[P5], CachePart[P6], CachePart[P7], CachePart[P8], CachePart[P9], CachePart[P10], CachePart[P11], CachePart[P12], CachePart[P13], CachePart[P14], CachePart[P15], CachePart[P16], CachePart[P17], CachePart[P18], CachePart[P19], CachePart[P20], CachePart[P21], CachePart[P22]]
       ) = {
-    coll.buildHavingWithOffset(new PartShape22(pick(model)))
+    coll.cacheHavingWithOffset(new PartShape22(pick(model)))
   }
 }

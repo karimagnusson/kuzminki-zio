@@ -1,16 +1,24 @@
-package kuzminki.delete
+package kuzminki.insert
 
 import kuzminki.column.TypeCol
+import kuzminki.section.insert.{InsertBlankValuesSec, ReturningSec}
 import kuzminki.render.SectionCollector
-import kuzminki.section.operation.ReturningSec
 import kuzminki.shape._
 
 
-abstract class PickDeleteReturning[M](model: M, coll: SectionCollector) { 
+trait PickInsertReturning[M, P] {
 
-  private def next[R](rowShape: RowShape[R]) = {
-    new RenderDeleteReturning(
-      coll.add(ReturningSec(rowShape.cols)),
+  protected val model: M
+  protected val coll: SectionCollector
+  protected val paramShape: ParamShape[P]
+
+  def next[R](rowShape: RowShape[R]) = {
+    new RenderInsertReturning(
+      coll.extend(Array(
+        InsertBlankValuesSec(paramShape.size),
+        ReturningSec(rowShape.cols)
+      )),
+      paramShape.conv,
       rowShape.conv
     )
   }

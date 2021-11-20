@@ -14,11 +14,27 @@
 * limitations under the License.
 */
 
-package kuzminki.operation
+package kuzminki.update
+
+import kuzminki.shape.ParamConv
+import kuzminki.render.RenderedOperation
 
 
-case class StoredOperation(
-  template: String,
-  args: Seq[Any]
-)
+class StoredUpdate[P1, P2](
+      template: String,
+      changes: ParamConv[P1],
+      filters: ParamConv[P2],
+    ) {
 
+  def render(changeArgs: P1, filterArgs: P2) = {
+    RenderedOperation(
+      template,
+      changes.fromShape(changeArgs) ++ filters.fromShape(filterArgs)
+    )
+  }
+
+  def sql(handler: String => Unit) = {
+    handler(template)
+    this
+  }
+}

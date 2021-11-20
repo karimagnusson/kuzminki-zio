@@ -38,7 +38,11 @@ import zio.blocking._
 
 import kuzminki.api.KuzminkiError
 import kuzminki.shape.RowConv
-import kuzminki.select.StoredSelect
+import kuzminki.render.{
+  RenderedQuery,
+  RenderedOperation
+}
+
 
 object Driver {
 
@@ -90,12 +94,12 @@ class Driver(dbName: String) {
     jdbcStm
   }
 
-  def query[R](stm: StoredSelect[R]): RIO[Blocking, Seq[R]] = {
+  def query[R](stm: RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
     effectBlocking {
 
-      println(s"<-- [${Thread.currentThread().getName}] -->")
+      //println(s"<-- [${Thread.currentThread().getName}] -->")
 
-      val jdbcStm = getStatement(stm.template, stm.args)
+      val jdbcStm = getStatement(stm.statement, stm.args)
       val jdbcResultSet = jdbcStm.executeQuery()
       var rows = ImmutableSeq.empty[R]
       while (jdbcResultSet.next()) {
@@ -104,6 +108,20 @@ class Driver(dbName: String) {
       jdbcResultSet.close()
       jdbcStm.close()
       rows.toSeq
+    }
+  }
+
+  def exec(stm: RenderedOperation): RIO[Blocking, Unit] = {
+    effectBlocking {
+      val jdbcStm = getStatement(stm.statement, stm.args)
+      jdbcStm.execute()
+    }
+  }
+
+  def execNum(stm: RenderedOperation): RIO[Blocking, Int] = {
+    effectBlocking {
+      val jdbcStm = getStatement(stm.statement, stm.args)
+      jdbcStm.executeUpdate()
     }
   }
 

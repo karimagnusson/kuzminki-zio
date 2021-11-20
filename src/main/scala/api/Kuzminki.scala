@@ -21,12 +21,15 @@ import scala.concurrent.duration._
 
 import kuzminki.api._
 import kuzminki.jdbc.Driver
+import kuzminki.render.{
+  RenderedQuery,
+  RenderedOperation
+}
 import kuzminki.select.{
   Select,
   SelectJoin,
   Where,
-  JoinOn,
-  StoredSelect
+  JoinOn
 }
 //import kuzminki.insert.Insert
 //import kuzminki.operation.{Update, Delete, OperationWhere}
@@ -53,20 +56,20 @@ object Kuzminki {
 
 class Kuzminki(driver: Driver) {
 
-  def query[R](stm: StoredSelect[R]): RIO[Blocking, Seq[R]] = {
+  def query[R](stm: RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
     for {
       rows <- driver.query(stm)
     } yield rows
   }
 
-  def query[R](build: => StoredSelect[R]): RIO[Blocking, Seq[R]] = {
+  def query[R](render: => RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
     for {
-      stm <- Task.effect { build }
+      stm <- Task.effect { render }
       rows <- driver.query(stm)
     } yield rows
   }
 
-  def queryAs[R, T](stm: StoredSelect[R])
+  def queryAs[R, T](stm: RenderedQuery[R])
                    (implicit modify: R => T): RIO[Blocking, Seq[T]] = {
     for {
       rows <- driver.query(stm)
@@ -74,31 +77,31 @@ class Kuzminki(driver: Driver) {
     } yield modifiedRows
   }
 
-  def queryAs[R, T](build: => StoredSelect[R])
+  def queryAs[R, T](render: => RenderedQuery[R])
                    (implicit modify: R => T): RIO[Blocking, Seq[T]] = {
     for {
-      stm <- Task.effect { build }
+      stm <- Task.effect { render }
       rows <- driver.query(stm)
       modifiedRows <- Task.effect { rows.map(modify)}
     } yield modifiedRows
   }
 
-  def queryHead[R](stm: StoredSelect[R]): RIO[Blocking, R] = {
+  def queryHead[R](stm: RenderedQuery[R]): RIO[Blocking, R] = {
     for {
       rows <- driver.query(stm)
       head <- Task.effect { rows.head }
     } yield head
   }
 
-  def queryHead[R](build: => StoredSelect[R]): RIO[Blocking, R] = {
+  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] = {
     for {
-      stm <- Task.effect { build }
+      stm <- Task.effect { render }
       rows <- driver.query(stm)
       head <- Task.effect { rows.head }
     } yield head
   }
 
-  def queryHeadAs[R, T](stm: StoredSelect[R])
+  def queryHeadAs[R, T](stm: RenderedQuery[R])
                        (implicit modify: R => T): RIO[Blocking, T] = {
     for {
       rows <- driver.query(stm)
@@ -106,31 +109,31 @@ class Kuzminki(driver: Driver) {
     } yield modifiedHead
   }
 
-  def queryHeadAs[R, T](build: => StoredSelect[R])
+  def queryHeadAs[R, T](render: => RenderedQuery[R])
                        (implicit modify: R => T): RIO[Blocking, T] = {
     for {
-      stm <- Task.effect { build }
+      stm <- Task.effect { render }
       rows <- driver.query(stm)
       modifiedHead <- Task.effect { modify(rows.head) }
     } yield modifiedHead
   }
 
-   def queryHeadOpt[R](stm: StoredSelect[R]): RIO[Blocking, Option[R]] = {
+   def queryHeadOpt[R](stm: RenderedQuery[R]): RIO[Blocking, Option[R]] = {
     for {
       rows <- driver.query(stm)
       headOpt <- Task.effect { rows.headOption }
     } yield headOpt
   }
 
-  def queryHeadOpt[R](build: => StoredSelect[R]): RIO[Blocking, Option[R]] = {
+  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] = {
     for {
-      stm <- Task.effect { build }
+      stm <- Task.effect { render }
       rows <- driver.query(stm)
       headOpt <- Task.effect { rows.headOption }
     } yield headOpt
   }
 
-  def queryHeadOptAs[R, T](stm: StoredSelect[R])
+  def queryHeadOptAs[R, T](stm: RenderedQuery[R])
                           (implicit modify: R => T): RIO[Blocking, Option[T]] = {
     for {
       rows <- driver.query(stm)
@@ -138,13 +141,39 @@ class Kuzminki(driver: Driver) {
     } yield modifiedHeadOpt
   }
 
-  def queryHeadOptAs[R, T](build: => StoredSelect[R])
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R])
                           (implicit modify: R => T): RIO[Blocking, Option[T]] = {
     for {
-      stm <- Task.effect { build }
+      stm <- Task.effect { render }
       rows <- driver.query(stm)
       modifiedHeadOpt <- Task.effect { rows.headOption.map(modify) }
     } yield modifiedHeadOpt
+  }
+
+  def exec(stm: RenderedOperation): RIO[Blocking, Unit] = {
+    for {
+      _ <- driver.exec(stm)
+    } yield ()
+  }
+
+  def exec(render: => RenderedOperation): RIO[Blocking, Unit] = {
+    for {
+      stm <- Task.effect { render }
+      _ <- driver.exec(stm)
+    } yield ()
+  }
+
+  def execNum(stm: RenderedOperation): RIO[Blocking, Int] = {
+    for {
+      num <- driver.execNum(stm)
+    } yield num
+  }
+
+  def execNum(render: => RenderedOperation): RIO[Blocking, Int] = {
+    for {
+      stm <- Task.effect { render }
+      num <- driver.execNum(stm)
+    } yield num
   }
 
   def close() = driver.close()

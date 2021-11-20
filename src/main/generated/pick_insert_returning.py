@@ -16,21 +16,24 @@ template = """package kuzminki.insert
 
 import kuzminki.column.TypeCol
 import kuzminki.section.insert.{InsertBlankValuesSec, ReturningSec}
+import kuzminki.render.SectionCollector
 import kuzminki.shape._
 
 
 trait PickInsertReturning[M, P] {
 
-  val model: M
-  protected val coll: InsertCollector[P]
+  protected val model: M
+  protected val coll: SectionCollector
+  protected val paramShape: ParamShape[P]
 
   def next[R](rowShape: RowShape[R]) = {
-    new RunInsertReturning(
+    new RenderInsertReturning(
       coll.extend(Array(
-        InsertBlankValuesSec(coll.paramShape.size),
+        InsertBlankValuesSec(paramShape.size),
         ReturningSec(rowShape.cols)
       )),
-      rowShape
+      paramShape.conv,
+      rowShape.conv
     )
   }
 
@@ -65,6 +68,6 @@ for num in range(2, 23):
 
 content = template % "\n".join(parts)
 
-f = open('../scala/kuzminki/insert/PickInsertReturning.scala', 'w')
+f = open('../scala/insert/PickInsertReturning.scala', 'w')
 f.write(content)
 f.close()

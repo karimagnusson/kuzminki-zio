@@ -17,6 +17,13 @@
 package kuzminki.render
 
 
-trait UnderlyingArgs extends UnderlyingRef {
-  def args = underlying.args
+case class RenderedOperation(
+      statement: String,
+      args: Seq[Any]
+    ) {
+
+  def debugSql(handler: String => Unit) = {
+    handler(statement)
+    this
+  }
 }

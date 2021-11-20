@@ -14,9 +14,20 @@
 * limitations under the License.
 */
 
-package kuzminki.render
+package kuzminki.update
+
+import kuzminki.render.{RenderedOperation, SectionCollector}
 
 
-trait UnderlyingRender extends UnderlyingRef {
-  def render(prefix: Prefix) = underlying.render(prefix)
+class RenderUpdate[M](
+      model: M,
+      coll: SectionCollector
+    ) extends PickUpdateReturning(model, coll) {
+  
+  def render = RenderedOperation(coll.render, coll.args)
+
+  def sql(handler: String => Unit) = {
+    handler(coll.render)
+    this
+  }
 }

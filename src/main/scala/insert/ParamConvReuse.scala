@@ -14,22 +14,19 @@
 * limitations under the License.
 */
 
-package kuzminki.select
+package kuzminki.insert
 
-import kuzminki.section.select.LimitSec
+import kuzminki.shape.ParamConv
 
 
-class Limit[M, R](
-      model: M,
-      coll: SelectCollector[R]
-    ) extends RenderSelect(model, coll) {
+class ParamConvReuse[P](
+      paramConv: ParamConv[P],
+      reuse: Reuse,
+    ) extends ParamConv[P] {
 
-  def limit(num: Int) = {
-    new RenderSelect(
-      model,
-      coll.add(
-        LimitSec(num)
-      )
+  def fromShape(params: P) = {
+    reuse.extend(
+      paramConv.fromShape(params)
     )
   }
 }

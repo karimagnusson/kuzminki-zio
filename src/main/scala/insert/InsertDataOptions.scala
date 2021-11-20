@@ -14,10 +14,42 @@
 * limitations under the License.
 */
 
-package kuzminki.render
+package kuzminki.insert
 
-
-trait UnderlyingFunctionRender extends UnderlyingRef {
-  val template: String
-  def render(prefix: Prefix) = template.format(underlying.render(prefix))
+import kuzminki.api.Model
+import kuzminki.render.{
+  SectionCollector,
+  RenderedOperation
 }
+
+
+class InsertDataOptions[M <: Model, P](
+      model: M,
+      coll: SectionCollector,
+    ) {
+
+  def render = {
+    RenderedOperation(
+      coll.render,
+      coll.args
+    )
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

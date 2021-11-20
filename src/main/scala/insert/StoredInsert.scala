@@ -14,33 +14,39 @@
 * limitations under the License.
 */
 
-package kuzminki.select
+package kuzminki.insert
 
-import kuzminki.render.Prefix
-import kuzminki.shape.RowConv
-
-
-case class StoredSelect[R](
-  template: String,
-  args: Seq[Any],
-  rowConv: RowConv[R]
-)
+import kuzminki.shape.{ParamConv, RowConv}
+import kuzminki.render.RenderedOperation
 
 
+class StoredInsert[P](
+      statement: String,
+      paramConv: ParamConv[P]
+    ) {
+
+  def render(params: P) = {
+    RenderedOperation(
+      statement,
+      paramConv.fromShape(params)
+    )
+  }
+}
 
 
+class StoredInsertReturning[P, R](
+      statement: String,
+      paramConv: ParamConv[P],
+      rowConv: RowConv[R]
+    ) {
 
-
-
-
-
-
-
-
-
-
-
-
+  def render(params: P) = {
+    RenderedOperation(
+      statement,
+      paramConv.fromShape(params)
+    )
+  }
+}
 
 
 
