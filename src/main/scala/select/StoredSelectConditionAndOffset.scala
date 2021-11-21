@@ -37,6 +37,11 @@ class StoredSelectConditionAndOffset[P, R](
       rowConv
     )
   }
+
+  def debugSql(handler: String => Unit) = {
+    handler(statement)
+    this
+  }
 }
 
 

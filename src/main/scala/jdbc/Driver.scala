@@ -36,7 +36,7 @@ import zio._
 import zio.console._
 import zio.blocking._
 
-import kuzminki.api.KuzminkiError
+import kuzminki.api.{DbConfig, KuzminkiError}
 import kuzminki.shape.RowConv
 import kuzminki.render.{
   RenderedQuery,
@@ -46,25 +46,19 @@ import kuzminki.render.{
 
 object Driver {
 
-  def blocking(dbName: String) = new Driver(dbName)
+  def blocking(config: DbConfig) = new Driver(config)
 
-  def async(dbName: String): RIO[Blocking, Driver] = {
+  def async(config: DbConfig): RIO[Blocking, Driver] = {
     effectBlockingInterrupt {
-      new Driver(dbName)
+      new Driver(config)
     }
   }
 }
 
 
-class Driver(dbName: String) {
+class Driver(config: DbConfig) {
 
-  private val conn = {
-    val url = s"jdbc:postgresql://localhost/$dbName"
-    val props = new Properties()
-    props.setProperty("user","karimagnusson")
-    props.setProperty("password","localpass")
-    DriverManager.getConnection(url, props)
-  }
+  private val conn = DriverManager.getConnection(config.url, config.props)
 
   private def setArg(jdbcStm: PreparedStatement, arg: Any, index: Int): Unit = {
     arg match {
@@ -96,9 +90,6 @@ class Driver(dbName: String) {
 
   def query[R](stm: RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
     effectBlocking {
-
-      //println(s"<-- [${Thread.currentThread().getName}] -->")
-
       val jdbcStm = getStatement(stm.statement, stm.args)
       val jdbcResultSet = jdbcStm.executeQuery()
       var rows = ImmutableSeq.empty[R]
@@ -115,13 +106,17 @@ class Driver(dbName: String) {
     effectBlocking {
       val jdbcStm = getStatement(stm.statement, stm.args)
       jdbcStm.execute()
+      jdbcStm.close()
+      ()
     }
   }
 
   def execNum(stm: RenderedOperation): RIO[Blocking, Int] = {
     effectBlocking {
       val jdbcStm = getStatement(stm.statement, stm.args)
-      jdbcStm.executeUpdate()
+      val num = jdbcStm.executeUpdate()
+      jdbcStm.close()
+      num
     }
   }
 

@@ -166,7 +166,7 @@ Optional conditions
 #### Join
 In a join the columns of each table are accessible under "a" and "b".
 ```scala
- sql
+sql
   .select(user, customer)
   .cols3(t => (
     t.a.id,
@@ -180,7 +180,7 @@ In a join the columns of each table are accessible under "a" and "b".
   ))
   .orderByOne(_.b.spending.desc)
   .limit(10)
-  .run()
+  .render
   // returns Tuple3[Int, String, Int]
 ```
 ```sql
@@ -227,22 +227,6 @@ WHERE "email" = ANY(
 
 #### Cache
 Cached query is built only once and the performance is the same as with a raw query.
-```scala
-val stm = sql
-  .select(user)
-  .cols1(_.username)
-  .all
-  .limit(10)
-  .cache
-
-db.query(stm)
-```
-```sql
-SELECT "username"
-FROM "user_profile"
-LIMIT 10
-```
-Cached query with WHERE.
 ```scala
 val stm = sql
   .select(user)
@@ -474,7 +458,7 @@ DELETE FROM "user_profile" WHERE "id" = 103
 ```scala
 sql
   .count(user)
-  .where1(_.country === "IT")
+  .whereOne(_.country === "IT")
   .render
 ```
 ```sql

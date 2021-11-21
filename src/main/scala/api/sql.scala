@@ -55,7 +55,7 @@ object sql {
   }
 
   def count[A <: Model, B <: Model](join: Join[A, B]): JoinOn[A, B, Long] = {
-    new SelectJoin(join, db).cols1(t => Count.all)
+    new SelectJoin(join).cols1(t => Count.all)
   }
 
   def insert[M <: Model](model: M): Insert[M] = {

@@ -31,6 +31,11 @@ class StoredInsert[P](
       paramConv.fromShape(params)
     )
   }
+
+  def debugSql(handler: String => Unit) = {
+    handler(statement)
+    this
+  }
 }
 
 
@@ -45,6 +50,11 @@ class StoredInsertReturning[P, R](
       statement,
       paramConv.fromShape(params)
     )
+  }
+
+  def debugSql(handler: String => Unit) = {
+    handler(statement)
+    this
   }
 }
 

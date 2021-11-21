@@ -32,4 +32,9 @@ class StoredDeleteCondition[P](
       args ++ paramConv.fromShape(params)
     )
   }
+
+  def debugSql(handler: String => Unit) = {
+    handler(statement)
+    this
+  }
 }

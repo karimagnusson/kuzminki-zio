@@ -16,24 +16,12 @@
 
 package kuzminki.api
 
-import scala.util.{Try, Success, Failure}
-import scala.concurrent.duration._
-
 import kuzminki.api._
 import kuzminki.jdbc.Driver
 import kuzminki.render.{
   RenderedQuery,
   RenderedOperation
 }
-import kuzminki.select.{
-  Select,
-  SelectJoin,
-  Where,
-  JoinOn
-}
-//import kuzminki.insert.Insert
-//import kuzminki.operation.{Update, Delete, OperationWhere}
-//import kuzminki.fn.Count
 
 import zio._
 import zio.console._
@@ -42,14 +30,14 @@ import zio.blocking._
 
 object Kuzminki {
 
-  def blocking(dbName: String) = {
-    val driver = new Driver(dbName)
+  def blocking(config: DbConfig) = {
+    val driver = new Driver(config)
     new Kuzminki(driver)
   }
 
-  def async(dbName: String): RIO[Blocking, Kuzminki] = {
+  def async(config: DbConfig): RIO[Blocking, Kuzminki] = {
     effectBlockingInterrupt {
-      blocking(dbName)
+      blocking(config)
     }
   }
 }

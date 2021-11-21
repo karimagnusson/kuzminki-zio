@@ -21,20 +21,20 @@ import kuzminki.render.RenderedOperation
 
 
 class StoredUpdate[P1, P2](
-      template: String,
+      statement: String,
       changes: ParamConv[P1],
       filters: ParamConv[P2],
     ) {
 
   def render(changeArgs: P1, filterArgs: P2) = {
     RenderedOperation(
-      template,
+      statement,
       changes.fromShape(changeArgs) ++ filters.fromShape(filterArgs)
     )
   }
 
-  def sql(handler: String => Unit) = {
-    handler(template)
+  def debugSql(handler: String => Unit) = {
+    handler(statement)
     this
   }
 }
