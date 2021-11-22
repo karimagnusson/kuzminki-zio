@@ -13,18 +13,66 @@ If you have any questions about the project feel free to post on Gitter or conta
 libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.0"
 ```
 
+#### Example
+```scala
+import kuzminki.api._
+
+class Client extends Model("client") {
+  val id = column[Int]("id")
+  val username = column[String]("username")
+  val age = column[Int]("age")
+  def all = (id, username, age)
+}
+
+val client = Model.get[Client]
+
+for {
+  db <- Kuzminki.async(DbConfig.forDb("company").getConfig)
+  _ <- db.exec {
+      sql
+        .insert(client)
+        .cols2(t => (t.username, t.age))
+        .render(("Joe", 35))
+    }
+  _ <- db.exec {
+      sql
+        .update(client)
+        .setOne(_.age => 24)
+        .whereOne(_.id === 4)
+        .render
+    }
+  _ <- db.exec { sql.delete(client).whereOne(_.id === 7).render }
+  clients <- db.query {
+      sql
+        .select(client)
+        .cols3(_.all)
+        .whereOne(_.age > 25)
+        .render
+    }
+} yield clients // Seq[Tuple3[Int, String, Int]]
+```
+
 #### Connecting to the database
 ```scala
 import kuzminki.api._
 
+val config = DbConfig
+  .forDb("<db-name>")
+  .withHost("<host>")
+  .withPort("<port>")
+  .withUser("<user>")
+  .withPassword("<password>")
+  .withOptions(Map(...))
+  .getConfig
+
 for { 
-  db <- Kuzminki.async("<db-name>", "<username>", "<password>")
+  db <- Kuzminki.async(config)
   ...
 } yield ...
 
 or
 
-val db = Kuzminki.blocking("<db-name>", "<username>", "<password>")
+val db = Kuzminki.blocking(config)
 ```
 
 #### Defining a model
