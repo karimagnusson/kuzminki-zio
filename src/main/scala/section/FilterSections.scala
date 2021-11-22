@@ -19,6 +19,7 @@ package kuzminki.section
 import kuzminki.column.AnyCol
 import kuzminki.render.{Renderable, Prefix, NoArgs}
 
+
 trait FilterSections {
 
   case class WhereSec(parts: Seq[Renderable]) extends NotEmpty(parts) with MultiPartRender {

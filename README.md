@@ -37,7 +37,7 @@ for {
   _ <- db.exec {
       sql
         .update(client)
-        .setOne(_.age => 24)
+        .setOne(_.age ==> 24)
         .whereOne(_.id === 4)
         .render
     }
@@ -113,7 +113,6 @@ Model.register[Newsletter]
 ```
 
 #### Create an instance of a model
-If you create a shortcut to read columns into a type as shown above, the compiler will not be able to check if the columns match the type. If they don not match, an error will be thrown when an instance of the class is created. Therefore, it is wise to create an instance where the model is defined to make sure an error is thrown at start-up and not unexpectedly at runtime.
 ```scala
 // Create an instance of the model for later use and make sure there is only one instance of the model.
 Model.register[User]
@@ -129,8 +128,8 @@ import kuzminki.api._
 val user = Model.get[User]
 
 for {
-  db <- Kuzminki.async("<db-name>", "<username>", "<password>")
-  rows <- db.query {
+  db <- Kuzminki.async(DbConfig.forDb("company").getConfig)
+  users <- db.query {
     sql
       .select(user)
       .cols2(t => (
@@ -145,7 +144,7 @@ for {
       .limit(10)
       .render
   }
-} yield rows // returns List[Tuple2[Int, String]]
+} yield users // Seq[Tuple2[Int, String]]
 ```
 Statement:
 ```sql
@@ -170,6 +169,8 @@ LIMIT 10
 ```
 AND / OR
 ```scala
+import kuzminki.fn._
+
 .where(t => Seq(
   t.age > 25,
   Or(
@@ -212,7 +213,6 @@ Optional conditions
 ```
 
 #### Join
-In a join the columns of each table are accessible under "a" and "b".
 ```scala
 sql
   .select(user, customer)
@@ -274,7 +274,7 @@ WHERE "email" = ANY(
 ```
 
 #### Cache
-Cached query is built only once and the performance is the same as with a raw query.
+Cached query is built only once and the execution has the same performance a raw SQL query.
 ```scala
 val stm = sql
   .select(user)

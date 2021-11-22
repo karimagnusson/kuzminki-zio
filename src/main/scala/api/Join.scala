@@ -17,9 +17,7 @@
 package kuzminki.api
 
 import scala.reflect.{classTag, ClassTag}
-//import scala.reflect.runtime.universe._
 import scala.annotation.tailrec
-
 import kuzminki.column.{ColInfo, TypeCol}
 import kuzminki.model.ModelRead
 

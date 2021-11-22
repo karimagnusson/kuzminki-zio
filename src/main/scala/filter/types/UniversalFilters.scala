@@ -32,7 +32,7 @@ case class FilterIn(col: AnyCol, argSeq: Seq[Any]) extends ArrayFilter {
 }
 
 case class FilterNotIn(col: AnyCol, argSeq: Seq[Any]) extends ArrayFilter {
-  val template = "%s != ANY(ARRAY[%s])"
+  val template = "NOT %s = ANY(ARRAY[%s])"
 }
 
 case class FilterBetween(col: AnyCol, argSeq: Seq[Any]) extends SingleFilter {
