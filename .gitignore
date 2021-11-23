@@ -10,5 +10,6 @@
 .scala_dependencies
 publish.sbt
 target/
+generated/
 project/project/
 project/target/
