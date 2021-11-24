@@ -44,21 +44,18 @@ import kuzminki.render.{
 }
 
 
-object Driver {
+object SingleConnection {
 
-  def blocking(config: DbConfig) = new Driver(config)
-
-  def async(config: DbConfig): RIO[Blocking, Driver] = {
-    effectBlockingInterrupt {
-      new Driver(config)
-    }
+  def create(connId: Int, url: String, props: Properties) = {
+    val conn = DriverManager.getConnection(url, props)
+    new SingleConnection(conn, connId)
   }
 }
 
 
-class Driver(config: DbConfig) {
+class SingleConnection(conn: Connection, connId: Int) {
 
-  private val conn = DriverManager.getConnection(config.url, config.props)
+  def getId = connId
 
   private def setArg(jdbcStm: PreparedStatement, arg: Any, index: Int): Unit = {
     arg match {

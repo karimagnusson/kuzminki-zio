@@ -17,7 +17,7 @@
 package kuzminki.api
 
 import kuzminki.api._
-import kuzminki.jdbc.Driver
+import kuzminki.jdbc.SingleConnection
 import kuzminki.render.{
   RenderedQuery,
   RenderedOperation
@@ -30,53 +30,42 @@ import zio.blocking._
 
 object Kuzminki {
 
-  def blocking(config: DbConfig) = {
-    val driver = new Driver(config)
-    new Kuzminki(driver)
-  }
-
-  def async(config: DbConfig): RIO[Blocking, Kuzminki] = {
-    effectBlockingInterrupt {
-      blocking(config)
-    }
+  def create(conf: DbConfig) = {
+    for {
+      connections <- ZIO.foreach(1 to conf.poolSize) { connId =>
+          effectBlocking {
+            SingleConnection.create(connId, conf.url, conf.props)
+          }
+        }
+      pool <- Queue.bounded[SingleConnection](conf.poolSize)
+      _ <- pool.offerAll(connections)
+      kuzminki <- ZIO.succeed(new Kuzminki(pool, connections.toList))
+      _ <- putStrLn("Connections: " + connections.size)
+    } yield kuzminki
   }
 }
 
-class Kuzminki(driver: Driver) {
+class Kuzminki(pool: Queue[SingleConnection], connections: List[SingleConnection]) {
 
   def query[R](stm: RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
     for {
-      rows <- driver.query(stm)
+      conn <- pool.take
+      rows <- conn.query(stm).ensuring { pool.offer(conn) }
     } yield rows
   }
 
   def query[R](render: => RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
     for {
       stm <- Task.effect { render }
-      rows <- driver.query(stm)
+      conn <- pool.take
+      rows <- conn.query(stm).ensuring { pool.offer(conn) }
     } yield rows
-  }
-
-  def queryAs[R, T](stm: RenderedQuery[R])
-                   (implicit modify: R => T): RIO[Blocking, Seq[T]] = {
-    for {
-      rows <- driver.query(stm)
-      modifiedRows <- Task.effect { rows.map(modify)}
-    } yield modifiedRows
-  }
-
-  def queryAs[R, T](render: => RenderedQuery[R])
-                   (implicit modify: R => T): RIO[Blocking, Seq[T]] = {
-    for {
-      stm <- Task.effect { render }
-      rows <- driver.query(stm)
-      modifiedRows <- Task.effect { rows.map(modify)}
-    } yield modifiedRows
   }
 
   def queryHead[R](stm: RenderedQuery[R]): RIO[Blocking, R] = {
     for {
-      rows <- driver.query(stm)
+      conn <- pool.take
+      rows <- conn.query(stm).ensuring { pool.offer(conn) }
       head <- Task.effect { rows.head }
     } yield head
   }
@@ -84,31 +73,16 @@ class Kuzminki(driver: Driver) {
   def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] = {
     for {
       stm <- Task.effect { render }
-      rows <- driver.query(stm)
+      conn <- pool.take
+      rows <- conn.query(stm).ensuring { pool.offer(conn) }
       head <- Task.effect { rows.head }
     } yield head
   }
 
-  def queryHeadAs[R, T](stm: RenderedQuery[R])
-                       (implicit modify: R => T): RIO[Blocking, T] = {
+  def queryHeadOpt[R](stm: RenderedQuery[R]): RIO[Blocking, Option[R]] = {
     for {
-      rows <- driver.query(stm)
-      modifiedHead <- Task.effect { modify(rows.head) }
-    } yield modifiedHead
-  }
-
-  def queryHeadAs[R, T](render: => RenderedQuery[R])
-                       (implicit modify: R => T): RIO[Blocking, T] = {
-    for {
-      stm <- Task.effect { render }
-      rows <- driver.query(stm)
-      modifiedHead <- Task.effect { modify(rows.head) }
-    } yield modifiedHead
-  }
-
-   def queryHeadOpt[R](stm: RenderedQuery[R]): RIO[Blocking, Option[R]] = {
-    for {
-      rows <- driver.query(stm)
+      conn <- pool.take
+      rows <- conn.query(stm).ensuring { pool.offer(conn) }
       headOpt <- Task.effect { rows.headOption }
     } yield headOpt
   }
@@ -116,55 +90,48 @@ class Kuzminki(driver: Driver) {
   def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] = {
     for {
       stm <- Task.effect { render }
-      rows <- driver.query(stm)
+      conn <- pool.take
+      rows <- conn.query(stm).ensuring { pool.offer(conn) }
       headOpt <- Task.effect { rows.headOption }
     } yield headOpt
   }
 
-  def queryHeadOptAs[R, T](stm: RenderedQuery[R])
-                          (implicit modify: R => T): RIO[Blocking, Option[T]] = {
-    for {
-      rows <- driver.query(stm)
-      modifiedHeadOpt <- Task.effect { rows.headOption.map(modify) }
-    } yield modifiedHeadOpt
-  }
-
-  def queryHeadOptAs[R, T](render: => RenderedQuery[R])
-                          (implicit modify: R => T): RIO[Blocking, Option[T]] = {
-    for {
-      stm <- Task.effect { render }
-      rows <- driver.query(stm)
-      modifiedHeadOpt <- Task.effect { rows.headOption.map(modify) }
-    } yield modifiedHeadOpt
-  }
-
   def exec(stm: RenderedOperation): RIO[Blocking, Unit] = {
     for {
-      _ <- driver.exec(stm)
+      conn <- pool.take
+      _ <- conn.exec(stm).ensuring { pool.offer(conn) }
     } yield ()
   }
 
   def exec(render: => RenderedOperation): RIO[Blocking, Unit] = {
     for {
       stm <- Task.effect { render }
-      _ <- driver.exec(stm)
+      conn <- pool.take
+      _ <- conn.exec(stm).ensuring { pool.offer(conn) }
     } yield ()
   }
 
   def execNum(stm: RenderedOperation): RIO[Blocking, Int] = {
     for {
-      num <- driver.execNum(stm)
+      conn <- pool.take
+      num <- conn.execNum(stm).ensuring { pool.offer(conn) }
     } yield num
   }
 
   def execNum(render: => RenderedOperation): RIO[Blocking, Int] = {
     for {
       stm <- Task.effect { render }
-      num <- driver.execNum(stm)
+      conn <- pool.take
+      num <- conn.execNum(stm).ensuring { pool.offer(conn) }
     } yield num
   }
 
-  def close() = driver.close()
+  def close() = {
+    for {
+      _ <- ZIO.foreach(connections)(_.close())
+      _ <- pool.shutdown
+    } yield ()
+  }
 }
 
 

@@ -9,4 +9,3 @@ libraryDependencies ++= Seq(
   "dev.zio" %% "zio" % "1.0.12",
   "org.postgresql" % "postgresql" % "42.2.24"
 )
-

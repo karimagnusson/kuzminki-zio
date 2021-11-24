@@ -19,13 +19,15 @@ package kuzminki.api
 import java.util.Properties
 
 
-case class DbConfig(url: String, props: Properties)
+case class DbConfig(url: String, props: Properties, poolSize: Int)
 
 object DbConfig {
   def forDb(dbName: String) = new DbConfigBuilder(dbName)
 }
 
 class DbConfigBuilder(dbName: String) {
+
+  private var poolSize = 10
 
   private var hostOpt: Option[String] = None
 
@@ -37,6 +39,11 @@ class DbConfigBuilder(dbName: String) {
     val host = hostOpt.getOrElse("localhost")
     val port = portOpt.getOrElse("5432")
     s"jdbc:postgresql://$host:$port/$dbName"
+  }
+
+  def withPoolSize(value: Int) = {
+    poolSize = value
+    this
   }
 
   def withHost(value: String) = {
@@ -67,7 +74,7 @@ class DbConfigBuilder(dbName: String) {
     this
   }
 
-  def getConfig = DbConfig(getUrl, props)
+  def getConfig = DbConfig(getUrl, props, poolSize)
 }
 
 
