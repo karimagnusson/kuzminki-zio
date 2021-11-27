@@ -46,16 +46,14 @@ import kuzminki.render.{
 
 object SingleConnection {
 
-  def create(connId: Int, url: String, props: Properties) = {
+  def create(url: String, props: Properties) = {
     val conn = DriverManager.getConnection(url, props)
-    new SingleConnection(conn, connId)
+    new SingleConnection(conn)
   }
 }
 
 
-class SingleConnection(conn: Connection, connId: Int) {
-
-  def getId = connId
+class SingleConnection(conn: Connection) {
 
   private def setArg(jdbcStm: PreparedStatement, arg: Any, index: Int): Unit = {
     arg match {

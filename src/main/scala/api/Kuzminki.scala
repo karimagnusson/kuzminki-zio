@@ -30,17 +30,16 @@ import zio.blocking._
 
 object Kuzminki {
 
-  def create(conf: DbConfig) = {
+  def forConfig(conf: DbConfig) = {
     for {
       connections <- ZIO.foreach(1 to conf.poolSize) { connId =>
           effectBlocking {
-            SingleConnection.create(connId, conf.url, conf.props)
+            SingleConnection.create(conf.url, conf.props)
           }
         }
       pool <- Queue.bounded[SingleConnection](conf.poolSize)
       _ <- pool.offerAll(connections)
       kuzminki <- ZIO.succeed(new Kuzminki(pool, connections.toList))
-      _ <- putStrLn("Connections: " + connections.size)
     } yield kuzminki
   }
 }

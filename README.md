@@ -27,7 +27,7 @@ class Client extends Model("client") {
 val client = Model.get[Client]
 
 for {
-  db <- Kuzminki.async(DbConfig.forDb("company").getConfig)
+  db <- Kuzminki.forConfig(DbConfig.forDb("company").getConfig)
   _ <- db.exec {
       sql
         .insert(client)
@@ -58,6 +58,7 @@ import kuzminki.api._
 
 val config = DbConfig
   .forDb("<db-name>")
+  .withPoolSize(10)
   .withHost("<host>")
   .withPort("<port>")
   .withUser("<user>")
@@ -66,7 +67,7 @@ val config = DbConfig
   .getConfig
 
 for { 
-  db <- Kuzminki.async(config)
+  db <- Kuzminki.forConfig(config)
   ...
 } yield ...
 
@@ -128,7 +129,7 @@ import kuzminki.api._
 val user = Model.get[User]
 
 for {
-  db <- Kuzminki.async(DbConfig.forDb("company").getConfig)
+  db <- Kuzminki.forConfig(DbConfig.forDb("company").getConfig)
   users <- db.query {
     sql
       .select(user)

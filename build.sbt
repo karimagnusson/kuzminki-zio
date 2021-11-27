@@ -2,7 +2,7 @@ scalaVersion := "2.12.12"
 
 name := "kuzminki-zio"
 
-version := "0.9.0"
+version := "0.8.0-test"
 
 libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-reflect" % "2.12.12",
