@@ -4,7 +4,7 @@
 
 Kuzminki-zio is query builder and access library for PostgreSQL and [ZIO](https://zio.dev/) written in Scala.
 
-The project is currently under development and not fully tested.
+The project is currently under development and not fully tested. It currently works with ZIO 1.x.
 
 If you have any questions about the project feel free to post on Gitter or contact me directly on telegram @karimagnusson.
 
@@ -58,9 +58,9 @@ import kuzminki.api._
 
 val config = DbConfig
   .forDb("<db-name>")
-  .withPoolSize(10)
-  .withHost("<host>")
-  .withPort("<port>")
+  .withPoolSize(10) // default = 10
+  .withHost("<host>") // default = localhost
+  .withPort("<port>") // default = 5432
   .withUser("<user>")
   .withPassword("<password>")
   .withOptions(Map(...))
@@ -70,10 +70,6 @@ for {
   db <- Kuzminki.forConfig(config)
   ...
 } yield ...
-
-or
-
-val db = Kuzminki.blocking(config)
 ```
 
 #### Defining a model
