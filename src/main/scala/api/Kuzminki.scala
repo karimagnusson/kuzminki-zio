@@ -30,6 +30,8 @@ import zio.blocking._
 
 object Kuzminki {
 
+  Class.forName("org.postgresql.Driver")
+
   def forConfig(conf: DbConfig) = {
     for {
       connections <- ZIO.foreach(1 to conf.poolSize) { connId =>
@@ -46,27 +48,12 @@ object Kuzminki {
 
 class Kuzminki(pool: Queue[SingleConnection], connections: List[SingleConnection]) {
 
-  def query[R](stm: RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
-    for {
-      conn <- pool.take
-      rows <- conn.query(stm).ensuring { pool.offer(conn) }
-    } yield rows
-  }
-
   def query[R](render: => RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
     for {
       stm <- Task.effect { render }
       conn <- pool.take
       rows <- conn.query(stm).ensuring { pool.offer(conn) }
     } yield rows
-  }
-
-  def queryHead[R](stm: RenderedQuery[R]): RIO[Blocking, R] = {
-    for {
-      conn <- pool.take
-      rows <- conn.query(stm).ensuring { pool.offer(conn) }
-      head <- Task.effect { rows.head }
-    } yield head
   }
 
   def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] = {
@@ -78,14 +65,6 @@ class Kuzminki(pool: Queue[SingleConnection], connections: List[SingleConnection
     } yield head
   }
 
-  def queryHeadOpt[R](stm: RenderedQuery[R]): RIO[Blocking, Option[R]] = {
-    for {
-      conn <- pool.take
-      rows <- conn.query(stm).ensuring { pool.offer(conn) }
-      headOpt <- Task.effect { rows.headOption }
-    } yield headOpt
-  }
-
   def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] = {
     for {
       stm <- Task.effect { render }
@@ -95,26 +74,12 @@ class Kuzminki(pool: Queue[SingleConnection], connections: List[SingleConnection
     } yield headOpt
   }
 
-  def exec(stm: RenderedOperation): RIO[Blocking, Unit] = {
-    for {
-      conn <- pool.take
-      _ <- conn.exec(stm).ensuring { pool.offer(conn) }
-    } yield ()
-  }
-
   def exec(render: => RenderedOperation): RIO[Blocking, Unit] = {
     for {
       stm <- Task.effect { render }
       conn <- pool.take
       _ <- conn.exec(stm).ensuring { pool.offer(conn) }
     } yield ()
-  }
-
-  def execNum(stm: RenderedOperation): RIO[Blocking, Int] = {
-    for {
-      conn <- pool.take
-      num <- conn.execNum(stm).ensuring { pool.offer(conn) }
-    } yield num
   }
 
   def execNum(render: => RenderedOperation): RIO[Blocking, Int] = {
