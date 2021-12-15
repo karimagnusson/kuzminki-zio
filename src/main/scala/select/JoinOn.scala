@@ -19,21 +19,81 @@ package kuzminki.select
 import kuzminki.api.{Model, Join}
 import kuzminki.model.ModelTable
 import kuzminki.column.ModelCol
-import kuzminki.section.select.{
-  InnerJoinSec,
-  OnSec
-}
+import kuzminki.section.join._
 
 
 class JoinOn[A <: Model, B <: Model, R](join: Join[A, B], coll: SelectCollector[R]) {
 
+  private def next(joinSec: JoinSec, onSec: OnSec) = {
+    new Where(join, coll.extend(Array(joinSec, onSec)))
+  }
+
   def joinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
-    new Where(
-      join,
-      coll.extend(Array(
-        InnerJoinSec(ModelTable(join.b)),
-        OnSec(pickLeft(join.a), pickRight(join.b))
-      ))
+    next(
+      InnerJoinSec(ModelTable(join.b)),
+      OnSec(pickLeft(join.a), pickRight(join.b))
+    )
+  }
+
+  def innerJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+    next(
+      InnerJoinSec(ModelTable(join.b)),
+      OnSec(pickLeft(join.a), pickRight(join.b))
+    )
+  }
+
+  def leftJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+    next(
+      LeftJoinSec(ModelTable(join.b)),
+      OnSec(pickLeft(join.a), pickRight(join.b))
+    )
+  }
+
+  def leftOuterJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+    next(
+      LeftOuterJoinSec(ModelTable(join.b)),
+      OnSec(pickLeft(join.a), pickRight(join.b))
+    )
+  }
+
+  def rightJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+    next(
+      RightJoinSec(ModelTable(join.b)),
+      OnSec(pickLeft(join.a), pickRight(join.b))
+    )
+  }
+
+  def rightOuterJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+    next(
+      RightOuterJoinSec(ModelTable(join.b)),
+      OnSec(pickLeft(join.a), pickRight(join.b))
+    )
+  }
+
+  def fullOuterJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+    next(
+      FullOuterJoinSec(ModelTable(join.b)),
+      OnSec(pickLeft(join.a), pickRight(join.b))
+    )
+  }
+
+  def crossJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+    next(
+      CrossJoinSec(ModelTable(join.b)),
+      OnSec(pickLeft(join.a), pickRight(join.b))
     )
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -76,47 +76,6 @@ package object select extends FilterSections {
     val expression = "OFFSET ?"
     def args = Seq(CacheOffsetArgs)
   }
-
-  // join
-
-  case class OnSec(leftCol: AnyCol, rightCol: AnyCol) extends Section with NoArgs {
-    val expression = "ON %s = %s"
-    def render(prefix: Prefix) = expression.format(leftCol.render(prefix), rightCol.render(prefix))
-  }
-
-  case class InnerJoinSec(part: ModelTable) extends SinglePartRender {
-    val expression = "INNER JOIN %s"
-  }
-
-
-  case class LeftJoinSec(part: ModelTable) extends SinglePartRender {
-    val expression = "LEFT JOIN %s"
-  }
-
-
-  case class LeftOuterJoinSec(part: ModelTable) extends SinglePartRender {
-    val expression = "LEFT OUTER JOIN %s"
-  }
-
-
-  case class RightJoinSec(part: ModelTable) extends SinglePartRender {
-    val expression = "RIGHT JOIN %s"
-  }
-
-
-  case class RightOuterJoinSec(part: ModelTable) extends SinglePartRender {
-    val expression = "RIGHT OUTER JOIN %s"
-  }
-
-
-  case class FullOuterJoinSec(part: ModelTable) extends SinglePartRender {
-    val expression = "FULL OUTER JOIN %s"
-  }
-
-
-  case class CrossJoinSec(part: ModelTable) extends SinglePartRender {
-    val expression = "CROSS JOIN %s"
-  }
 }
 
 
