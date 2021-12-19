@@ -77,11 +77,8 @@ class JoinOn[A <: Model, B <: Model, R](join: Join[A, B], coll: SelectCollector[
     )
   }
 
-  def crossJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
-    next(
-      CrossJoinSec(ModelTable(join.b)),
-      OnSec(pickLeft(join.a), pickRight(join.b))
-    )
+  def crossJoin = {
+    new Where(join, coll.add(CrossJoinSec(ModelTable(join.b))))
   }
 }
 

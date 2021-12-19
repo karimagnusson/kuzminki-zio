@@ -17,7 +17,7 @@
 package kuzminki
 
 import kuzminki.column._
-
+import kuzminki.render.{RawSQLStatement, RenderedQuery, RenderedOperation}
 
 import java.sql.Time
 import java.sql.Date
@@ -72,6 +72,31 @@ package object api {
   implicit val typeColToTimeCol: TypeCol[Time] => TimeCol = col => col.asInstanceOf[TimeCol]
   implicit val typeColToDateCol: TypeCol[Date] => DateCol = col => col.asInstanceOf[DateCol]
   implicit val typeColToTimestampCol: TypeCol[Timestamp] => TimestampCol = col => col.asInstanceOf[TimestampCol]
+
+  // raw SQL
+
+  implicit val rawToQuery: RawSQLStatement => RenderedQuery[Seq[Any]] = rss => rss.toQuery
+  implicit val rawToOperation: RawSQLStatement => RenderedOperation = rss => rss.toOperation
+
+  implicit class RawSQL(val sc: StringContext) extends AnyVal {
+    def rsql(args: Any*): RawSQLStatement = {
+      val strings = sc.parts.iterator
+      val expressions = args.iterator
+
+      var sb = new StringBuilder
+      var params = Vector.empty[Any]
+
+      for (part <- strings) {
+        sb.append(part)
+        if (expressions.hasNext) {
+          params = params :+ expressions.next
+          sb.append("?")
+        }
+      }
+
+      RawSQLStatement(sb.toString, params)
+    }
+  }
 }
 
 
