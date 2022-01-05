@@ -8,7 +8,7 @@ The project is currently under development and not fully tested. It currently wo
 
 If you have any questions about the project feel free to post on Gitter or contact me directly on telegram @karimagnusson.
 
-[Documentation](https://kuzminki.io/)
+See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
 #### Sbt
 ```sbt
