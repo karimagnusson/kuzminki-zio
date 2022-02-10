@@ -29,7 +29,7 @@ package object insert extends ReturningSections {
     val expression = "INSERT INTO %s"
   }
 
-  case class InsertDataSec(parts: Seq[SetValue]) extends Section with FillValues {
+  case class InsertDataSec(parts: Vector[SetValue]) extends Section with FillValues {
     val expression = "(%s) VALUES (%s)"
     def render(prefix: Prefix) = expression.format(
       parts.map(_.col.render(prefix)).mkString(", "),
@@ -38,12 +38,12 @@ package object insert extends ReturningSections {
     def args = parts.map(_.value)
   }
 
-  case class InsertColumnsSec(parts: Seq[AnyCol]) extends MultiPartRender {
+  case class InsertColumnsSec(parts: Vector[AnyCol]) extends MultiPartRender {
     val expression = "(%s)"
     val glue = ", "
   }
 
-  case class InsertValuesSec(values: Seq[Any]) extends Section with FillValues {
+  case class InsertValuesSec(values: Vector[Any]) extends Section with FillValues {
     val expression = "VALUES %s"
     def render(prefix: Prefix) = expression.format(fillBrackets(values.size))
     def args = values
@@ -54,7 +54,7 @@ package object insert extends ReturningSections {
     def render(prefix: Prefix) = expression.format(fillBrackets(size))
   }
 
-  case class InsertMultipleValuesSec(valuesList: Seq[Seq[Any]]) extends Section with FillValues {
+  case class InsertMultipleValuesSec(valuesList: Vector[Vector[Any]]) extends Section with FillValues {
     val expression = "VALUES %s"
     def render(prefix: Prefix) = {
       expression.format(
@@ -87,12 +87,12 @@ package object insert extends ReturningSections {
     val expression = "DO NOTHING"
   }
 
-  case class InsertDoUpdateSec(parts: Seq[SetValue]) extends MultiPartRender {
+  case class InsertDoUpdateSec(parts: Vector[SetValue]) extends MultiPartRender {
     val expression = "DO UPDATE SET %s"
     val glue = ", "
   }
 
-  case class InsertDoUpdateNoArgsSec(parts: Seq[SetUpsert]) extends Section with NoArgs {
+  case class InsertDoUpdateNoArgsSec(parts: Vector[SetUpsert]) extends Section with NoArgs {
     val expression = "DO UPDATE SET %s"
     def render(prefix: Prefix) = expression.format(
       parts.map(_.render(prefix)).mkString(", ")

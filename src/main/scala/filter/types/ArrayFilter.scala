@@ -25,5 +25,5 @@ trait ArrayFilter extends Filter {
   val col: AnyCol
   val argSeq: Seq[Any]
   def render(prefix: Prefix) = template.format(col.render(prefix), Vector.fill(args.size)("?").mkString(", "))
-  def args = col.args ++ argSeq
+  def args = col.args ++ argSeq.toVector
 }

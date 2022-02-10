@@ -31,22 +31,23 @@ class Update[M <: Model](
     new UpdateWhere(
       model,
       SectionCollector(
-        Array(
+        Vector(
           UpdateSec(ModelTable(model)),
-          UpdateSetSec(pick(model))
+          UpdateSetSec(pick(model).toVector)
         )
       )
     )
   }
 
+  @deprecated("use set", "0.9.2")
   def setOne(pick: M => Assign) = {
     new UpdateWhere(
       model,
       SectionCollector(
-        Array(
+        Vector(
           UpdateSec(ModelTable(model)),
           UpdateSetSec(
-            Seq(pick(model))
+            Vector(pick(model))
           )
         )
       )

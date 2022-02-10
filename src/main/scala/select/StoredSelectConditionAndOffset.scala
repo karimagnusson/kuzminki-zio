@@ -33,7 +33,7 @@ class StoredSelectConditionAndOffset[P, R](
   def render(params: P, offset: Int) = {
     RenderedQuery(
       statement,
-      args1 ++ paramConv.fromShape(params) ++ args2 ++ Seq(offset) ++ args3,
+      args1 ++ paramConv.fromShape(params) ++ args2 ++ Vector(offset) ++ args3,
       rowConv
     )
   }

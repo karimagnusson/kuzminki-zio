@@ -19,6 +19,6 @@ package kuzminki.render
 
 trait Renderable {
   def render(prefix: Prefix): String
-  def args: Seq[Any]
+  def args: Vector[Any]
 }
 

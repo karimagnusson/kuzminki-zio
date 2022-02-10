@@ -29,12 +29,13 @@ class DeleteWhere[M](
 
   def all() = new RenderDelete(model, coll)
 
+  @deprecated("use where", "0.9.2")
   def whereOne(pick: M => Filter) = {
     new RenderDelete(
       model,
       coll.add(
         WhereSec(
-          Seq(pick(model))
+          Vector(pick(model))
         )
       )
     )
@@ -47,7 +48,7 @@ class DeleteWhere[M](
       case conds =>
         new RenderDelete(
           model,
-          coll.add(WhereSec(conds))
+          coll.add(WhereSec(conds.toVector))
         )
     }
   }
@@ -59,7 +60,7 @@ class DeleteWhere[M](
       case filters =>
         new RenderDelete(
           model,
-          coll.add(WhereSec(filters))
+          coll.add(WhereSec(filters.toVector))
         )
     }
   }
@@ -70,7 +71,7 @@ class DeleteWhere[M](
         new RenderDelete(
           model,
           coll.add(
-            WhereSec(Seq(filter))
+            WhereSec(Vector(filter))
           )
         )
       case None =>

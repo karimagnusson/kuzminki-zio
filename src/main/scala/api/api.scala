@@ -17,25 +17,29 @@
 package kuzminki
 
 import kuzminki.column._
+import kuzminki.filter.Filter
+import kuzminki.sorting.Sorting
+import kuzminki.assign.Assign
 import kuzminki.render.{RawSQLStatement, RenderedQuery, RenderedOperation}
 
 import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
 
+
 package object api {
 
   // create model col
 
-  implicit val implStringCol: ColInfo => TypeCol[String] = info => StringModelCol(info)
-  implicit val implBooleanCol: ColInfo => TypeCol[Boolean] = info => BooleanModelCol(info)
+  implicit val kzimplStringCol: ColInfo => TypeCol[String] = info => StringModelCol(info)
+  implicit val kzimplBooleanCol: ColInfo => TypeCol[Boolean] = info => BooleanModelCol(info)
   
-  implicit val implShortCol: ColInfo => TypeCol[Short] = info => ShortModelCol(info)
-  implicit val implIntCol: ColInfo => TypeCol[Int] = info => IntModelCol(info)
-  implicit val implLongCol: ColInfo => TypeCol[Long] = info => LongModelCol(info)
-  implicit val implFloatCol: ColInfo => TypeCol[Float] = info => FloatModelCol(info)
-  implicit val implDoubleCol: ColInfo => TypeCol[Double] = info => DoubleModelCol(info)
-  implicit val implBigDecimalCol: ColInfo => TypeCol[BigDecimal] = info => BigDecimalModelCol(info)
+  implicit val kzimplShortCol: ColInfo => TypeCol[Short] = info => ShortModelCol(info)
+  implicit val kzimplIntCol: ColInfo => TypeCol[Int] = info => IntModelCol(info)
+  implicit val kzimplLongCol: ColInfo => TypeCol[Long] = info => LongModelCol(info)
+  implicit val kzimplFloatCol: ColInfo => TypeCol[Float] = info => FloatModelCol(info)
+  implicit val kzimplDoubleCol: ColInfo => TypeCol[Double] = info => DoubleModelCol(info)
+  implicit val kzimplBigDecimalCol: ColInfo => TypeCol[BigDecimal] = info => BigDecimalModelCol(info)
 
   implicit val implTimeCol: ColInfo => TypeCol[Time] = info => TimeModelCol(info)
   implicit val implDateCol: ColInfo => TypeCol[Date] = info => DateModelCol(info)
@@ -43,40 +47,47 @@ package object api {
 
   // model type col
 
-  implicit val toStringModelCol: TypeCol[String] => StringModelCol = col => col.asInstanceOf[StringModelCol]
-  implicit val toBooleanModelCol: TypeCol[Boolean] => BooleanModelCol = col => col.asInstanceOf[BooleanModelCol]
+  implicit val kzimplToStringModelCol: TypeCol[String] => StringModelCol = col => col.asInstanceOf[StringModelCol]
+  implicit val kzimplToBooleanModelCol: TypeCol[Boolean] => BooleanModelCol = col => col.asInstanceOf[BooleanModelCol]
   
-  implicit val toShortModelCol: TypeCol[Short] => ShortModelCol = col => col.asInstanceOf[ShortModelCol]
-  implicit val toIntModelCol: TypeCol[Int] => IntModelCol = col => col.asInstanceOf[IntModelCol]
-  implicit val toLongModelCol: TypeCol[Long] => LongModelCol = col => col.asInstanceOf[LongModelCol]
-  implicit val toFloatModelCol: TypeCol[Float] => FloatModelCol = col => col.asInstanceOf[FloatModelCol]
-  implicit val toDoubleModelCol: TypeCol[Double] => DoubleModelCol = col => col.asInstanceOf[DoubleModelCol]
-  implicit val toBigDecimalModelCol: TypeCol[BigDecimal] => BigDecimalModelCol = col => col.asInstanceOf[BigDecimalModelCol]
+  implicit val kzimplToShortModelCol: TypeCol[Short] => ShortModelCol = col => col.asInstanceOf[ShortModelCol]
+  implicit val kzimplToIntModelCol: TypeCol[Int] => IntModelCol = col => col.asInstanceOf[IntModelCol]
+  implicit val kzimplToLongModelCol: TypeCol[Long] => LongModelCol = col => col.asInstanceOf[LongModelCol]
+  implicit val kzimplToFloatModelCol: TypeCol[Float] => FloatModelCol = col => col.asInstanceOf[FloatModelCol]
+  implicit val kzimplToDoubleModelCol: TypeCol[Double] => DoubleModelCol = col => col.asInstanceOf[DoubleModelCol]
+  implicit val kzimplToBigDecimalModelCol: TypeCol[BigDecimal] => BigDecimalModelCol = col => col.asInstanceOf[BigDecimalModelCol]
 
-  implicit val toTimeModelCol: TypeCol[Time] => TimeModelCol = col => col.asInstanceOf[TimeModelCol]
-  implicit val toDateModelCol: TypeCol[Date] => DateModelCol = col => col.asInstanceOf[DateModelCol]
-  implicit val toTimestampModelCol: TypeCol[Timestamp] => TimestampModelCol = col => col.asInstanceOf[TimestampModelCol]
+  implicit val kzimplToTimeModelCol: TypeCol[Time] => TimeModelCol = col => col.asInstanceOf[TimeModelCol]
+  implicit val kzimplToDateModelCol: TypeCol[Date] => DateModelCol = col => col.asInstanceOf[DateModelCol]
+  implicit val kzimplToTimestampModelCol: TypeCol[Timestamp] => TimestampModelCol = col => col.asInstanceOf[TimestampModelCol]
 
   // type col
 
-  implicit val typeColToStringCol: TypeCol[String] => StringCol = col => col.asInstanceOf[StringCol]
-  implicit val typeColToBooleanCol: TypeCol[Boolean] => BooleanCol = col => col.asInstanceOf[BooleanCol]
+  implicit val kzimplTypeColToStringCol: TypeCol[String] => StringCol = col => col.asInstanceOf[StringCol]
+  implicit val kzimplTypeColToBooleanCol: TypeCol[Boolean] => BooleanCol = col => col.asInstanceOf[BooleanCol]
   
-  implicit val typeColToShortCol: TypeCol[Short] => ShortCol = col => col.asInstanceOf[ShortCol]
-  implicit val typeColToIntCol: TypeCol[Int] => IntCol = col => col.asInstanceOf[IntCol]
-  implicit val typeColToLongCol: TypeCol[Long] => LongCol = col => col.asInstanceOf[LongCol]
-  implicit val typeColToFloatCol: TypeCol[Float] => FloatCol = col => col.asInstanceOf[FloatCol]
-  implicit val typeColToDoubleCol: TypeCol[Double] => DoubleCol = col => col.asInstanceOf[DoubleCol]
-  implicit val typeColToBigDecimalCol: TypeCol[BigDecimal] => BigDecimalCol = col => col.asInstanceOf[BigDecimalCol]
+  implicit val kzimplTypeColToShortCol: TypeCol[Short] => ShortCol = col => col.asInstanceOf[ShortCol]
+  implicit val kzimplTypeColToIntCol: TypeCol[Int] => IntCol = col => col.asInstanceOf[IntCol]
+  implicit val kzimplTypeColToLongCol: TypeCol[Long] => LongCol = col => col.asInstanceOf[LongCol]
+  implicit val kzimplTypeColToFloatCol: TypeCol[Float] => FloatCol = col => col.asInstanceOf[FloatCol]
+  implicit val kzimplTypeColToDoubleCol: TypeCol[Double] => DoubleCol = col => col.asInstanceOf[DoubleCol]
+  implicit val kzimplTypeColToBigDecimalCol: TypeCol[BigDecimal] => BigDecimalCol = col => col.asInstanceOf[BigDecimalCol]
 
-  implicit val typeColToTimeCol: TypeCol[Time] => TimeCol = col => col.asInstanceOf[TimeCol]
-  implicit val typeColToDateCol: TypeCol[Date] => DateCol = col => col.asInstanceOf[DateCol]
-  implicit val typeColToTimestampCol: TypeCol[Timestamp] => TimestampCol = col => col.asInstanceOf[TimestampCol]
+  implicit val kzimplTypeColToTimeCol: TypeCol[Time] => TimeCol = col => col.asInstanceOf[TimeCol]
+  implicit val kzimplTypeColToDateCol: TypeCol[Date] => DateCol = col => col.asInstanceOf[DateCol]
+  implicit val kzimplTypeColToTimestampCol: TypeCol[Timestamp] => TimestampCol = col => col.asInstanceOf[TimestampCol]
+
+  // pick one
+
+  implicit val kzimplFilterToSeq: Filter => Seq[Filter] = filter => Seq(filter)
+  implicit val kzimplSortingToSeq: Sorting => Seq[Sorting] = sorting => Seq(sorting)
+  implicit val kzimplAssignToSeq: Assign => Seq[Assign] = assign => Seq(assign)
+  implicit def kzimplTypeColToSeq[T](col: TypeCol[T]): Seq[TypeCol[_]] = Seq(col)
 
   // raw SQL
 
-  implicit val rawToQuery: RawSQLStatement => RenderedQuery[Seq[Any]] = rss => rss.toQuery
-  implicit val rawToOperation: RawSQLStatement => RenderedOperation = rss => rss.toOperation
+  implicit val kzimplRawToQuery: RawSQLStatement => RenderedQuery[Vector[Any]] = rss => rss.toQuery
+  implicit val kzimplRawToOperation: RawSQLStatement => RenderedOperation = rss => rss.toOperation
 
   implicit class RawSQL(val sc: StringContext) extends AnyVal {
     def rsql(args: Any*): RawSQLStatement = {

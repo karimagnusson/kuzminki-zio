@@ -25,7 +25,7 @@ import kuzminki.section.join._
 class JoinOn[A <: Model, B <: Model, R](join: Join[A, B], coll: SelectCollector[R]) {
 
   private def next(joinSec: JoinSec, onSec: OnSec) = {
-    new Where(join, coll.extend(Array(joinSec, onSec)))
+    new Where(join, coll.extend(Vector(joinSec, onSec)))
   }
 
   def joinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {

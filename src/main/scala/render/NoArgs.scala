@@ -18,5 +18,5 @@ package kuzminki.render
 
 
 trait NoArgs {
-  val args = Seq.empty[Any]
+  val args = Vector.empty[Any]
 }

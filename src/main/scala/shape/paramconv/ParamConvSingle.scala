@@ -20,6 +20,5 @@ import kuzminki.conv.ValConv
 
 
 class ParamConvSingle[P](col: ValConv[P]) extends ParamConv[P] {
-
   def fromShape(param: P) = Vector(param) 
 }

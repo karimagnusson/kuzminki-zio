@@ -16,7 +16,7 @@
 
 package kuzminki.insert
 
-import kuzminki.column.ModelCol
+import kuzminki.column.{ModelCol, TypeCol}
 import kuzminki.api.KuzminkiError
 import kuzminki.shape.ParamShape
 import kuzminki.assign.SetUpsert
@@ -33,7 +33,7 @@ class DoUpdate[M, P](
 
   def doNothing = {
     new RenderInsert(
-      coll.extend(Array(
+      coll.extend(Vector(
         InsertBlankValuesSec(paramShape.size),
         InsertOnConflictSec,
         InsertDoNothingSec
@@ -42,22 +42,28 @@ class DoUpdate[M, P](
     )
   }
 
-  def doUpdate(pick: M => Seq[ModelCol]) = {
+  def doUpdate(pick: M => Seq[TypeCol[_]]) = {
     doUpdateApply(
-      pick(model)
+      pick(model).toVector
     )
   }
 
-  def doUpdateOne(pick: M => ModelCol) = {
+  @deprecated("use doUpdate", "0.9.2")
+  def doUpdateOne[T](pick: M => TypeCol[T]) = {
     doUpdateApply(
-      Seq(pick(model))
+      Vector(pick(model))
     )
   }
 
   protected def validate(
         conflictCol: ModelCol,
-        updateCols: Seq[ModelCol]
-      ): Unit = {
+        updateTypeCols: Vector[TypeCol[_]]
+      ) = {
+
+    val updateCols = updateTypeCols.map {
+      case col: ModelCol => col
+      case _ => throw KuzminkiError("no update columns selected")
+    }
 
     if (updateCols.isEmpty) {
       throw KuzminkiError("no update columns selected")
@@ -66,12 +72,14 @@ class DoUpdate[M, P](
     if (updateCols.contains(conflictCol)) {
       throw KuzminkiError("cannot update the conflicting column")
     }
+
+    updateCols
   }
 
-  private def doUpdateApply(updateCols: Seq[ModelCol]) = {
-    validate(conflictCol, updateCols)
+  private def doUpdateApply(updateTypeCols: Vector[TypeCol[_]]) = {
+    val updateCols = validate(conflictCol, updateTypeCols)
     new RenderInsert(
-      coll.extend(Array(
+      coll.extend(Vector(
         InsertBlankValuesSec(paramShape.size),
         InsertOnConflictColumnSec(conflictCol),
         InsertDoUpdateNoArgsSec(updateCols.map(SetUpsert(_)))

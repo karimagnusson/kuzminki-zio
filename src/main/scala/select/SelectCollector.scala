@@ -26,12 +26,12 @@ import kuzminki.shape._
 case class SelectCollector[R](
       prefix: Prefix,
       rowShape: RowShape[R],
-      sections: Array[Section]
+      sections: Vector[Section]
     ) extends RenderCollector {
 
   def add(section: Section) = this.copy(sections = sections :+ section)
 
-  def extend(added: Array[Section]) = this.copy(sections = sections ++ added)
+  def extend(added: Vector[Section]) = this.copy(sections = sections ++ added)
 
   private def validataWhere(): Unit = {
     
@@ -72,7 +72,7 @@ case class SelectCollector[R](
     }
   }
 
-  private def replaceWhereSec[P](modifiedSections: Array[Section], partShape: PartShape[P]) = {
+  private def replaceWhereSec[P](modifiedSections: Vector[Section], partShape: PartShape[P]) = {
 
     modifiedSections.map {
       
@@ -87,7 +87,7 @@ case class SelectCollector[R](
     }
   }
 
-  private def replaceHavingSec[P](modifiedSections: Array[Section], partShape: PartShape[P]) = {
+  private def replaceHavingSec[P](modifiedSections: Vector[Section], partShape: PartShape[P]) = {
 
     modifiedSections.map {
       
@@ -102,12 +102,12 @@ case class SelectCollector[R](
     }
   }
 
-  private def insertOffsetCacheSec(modifiedSections: Array[Section]) = {
+  private def insertOffsetCacheSec(modifiedSections: Vector[Section]) = {
     
     modifiedSections.last match {
     
       case limitSec: LimitSec =>
-        modifiedSections.dropRight(1) ++ Array(OffsetCacheSec, limitSec)
+        modifiedSections.dropRight(1) ++ Vector(OffsetCacheSec, limitSec)
     
       case _ =>
         modifiedSections :+ OffsetCacheSec
@@ -129,7 +129,7 @@ case class SelectCollector[R](
     }
   }
 
-  private def renderForCache[P](modifiedSections: Array[Section]) = {
+  private def renderForCache[P](modifiedSections: Vector[Section]) = {
     
     val template = modifiedSections.map(_.render(prefix)).mkString(" ")
     
@@ -140,7 +140,7 @@ case class SelectCollector[R](
     (template, argParts)
   }
 
-  private def renderForCacheWithOffset[P](modifiedSections: Array[Section]) = {
+  private def renderForCacheWithOffset[P](modifiedSections: Vector[Section]) = {
 
     val (template, argsTwoParts) = renderForCache(modifiedSections)
 

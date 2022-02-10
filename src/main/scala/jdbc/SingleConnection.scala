@@ -26,11 +26,11 @@ import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
 
-import scala.util.{Try, Success, Failure}
 import scala.concurrent.duration._
-import scala.collection.mutable.{Seq => ImmutableSeq}
 import scala.reflect.runtime.universe._
+import scala.util.{Try, Success, Failure}
 import scala.reflect.{classTag, ClassTag}
+import scala.collection.mutable.ListBuffer
 
 import zio._
 import zio.console._
@@ -72,7 +72,7 @@ class SingleConnection(conn: Connection) {
     }
   }
 
-  private def getStatement(sql: String, args: Seq[Any]) = {
+  private def getStatement(sql: String, args: Vector[Any]) = {
     val jdbcStm = conn.prepareStatement(sql)
     if (args.nonEmpty) {
       args.zipWithIndex.foreach {
@@ -83,17 +83,17 @@ class SingleConnection(conn: Connection) {
     jdbcStm
   }
 
-  def query[R](stm: RenderedQuery[R]): RIO[Blocking, Seq[R]] = {
+  def query[R](stm: RenderedQuery[R]): RIO[Blocking, List[R]] = {
     effectBlocking {
       val jdbcStm = getStatement(stm.statement, stm.args)
       val jdbcResultSet = jdbcStm.executeQuery()
-      var rows = ImmutableSeq.empty[R]
+      var buff = ListBuffer.empty[R]
       while (jdbcResultSet.next()) {
-        rows = rows :+ stm.rowConv.fromRow(jdbcResultSet)
+        buff += stm.rowConv.fromRow(jdbcResultSet)
       }
       jdbcResultSet.close()
       jdbcStm.close()
-      rows.toSeq
+      buff.toList
     }
   }
 

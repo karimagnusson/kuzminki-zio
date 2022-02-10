@@ -20,6 +20,6 @@ import kuzminki.column.TypeCol
 
 
 class RowShapeSingle[R](col: TypeCol[R]) extends RowShape[R] {
-  val cols = Seq(col)
+  val cols = Vector(col)
   def conv = new RowConvSingle(col.conv)
 }

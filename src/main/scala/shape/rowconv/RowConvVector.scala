@@ -16,9 +16,18 @@
 
 package kuzminki.shape
 
-import kuzminki.column.TypeCol
+import java.sql.ResultSet
+import kuzminki.conv.ValConv
 
 
-class RowShapeSeq(val cols: Seq[TypeCol[_]]) extends RowShape[Seq[Any]] {
-  def conv = new RowConvSeq(cols.map(_.conv)) 
+class RowConvVector(val cols: Vector[ValConv[_]]) extends RowConv[Vector[Any]] {
+
+  private val indexedCols = cols.zipWithIndex.map(p => (p._1, p._2 + 1))
+
+  def fromRow(rs: ResultSet) = {
+    indexedCols.map {
+      case (col, index) =>
+        col.get(rs, index)
+    }
+  }
 }

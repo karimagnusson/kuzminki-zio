@@ -1,19 +1,3 @@
-/*
-* Copyright 2021 Kári Magnússon
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 package kuzminki.shape
 
 
@@ -24,7 +8,7 @@ class PartShape2[P1, P2](
   def parts = {
     shape match {
       case (cond1, cond2) =>
-        Seq(cond1, cond2)
+        Vector(cond1, cond2)
     }
   }
 
@@ -43,7 +27,7 @@ class PartShape3[P1, P2, P3](
   def parts = {
     shape match {
       case (cond1, cond2, cond3) =>
-        Seq(cond1, cond2, cond3)
+        Vector(cond1, cond2, cond3)
     }
   }
 
@@ -62,7 +46,7 @@ class PartShape4[P1, P2, P3, P4](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4) =>
-        Seq(cond1, cond2, cond3, cond4)
+        Vector(cond1, cond2, cond3, cond4)
     }
   }
 
@@ -81,7 +65,7 @@ class PartShape5[P1, P2, P3, P4, P5](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5) =>
-        Seq(cond1, cond2, cond3, cond4, cond5)
+        Vector(cond1, cond2, cond3, cond4, cond5)
     }
   }
 
@@ -100,7 +84,7 @@ class PartShape6[P1, P2, P3, P4, P5, P6](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6)
     }
   }
 
@@ -119,7 +103,7 @@ class PartShape7[P1, P2, P3, P4, P5, P6, P7](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7)
     }
   }
 
@@ -138,7 +122,7 @@ class PartShape8[P1, P2, P3, P4, P5, P6, P7, P8](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8)
     }
   }
 
@@ -157,7 +141,7 @@ class PartShape9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9)
     }
   }
 
@@ -176,7 +160,7 @@ class PartShape10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10)
     }
   }
 
@@ -195,7 +179,7 @@ class PartShape11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11)
     }
   }
 
@@ -214,7 +198,7 @@ class PartShape12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12)
     }
   }
 
@@ -233,7 +217,7 @@ class PartShape13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13)
     }
   }
 
@@ -252,7 +236,7 @@ class PartShape14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14)
     }
   }
 
@@ -271,7 +255,7 @@ class PartShape15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15)
     }
   }
 
@@ -290,7 +274,7 @@ class PartShape16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16)
     }
   }
 
@@ -309,7 +293,7 @@ class PartShape17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17)
     }
   }
 
@@ -328,7 +312,7 @@ class PartShape18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18)
     }
   }
 
@@ -347,7 +331,7 @@ class PartShape19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19)
     }
   }
 
@@ -366,7 +350,7 @@ class PartShape20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20)
     }
   }
 
@@ -385,7 +369,7 @@ class PartShape21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20, cond21) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20, cond21)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20, cond21)
     }
   }
 
@@ -404,7 +388,7 @@ class PartShape22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P
   def parts = {
     shape match {
       case (cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20, cond21, cond22) =>
-        Seq(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20, cond21, cond22)
+        Vector(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8, cond9, cond10, cond11, cond12, cond13, cond14, cond15, cond16, cond17, cond18, cond19, cond20, cond21, cond22)
     }
   }
 

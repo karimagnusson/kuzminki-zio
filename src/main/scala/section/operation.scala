@@ -36,19 +36,19 @@ package object operation extends FilterSections with ReturningSections {
     val expression = "UPDATE %s"
   }
 
-  case class UpdateSetSec(parts: Seq[Assign]) extends MultiPartRender {
+  case class UpdateSetSec(parts: Vector[Assign]) extends MultiPartRender {
     val expression = "SET %s"
     val glue = ", "
   }
 
   // cache
 
-  case class UpdateCacheSetSec(parts: Seq[Renderable]) extends Section with NoArgs {
+  case class UpdateCacheSetSec(parts: Vector[Renderable]) extends Section with NoArgs {
     val expression = "SET %s"
     def render(prefix: Prefix) = expression.format(parts.map(_.render(prefix)).mkString(", "))
   }
 
-  case class UpdateCacheWhereSec(parts: Seq[Renderable]) extends Section with NoArgs {
+  case class UpdateCacheWhereSec(parts: Vector[Renderable]) extends Section with NoArgs {
     val expression = "WHERE %s"
     def render(prefix: Prefix) = expression.format(parts.map(_.render(prefix)).mkString(", "))
   }

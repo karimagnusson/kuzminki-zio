@@ -21,7 +21,7 @@ import kuzminki.column.AnyCol
 
 trait ReturningSections {
 
-  case class ReturningSec(parts: Seq[AnyCol]) extends MultiPartRender {
+  case class ReturningSec(parts: Vector[AnyCol]) extends MultiPartRender {
     val expression = "RETURNING %s"
     val glue = ", "
   }

@@ -19,5 +19,5 @@ package kuzminki.filter.types
 
 trait SingleArgFilter extends SingleFilter {
   val arg: Any
-  def args = col.args ++ Seq(arg)
+  def args = col.args ++ Vector(arg)
 }

@@ -22,7 +22,7 @@ import kuzminki.render.{Renderable, Prefix, NoArgs}
 
 trait FilterSections {
 
-  case class WhereSec(parts: Seq[Renderable]) extends NotEmpty(parts) with MultiPartRender {
+  case class WhereSec(parts: Vector[Renderable]) extends NotEmpty(parts) with MultiPartRender {
     def error = "WHERE cannot be empty"
     val expression = "WHERE %s"
     val glue = " AND "
@@ -32,7 +32,7 @@ trait FilterSections {
     val expression = ""
   }
 
-  case class HavingSec(parts: Seq[Renderable]) extends NotEmpty(parts) with MultiPartRender {
+  case class HavingSec(parts: Vector[Renderable]) extends NotEmpty(parts) with MultiPartRender {
     def error = "HAVING cannot be empty"
     val expression = "HAVING %s"
     val glue = " AND "

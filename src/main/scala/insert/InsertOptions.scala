@@ -58,7 +58,7 @@ class InsertOptions[M <: Model, P](
   def renderList(paramsList: List[P]) = {
     val sections = coll.add(
       InsertMultipleValuesSec(
-        paramsList.map { params =>
+        paramsList.toVector.map { params =>
           paramShape.conv.fromShape(params)
         }
       )

@@ -19,7 +19,7 @@ package kuzminki.render
 import kuzminki.shape.RowConvRaw
 
 
-case class RawSQLStatement(statement: String, args: Seq[Any]) {
+case class RawSQLStatement(statement: String, args: Vector[Any]) {
   def toQuery = RenderedQuery(statement, args, RowConvRaw)
   def toOperation = RenderedOperation(statement, args)
 }

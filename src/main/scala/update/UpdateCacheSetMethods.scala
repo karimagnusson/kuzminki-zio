@@ -29,7 +29,7 @@ abstract class UpdateCacheSetMethods[M <: Model](model: M) {
     new UpdateCacheWhere(
       model,
       SectionCollector(
-        Array(
+        Vector(
           UpdateSec(ModelTable(model)),
           UpdateCacheSetSec(changes.parts)
         )

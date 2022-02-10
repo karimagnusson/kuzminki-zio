@@ -24,7 +24,7 @@ object Reuse {
 
   def noChange: Reuse = NoChange
 
-  def fromIndex(insertCols: Seq[AnyCol], reuseCols: Seq[AnyCol]): Reuse = {
+  def fromIndex(insertCols: Vector[AnyCol], reuseCols: Vector[AnyCol]): Reuse = {
 
     val indexes = reuseCols.map { col =>
       insertCols.indexOf(col) match {
@@ -36,7 +36,7 @@ object Reuse {
       }
     }
 
-    new ReuseIndexes(indexes.toVector)
+    new ReuseIndexes(indexes)
   }
 }  
 

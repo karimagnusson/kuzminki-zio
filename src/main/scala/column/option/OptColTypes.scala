@@ -28,7 +28,7 @@ case class BooleanOptCol(underlying: AnyCol) extends BooleanOptColValue
 
 
 case class ShortOptCol(underlying: AnyCol) extends ShortOptColValue
-                                             with UnderlyingRenderAndArgs
+                                              with UnderlyingRenderAndArgs
 
 
 case class IntOptCol(underlying: AnyCol) extends IntOptColValue

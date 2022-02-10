@@ -29,7 +29,7 @@ import zio.blocking._
 
 object db { 
 
-  def query[R](render: => RenderedQuery[R]): RIO[Has[Kuzminki] with Blocking, Seq[R]] = {
+  def query[R](render: => RenderedQuery[R]): RIO[Has[Kuzminki] with Blocking, List[R]] = {
     for {
       db   <- Kuzminki.get
       rows <- db.query(render)

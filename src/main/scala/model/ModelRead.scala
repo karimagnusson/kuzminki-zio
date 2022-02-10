@@ -24,6 +24,6 @@ import kuzminki.shape._
 
 trait ModelRead {
   def read[T](cols: TypeCol[_]*)(implicit cTag: ClassTag[T], tTag: TypeTag[T]) = {
-    RowReader.create(RowTypeInfo(cols, cTag, tTag))
+    RowReader.create(RowTypeInfo(cols.toVector, cTag, tTag))
   }
 }

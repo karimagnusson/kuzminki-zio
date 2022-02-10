@@ -1,19 +1,3 @@
-/*
-* Copyright 2021 Kári Magnússon
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 package kuzminki.shape
 
 import kuzminki.column.TypeCol
@@ -25,7 +9,8 @@ class RowShape2[R1, R2](
 
   val cols = {
     shape match {
-      case (col1, col2) => Seq(col1, col2)
+      case (col1, col2) =>
+        Vector(col1, col2)
     }
   }
 
@@ -44,7 +29,8 @@ class RowShape3[R1, R2, R3](
 
   val cols = {
     shape match {
-      case (col1, col2, col3) => Seq(col1, col2, col3)
+      case (col1, col2, col3) =>
+        Vector(col1, col2, col3)
     }
   }
 
@@ -63,7 +49,8 @@ class RowShape4[R1, R2, R3, R4](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4) => Seq(col1, col2, col3, col4)
+      case (col1, col2, col3, col4) =>
+        Vector(col1, col2, col3, col4)
     }
   }
 
@@ -82,7 +69,8 @@ class RowShape5[R1, R2, R3, R4, R5](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5) => Seq(col1, col2, col3, col4, col5)
+      case (col1, col2, col3, col4, col5) =>
+        Vector(col1, col2, col3, col4, col5)
     }
   }
 
@@ -101,7 +89,8 @@ class RowShape6[R1, R2, R3, R4, R5, R6](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6) => Seq(col1, col2, col3, col4, col5, col6)
+      case (col1, col2, col3, col4, col5, col6) =>
+        Vector(col1, col2, col3, col4, col5, col6)
     }
   }
 
@@ -120,7 +109,8 @@ class RowShape7[R1, R2, R3, R4, R5, R6, R7](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7) => Seq(col1, col2, col3, col4, col5, col6, col7)
+      case (col1, col2, col3, col4, col5, col6, col7) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7)
     }
   }
 
@@ -139,7 +129,8 @@ class RowShape8[R1, R2, R3, R4, R5, R6, R7, R8](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8) => Seq(col1, col2, col3, col4, col5, col6, col7, col8)
+      case (col1, col2, col3, col4, col5, col6, col7, col8) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8)
     }
   }
 
@@ -158,7 +149,8 @@ class RowShape9[R1, R2, R3, R4, R5, R6, R7, R8, R9](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9)
     }
   }
 
@@ -177,7 +169,8 @@ class RowShape10[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10)
     }
   }
 
@@ -196,7 +189,8 @@ class RowShape11[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11)
     }
   }
 
@@ -215,7 +209,8 @@ class RowShape12[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12)
     }
   }
 
@@ -234,7 +229,8 @@ class RowShape13[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13)
     }
   }
 
@@ -253,7 +249,8 @@ class RowShape14[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14](
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14)
     }
   }
 
@@ -272,7 +269,8 @@ class RowShape15[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R1
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15)
     }
   }
 
@@ -291,7 +289,8 @@ class RowShape16[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R1
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16)
     }
   }
 
@@ -310,7 +309,8 @@ class RowShape17[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R1
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17)
     }
   }
 
@@ -329,7 +329,8 @@ class RowShape18[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R1
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18)
     }
   }
 
@@ -348,7 +349,8 @@ class RowShape19[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R1
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19)
     }
   }
 
@@ -367,7 +369,8 @@ class RowShape20[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R1
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20)
     }
   }
 
@@ -386,7 +389,8 @@ class RowShape21[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R1
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21)
     }
   }
 
@@ -405,7 +409,8 @@ class RowShape22[R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R1
 
   val cols = {
     shape match {
-      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22) => Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22)
+      case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22) =>
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22)
     }
   }
 

@@ -21,4 +21,4 @@ import scala.reflect.runtime.universe._
 import kuzminki.column.TypeCol
 
 
-case class RowTypeInfo[T](cols: Seq[TypeCol[_]], cTag: ClassTag[T], tTag: TypeTag[T])
+case class RowTypeInfo[T](cols: Vector[TypeCol[_]], cTag: ClassTag[T], tTag: TypeTag[T])

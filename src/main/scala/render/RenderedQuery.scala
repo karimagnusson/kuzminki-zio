@@ -21,7 +21,7 @@ import kuzminki.shape.RowConv
 
 case class RenderedQuery[R](
       statement: String,
-      args: Seq[Any],
+      args: Vector[Any],
       rowConv: RowConv[R]
     ) {
 

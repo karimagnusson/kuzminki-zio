@@ -30,7 +30,7 @@ trait OnConflict[M, P] {
 
   def onConflictDoNothing = {
     new RenderInsert(
-      coll.extend(Array(
+      coll.extend(Vector(
         InsertBlankValuesSec(paramShape.size),
         InsertOnConflictSec,
         InsertDoNothingSec

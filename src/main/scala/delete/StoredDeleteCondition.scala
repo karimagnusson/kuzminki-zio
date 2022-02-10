@@ -22,7 +22,7 @@ import kuzminki.render.RenderedOperation
 
 class StoredDeleteCondition[P](
       statement: String,
-      args: Seq[Any],
+      args: Vector[Any],
       paramConv: ParamConv[P]
     ) {
 

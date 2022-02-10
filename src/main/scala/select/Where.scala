@@ -40,14 +40,15 @@ class Where[M, R](
 
   def where(pick: M => Seq[Filter]) = {
     toOrderBy(
-      WhereSec(pick(model))
+      WhereSec(pick(model).toVector)
     )
   }
 
+  @deprecated("use where", "0.9.2")
   def whereOne(pick: M => Filter) = {
     toOrderBy(
       WhereSec(
-        Seq(pick(model))
+        Vector(pick(model))
       )
     )
   }
@@ -58,7 +59,7 @@ class Where[M, R](
         case Nil =>
           WhereBlankSec
         case filters =>
-          WhereSec(pick(model).flatten)
+          WhereSec(pick(model).toVector.flatten)
       }
     )
   }
@@ -67,7 +68,7 @@ class Where[M, R](
     toOrderBy(
       pick(model) match {
         case Some(filter) =>
-          WhereSec(Seq(filter))
+          WhereSec(Vector(filter))
         case None =>
           WhereBlankSec
       }
@@ -76,21 +77,22 @@ class Where[M, R](
 
   // group by
 
-  private def toHaving(cols: Seq[AnyCol]) = {
+  private def toHaving(cols: Vector[AnyCol]) = {
     new Having(
       model,
       coll.add(GroupBySec(cols))
     )
   }
 
+  @deprecated("use groupBy", "0.9.2")
   def groupByOne(pick: M => AnyCol) = {
     toHaving(
-      Seq(pick(model))
+      Vector(pick(model))
     )
   }
 
   def groupBy(pick: M => Seq[AnyCol]) = {
-    toHaving(pick(model))
+    toHaving(pick(model).toVector)
   }
 }
 

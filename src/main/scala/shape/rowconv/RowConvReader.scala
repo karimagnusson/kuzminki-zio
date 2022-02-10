@@ -25,7 +25,7 @@ import kuzminki.api.KuzminkiError
 import kuzminki.conv.ValConv
 
 
-class RowConvReader[R](val cols: Seq[ValConv[_]])(implicit tag: ClassTag[R]) extends RowConv[R] {
+class RowConvReader[R](val cols: Vector[ValConv[_]])(implicit tag: ClassTag[R]) extends RowConv[R] {
 
   private val indexedCols = cols.zipWithIndex.map(p => (p._1, p._2 + 1))
 

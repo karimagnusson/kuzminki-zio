@@ -21,6 +21,6 @@ import kuzminki.column.AnyCol
 
 trait ParamShape[P] {
   def size: Int
-  def cols: Seq[AnyCol]
+  def cols: Vector[AnyCol]
   def conv: ParamConv[P]
 }

@@ -1,19 +1,3 @@
-/*
-* Copyright 2021 Kári Magnússon
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 package kuzminki.shape
 
 import kuzminki.column.TypeCol
@@ -29,7 +13,7 @@ class ParamShape2[P1, P2](
   def cols = {
     shape match {
       case (col1, col2) =>
-        Seq(col1, col2)
+        Vector(col1, col2)
     }
   }
 
@@ -50,7 +34,7 @@ class ParamShape3[P1, P2, P3](
   def cols = {
     shape match {
       case (col1, col2, col3) =>
-        Seq(col1, col2, col3)
+        Vector(col1, col2, col3)
     }
   }
 
@@ -71,7 +55,7 @@ class ParamShape4[P1, P2, P3, P4](
   def cols = {
     shape match {
       case (col1, col2, col3, col4) =>
-        Seq(col1, col2, col3, col4)
+        Vector(col1, col2, col3, col4)
     }
   }
 
@@ -92,7 +76,7 @@ class ParamShape5[P1, P2, P3, P4, P5](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5) =>
-        Seq(col1, col2, col3, col4, col5)
+        Vector(col1, col2, col3, col4, col5)
     }
   }
 
@@ -113,7 +97,7 @@ class ParamShape6[P1, P2, P3, P4, P5, P6](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6) =>
-        Seq(col1, col2, col3, col4, col5, col6)
+        Vector(col1, col2, col3, col4, col5, col6)
     }
   }
 
@@ -134,7 +118,7 @@ class ParamShape7[P1, P2, P3, P4, P5, P6, P7](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7)
+        Vector(col1, col2, col3, col4, col5, col6, col7)
     }
   }
 
@@ -155,7 +139,7 @@ class ParamShape8[P1, P2, P3, P4, P5, P6, P7, P8](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8)
     }
   }
 
@@ -176,7 +160,7 @@ class ParamShape9[P1, P2, P3, P4, P5, P6, P7, P8, P9](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9)
     }
   }
 
@@ -197,7 +181,7 @@ class ParamShape10[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10)
     }
   }
 
@@ -218,7 +202,7 @@ class ParamShape11[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11)
     }
   }
 
@@ -239,7 +223,7 @@ class ParamShape12[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12)
     }
   }
 
@@ -260,7 +244,7 @@ class ParamShape13[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13)
     }
   }
 
@@ -281,7 +265,7 @@ class ParamShape14[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14](
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14)
     }
   }
 
@@ -302,7 +286,7 @@ class ParamShape15[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, 
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15)
     }
   }
 
@@ -323,7 +307,7 @@ class ParamShape16[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, 
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16)
     }
   }
 
@@ -344,7 +328,7 @@ class ParamShape17[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, 
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17)
     }
   }
 
@@ -365,7 +349,7 @@ class ParamShape18[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, 
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18)
     }
   }
 
@@ -386,7 +370,7 @@ class ParamShape19[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, 
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19)
     }
   }
 
@@ -407,7 +391,7 @@ class ParamShape20[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, 
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20)
     }
   }
 
@@ -428,7 +412,7 @@ class ParamShape21[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, 
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21)
     }
   }
 
@@ -449,7 +433,7 @@ class ParamShape22[P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, 
   def cols = {
     shape match {
       case (col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22) =>
-        Seq(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22)
+        Vector(col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20, col21, col22)
     }
   }
 

@@ -20,7 +20,7 @@ import scala.reflect.{classTag, ClassTag}
 import kuzminki.column.TypeCol
 
 
-class ParamShapeWrite[P](val cols: Seq[TypeCol[_]], tag: ClassTag[P]) extends ParamShape[P] {
+class ParamShapeWrite[P](val cols: Vector[TypeCol[_]], tag: ClassTag[P]) extends ParamShape[P] {
   def size = cols.size
   def conv = new ParamConvWrite(tag) 
 }

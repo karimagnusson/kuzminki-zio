@@ -26,7 +26,7 @@ trait NoRender extends Section {
 
 trait SingleArgRender extends NoRender {
   def arg: Any
-  def args = Seq(arg)
+  def args = Vector(arg)
 }
 
 trait TextOnlyRender extends NoRender with NoArgs
@@ -38,7 +38,7 @@ trait SinglePartRender extends Section {
 }
 
 trait MultiPartRender extends Section {
-  val parts: Seq[Renderable]
+  val parts: Vector[Renderable]
   val glue: String
   def render(prefix: Prefix) = expression.format(parts.map(_.render(prefix)).mkString(glue))
   def args = parts.map(_.args).flatten
@@ -47,23 +47,23 @@ trait MultiPartRender extends Section {
 // cache
 
 trait CacheCondition extends Section {
-  val cacheConds: Seq[Renderable]
+  val cacheConds: Vector[Renderable]
   def render(prefix: Prefix) = {
     expression.format(
       cacheConds.map(_.render(prefix)).mkString(" AND ")
     )
   }
-  def args = Seq(CacheCondArgs)
+  def args = Vector(CacheCondArgs)
 }
 
 trait MixedCondition extends Section {
-  val conds: Seq[Renderable]
-  val cacheConds: Seq[Renderable]
+  val conds: Vector[Renderable]
+  val cacheConds: Vector[Renderable]
   def render(prefix: Prefix) = {
     val both = conds ++ cacheConds
     expression.format(
       both.map(_.render(prefix)).mkString(" AND ")
     )
   }
-  def args = conds.map(_.args).flatten ++ Seq(CacheCondArgs)
+  def args = conds.map(_.args).flatten ++ Vector(CacheCondArgs)
 }

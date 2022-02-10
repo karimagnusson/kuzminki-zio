@@ -24,6 +24,6 @@ import kuzminki.shape._
 
 trait ModelWrite {
   def write[T](cols: TypeCol[_]*)(implicit cTag: ClassTag[T], tTag: TypeTag[T]) = {
-    RowWriter.create(RowTypeInfo(cols, cTag, tTag))
+    RowWriter.create(RowTypeInfo(cols.toVector, cTag, tTag))
   }
 }

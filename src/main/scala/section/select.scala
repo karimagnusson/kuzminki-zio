@@ -24,7 +24,7 @@ import kuzminki.render.{Renderable, Prefix, NoArgs}
 
 package object select extends FilterSections {
 
-  case class SelectSec(parts: Seq[AnyCol]) extends NotEmpty(parts) with MultiPartRender {
+  case class SelectSec(parts: Vector[AnyCol]) extends NotEmpty(parts) with MultiPartRender {
     def error = "no columns selected"
     val expression = "SELECT %s"
     val glue = ", "
@@ -34,13 +34,13 @@ package object select extends FilterSections {
     val expression = "FROM %s"
   }
 
-  case class GroupBySec(parts: Seq[AnyCol]) extends NotEmpty(parts) with MultiPartRender {
+  case class GroupBySec(parts: Vector[AnyCol]) extends NotEmpty(parts) with MultiPartRender {
     def error = "WHERE BY cannot be empty"
     val expression = "GROUP BY %s"
     val glue = ", "
   }
 
-  case class OrderBySec(parts: Seq[Sorting]) extends NotEmpty(parts) with MultiPartRender {
+  case class OrderBySec(parts: Vector[Sorting]) extends NotEmpty(parts) with MultiPartRender {
     def error = "ORDER BY cannot be empty"
     val expression = "ORDER BY %s"
     val glue = ", "
@@ -56,25 +56,25 @@ package object select extends FilterSections {
 
   // cache
 
-  case class WhereCacheSec(cacheConds: Seq[Renderable]) extends CacheCondition {
+  case class WhereCacheSec(cacheConds: Vector[Renderable]) extends CacheCondition {
     val expression = "WHERE %s"
   }
 
-  case class WhereMixedSec(conds: Seq[Renderable], cacheConds: Seq[Renderable]) extends MixedCondition {
+  case class WhereMixedSec(conds: Vector[Renderable], cacheConds: Vector[Renderable]) extends MixedCondition {
     val expression = "WHERE %s"
   }
 
-  case class HavingCacheSec(cacheConds: Seq[Renderable]) extends CacheCondition {
+  case class HavingCacheSec(cacheConds: Vector[Renderable]) extends CacheCondition {
     val expression = "HAVING %s"
   }
 
-  case class HavingMixedSec(conds: Seq[Renderable], cacheConds: Seq[Renderable]) extends MixedCondition {
+  case class HavingMixedSec(conds: Vector[Renderable], cacheConds: Vector[Renderable]) extends MixedCondition {
     val expression = "HAVING %s"
   }
 
   object OffsetCacheSec extends Section with NoRender {
     val expression = "OFFSET ?"
-    def args = Seq(CacheOffsetArgs)
+    def args = Vector(CacheOffsetArgs)
   }
 }
 

@@ -28,7 +28,7 @@ object Delete {
     new DeleteWhere(
       model,
       SectionCollector(
-        Array(
+        Vector(
           DeleteFromSec(ModelTable(model))
         )
       )

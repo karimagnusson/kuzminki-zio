@@ -24,7 +24,7 @@ trait FillValues {
   def fillBrackets(size: Int) = "(%s)".format(fillNoBrackets(size))
 }
 
-abstract class NotEmpty(parts: Seq[Any]) {
+abstract class NotEmpty(parts: Vector[Any]) {
   def error: String
   if (parts.isEmpty) {
     throw KuzminkiError(error)

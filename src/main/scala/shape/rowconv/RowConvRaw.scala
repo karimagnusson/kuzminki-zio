@@ -20,10 +20,10 @@ import java.sql.ResultSet
 import kuzminki.conv.ValConv
 
 
-object RowConvRaw extends RowConv[Seq[Any]] {
+object RowConvRaw extends RowConv[Vector[Any]] {
 
   def fromRow(rs: ResultSet) = {
-    (1 to rs.getMetaData.getColumnCount).toSeq.map { index =>
+    (1 to rs.getMetaData.getColumnCount).toVector.map { index =>
       rs.getObject(index)
     }
   }

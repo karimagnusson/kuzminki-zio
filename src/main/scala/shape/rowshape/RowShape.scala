@@ -20,7 +20,7 @@ import kuzminki.column.AnyCol
 
 
 trait RowShape[R] {
-  val cols: Seq[AnyCol]
+  val cols: Vector[AnyCol]
   def conv: RowConv[R]
 }
 

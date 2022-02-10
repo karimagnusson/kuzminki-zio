@@ -22,7 +22,7 @@ import kuzminki.sorting.Sorting
 
 class OrderBy[M, R](model: M, coll: SelectCollector[R]) extends Offset(model, coll) {
 
-  private def toOffset(sorting: Seq[Sorting]) = {
+  private def toOffset(sorting: Vector[Sorting]) = {
     new Offset(
       model,
       coll.add(
@@ -32,12 +32,13 @@ class OrderBy[M, R](model: M, coll: SelectCollector[R]) extends Offset(model, co
   }
 
   def orderBy(pick: M => Seq[Sorting]) = {
-    toOffset(pick(model))
+    toOffset(pick(model).toVector)
   }
 
+  @deprecated("use orderBy", "0.9.2")
   def orderByOne(pick: M => Sorting) = {
     toOffset(
-      Seq(pick(model))
+      Vector(pick(model))
     )
   }
 }

@@ -32,17 +32,18 @@ trait WhereNotExists[M <: Model, P] {
   protected val coll: SectionCollector
   protected val paramShape: ParamShape[P]
 
+  def whereNotExists(pick: M => Seq[TypeCol[_]]) = {
+    whereNotExistsApply(pick(model).toVector)
+  }
+
+  @deprecated("use whereNotExists", "0.9.2")
   def whereNotExistsOne[T](pick: M => TypeCol[T]) = {
     whereNotExistsApply(
-      Seq(pick(model))
+      Vector(pick(model))
     )
   }
 
-  def whereNotExists(pick: M => Seq[TypeCol[_]]) = {
-    whereNotExistsApply(pick(model))
-  }
-
-  private def whereNotExistsApply(uniqueCols: Seq[TypeCol[_]]) = {
+  private def whereNotExistsApply(uniqueCols: Vector[TypeCol[_]]) = {
 
     if (uniqueCols.isEmpty) {
       throw KuzminkiError("whereNotExists")

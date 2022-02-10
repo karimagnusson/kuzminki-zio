@@ -19,7 +19,7 @@ package kuzminki.render
 
 case class RenderedOperation(
       statement: String,
-      args: Seq[Any]
+      args: Vector[Any]
     ) {
 
   def debugSql(handler: String => Unit) = {

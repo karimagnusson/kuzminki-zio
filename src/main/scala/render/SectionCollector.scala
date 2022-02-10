@@ -19,15 +19,15 @@ package kuzminki.render
 import kuzminki.section.Section
 
 
-case class SectionCollector(sections: Array[Section]) {
+case class SectionCollector(sections: Vector[Section]) {
 
   val prefix = Prefix.forModel
 
   def add(section: Section) = this.copy(sections = sections :+ section)
 
-  def extend(added: Array[Section]) = this.copy(sections = sections ++ added)
+  def extend(added: Vector[Section]) = this.copy(sections = sections ++ added)
 
   def render = sections.map(_.render(prefix)).mkString(" ")
   
-  def args = sections.toSeq.map(_.args).flatten.toVector
+  def args = sections.map(_.args).flatten.toVector
 }

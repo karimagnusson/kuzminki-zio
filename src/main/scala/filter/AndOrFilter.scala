@@ -24,14 +24,14 @@ trait AndOrFilter extends Filter {
   val template = "(%s)"
   val glue: String
   def render(prefix: Prefix) = {
-    filters match {
-      case Seq(first) =>
+    filters.toVector match {
+      case Vector(first) =>
         first.render(prefix)
-      case _ =>
-        template.format(filters.map(_.render(prefix)).mkString(glue))
+      case filtersVector =>
+        template.format(filtersVector.map(_.render(prefix)).mkString(glue))
     }
   }
-  def args = filters.map(_.args).flatten
+  def args = filters.toVector.map(_.args).flatten
 }
 
 

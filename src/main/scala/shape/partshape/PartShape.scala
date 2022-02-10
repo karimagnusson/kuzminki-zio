@@ -19,6 +19,6 @@ package kuzminki.shape
 import kuzminki.render.Renderable
 
 trait PartShape[P] {
-  def parts: Seq[Renderable]
+  def parts: Vector[Renderable]
   def conv: ParamConv[P]
 }

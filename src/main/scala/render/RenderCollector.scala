@@ -21,7 +21,7 @@ import kuzminki.section.select.{WhereBlankSec, HavingBlankSec}
 
 
 trait RenderCollector {
-  val sections: Array[Section]
+  val sections: Vector[Section]
   val prefix: Prefix
 
   val notBlank: Section => Boolean = {

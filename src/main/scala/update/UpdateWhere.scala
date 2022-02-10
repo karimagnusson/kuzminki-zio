@@ -29,12 +29,13 @@ class UpdateWhere[M](
 
   def all() = new RenderUpdate(model, coll)
 
+  @deprecated("use where", "0.9.2")
   def whereOne(pick: M => Filter) = {
     new RenderUpdate(
       model,
       coll.add(
         WhereSec(
-          Seq(pick(model))
+          Vector(pick(model))
         )
       )
     )
@@ -47,7 +48,7 @@ class UpdateWhere[M](
       case conds =>
         new RenderUpdate(
           model,
-          coll.add(WhereSec(conds))
+          coll.add(WhereSec(conds.toVector))
         )
     }
   }
@@ -59,7 +60,7 @@ class UpdateWhere[M](
       case filters =>
         new RenderUpdate(
           model,
-          coll.add(WhereSec(filters))
+          coll.add(WhereSec(filters.toVector))
         )
     }
   }
@@ -70,7 +71,7 @@ class UpdateWhere[M](
         new RenderUpdate(
           model,
           coll.add(
-            WhereSec(Seq(filter))
+            WhereSec(Vector(filter))
           )
         )
       case None =>

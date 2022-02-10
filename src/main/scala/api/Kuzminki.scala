@@ -68,7 +68,7 @@ object Kuzminki {
 
 trait Kuzminki {
 
-  def query[R](render: => RenderedQuery[R]): RIO[Blocking, Seq[R]]
+  def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]]
 
   def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R]
 
@@ -90,7 +90,7 @@ private case class Pool(
 
 private class DefaultApi(pool: Pool) extends Kuzminki {
 
-  def query[R](render: => RenderedQuery[R]): RIO[Blocking, Seq[R]] = for {
+  def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]] = for {
     stm  <- Task.effect { render }
     conn <- pool.queue.take
     rows <- conn.query(stm).ensuring { pool.queue.offer(conn) }
@@ -131,7 +131,7 @@ private class DefaultApi(pool: Pool) extends Kuzminki {
 
 private class SplitApi(getPool: Pool, setPool: Pool) extends Kuzminki {
 
-  def query[R](render: => RenderedQuery[R]): RIO[Blocking, Seq[R]] = for {
+  def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]] = for {
     stm  <- Task.effect { render }
     conn <- getPool.queue.take
     rows <- conn.query(stm).ensuring { getPool.queue.offer(conn) }

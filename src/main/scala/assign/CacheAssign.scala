@@ -25,7 +25,7 @@ trait CacheAssign[T] extends CachePart[T] {
   val col: TypeCol[T]
   val template = ""
   def conv = col.conv
-  def args = Seq.empty[Any]
+  def args = Vector.empty[Any]
 }
 
 

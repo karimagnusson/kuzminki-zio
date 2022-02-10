@@ -21,7 +21,6 @@ import kuzminki.render.{RenderedQuery, SectionCollector}
 
 
 class RenderDeleteReturning[R](coll: SectionCollector, rowConv: RowConv[R]) {
-  
   def render = RenderedQuery(coll.render, coll.args, rowConv)
 }
 

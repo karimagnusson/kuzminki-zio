@@ -29,9 +29,9 @@ object Fn {
 
   def coalesce[T](col: TypeCol[T], default: T) = Coalesce(col, default)
 
-  def concat(cols: TypeCol[_]*) = Concat(cols)
+  def concat(cols: TypeCol[_]*) = Concat(cols.toVector)
 
-  def concatWs(glue: String, cols: TypeCol[_]*) = ConcatWs(glue, cols)
+  def concatWs(glue: String, cols: TypeCol[_]*) = ConcatWs(glue, cols.toVector)
 
   def substr(col: TypeCol[String], start: Int) = Substr(col, start, None)
 
@@ -57,11 +57,11 @@ package object general {
     val template = "coalesce(%s, ?)"
     def conv = underlying.conv
     def render(prefix: Prefix) = template.format(underlying.render(prefix))
-    def args = underlying.args ++ Seq(default)
+    def args = underlying.args ++ Vector(default)
   }
 
 
-  case class Concat(cols: Seq[TypeCol[_]]) extends StringFunction {
+  case class Concat(cols: Vector[TypeCol[_]]) extends StringFunction {
     val template = "concat(%s)"
     def render(prefix: Prefix) = {
       template.format(
@@ -72,7 +72,7 @@ package object general {
   }
 
 
-  case class ConcatWs(glue: String, cols: Seq[TypeCol[_]]) extends StringFunction {
+  case class ConcatWs(glue: String, cols: Vector[TypeCol[_]]) extends StringFunction {
     val template = s"concat_ws('$glue', %s)"
     def render(prefix: Prefix) = {
       template.format(
@@ -118,22 +118,22 @@ package object general {
   }
 
   case class Upper(underlying: TypeCol[String]) extends StringFunction
-                                                  with UnderlyingFunctionRender
-                                                  with UnderlyingArgs {
+                                                   with UnderlyingFunctionRender
+                                                   with UnderlyingArgs {
 
     val template = "upper(%s)"
   }
 
   case class Lower(underlying: TypeCol[String]) extends StringFunction
-                                                  with UnderlyingFunctionRender
-                                                  with UnderlyingArgs {
+                                                   with UnderlyingFunctionRender
+                                                   with UnderlyingArgs {
 
     val template = "replace(%s)"
   }
 
   case class Initcap(underlying: TypeCol[String]) extends StringFunction
-                                                  with UnderlyingFunctionRender
-                                                  with UnderlyingArgs {
+                                                     with UnderlyingFunctionRender
+                                                     with UnderlyingArgs {
 
     val template = "initcap(%s)"
   }
