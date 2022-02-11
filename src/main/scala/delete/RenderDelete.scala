@@ -16,13 +16,18 @@
 
 package kuzminki.delete
 
-import kuzminki.render.{RenderedOperation, SectionCollector}
+import kuzminki.render.{
+  RunOperation,
+  RenderedOperation,
+  SectionCollector
+}
 
 
 class RenderDelete[M](
-      model: M,
-      coll: SectionCollector
-    ) extends PickDeleteReturning(model, coll) {
+    model: M,
+    coll: SectionCollector
+  ) extends PickDeleteReturning(model, coll)
+       with RunOperation {
   
   def render = RenderedOperation(coll.render, coll.args)
 }

@@ -56,7 +56,7 @@ package object round {
   trait RoundDecimal extends AnyCol with UnderlyingFunctionRender {
     val size: Int
     val template = "round(%s, ?)"
-    def args = underlying.args ++ Seq(size)
+    val args = underlying.args ++ Seq(size)
     def asString = Cast.asString(this)
   }
 

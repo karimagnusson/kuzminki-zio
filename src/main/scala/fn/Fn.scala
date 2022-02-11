@@ -55,9 +55,9 @@ package object general {
                                                                 with ColFunction {
 
     val template = "coalesce(%s, ?)"
-    def conv = underlying.conv
+    val conv = underlying.conv
     def render(prefix: Prefix) = template.format(underlying.render(prefix))
-    def args = underlying.args ++ Vector(default)
+    val args = underlying.args ++ Vector(default)
   }
 
 
@@ -68,7 +68,7 @@ package object general {
         cols.map(_.render(prefix)).mkString(", ")
       )
     }
-    def args = cols.map(_.args).flatten
+    val args = cols.map(_.args).flatten
   }
 
 
@@ -79,7 +79,7 @@ package object general {
         cols.map(_.render(prefix)).mkString(", ")
       )
     }
-    def args = cols.map(_.args).flatten
+    val args = cols.map(_.args).flatten
   }
 
 

@@ -18,6 +18,6 @@ package kuzminki.shape
 
 
 class PartShapeSingle[P](cond: CachePart[P]) extends PartShape[P] {
-  def parts = Vector(cond)
-  def conv = new ParamConvSingle(cond.conv)
+  val parts = Vector(cond)
+  val conv = new ParamConvSingle(cond.conv)
 }

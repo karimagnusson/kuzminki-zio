@@ -21,6 +21,6 @@ import kuzminki.column.AnyCol
 
 trait RowShape[R] {
   val cols: Vector[AnyCol]
-  def conv: RowConv[R]
+  val conv: RowConv[R]
 }
 

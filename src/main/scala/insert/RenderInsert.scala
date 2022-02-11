@@ -16,9 +16,15 @@
 
 package kuzminki.insert
 
+import zio._
+import zio.blocking._
+import kuzminki.api.{db, Kuzminki}
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
 import kuzminki.render.{
+  RunQueryParams,
+  RunOperation,
+  RunOperationParams,
   RenderedQuery,
   RenderedOperation,
   SectionCollector
@@ -26,9 +32,9 @@ import kuzminki.render.{
 
 
 class RenderInsert[P](
-      coll: SectionCollector,
-      paramConv: ParamConv[P]
-    ) {
+    coll: SectionCollector,
+    paramConv: ParamConv[P]
+  ) extends RunOperationParams[P] {
 
   def cache = {
     new StoredInsert(
@@ -43,14 +49,19 @@ class RenderInsert[P](
       paramConv.fromShape(params)
     )
   }
+
+  def debugSql(handler: String => Unit) = {
+    handler(coll.render)
+    this
+  }
 }
 
 
 class RenderInsertReturning[P, R](
-      coll: SectionCollector,
-      paramConv: ParamConv[P],
-      rowConv: RowConv[R]
-    ) {
+    coll: SectionCollector,
+    paramConv: ParamConv[P],
+    rowConv: RowConv[R]
+  ) extends RunQueryParams[P, R] {
 
   def cache = {
     new StoredInsertReturning(
@@ -67,16 +78,28 @@ class RenderInsertReturning[P, R](
       rowConv
     )
   }
+
+  def debugSql(handler: String => Unit) = {
+    handler(coll.render)
+    this
+  }
 }
 
 
-class RenderInsertNoCache(coll: SectionCollector) {
+class RenderInsertNoCache(
+    coll: SectionCollector
+  ) extends RunOperation {
 
   def render = {
     RenderedOperation(
       coll.render,
       coll.args
     )
+  }
+
+  def debugSql(handler: String => Unit) = {
+    handler(coll.render)
+    this
   }
 }
 

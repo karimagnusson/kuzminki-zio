@@ -23,9 +23,9 @@ import kuzminki.filter.Filter
 
 
 class DeleteWhere[M](
-      model: M,
-      coll: SectionCollector
-    ) extends CacheDeleteWhereMethods(model, coll) {
+    model: M,
+    coll: SectionCollector
+  ) extends CacheDeleteWhereMethods(model, coll) {
 
   def all() = new RenderDelete(model, coll)
 

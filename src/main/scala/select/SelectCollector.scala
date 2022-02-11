@@ -24,10 +24,10 @@ import kuzminki.shape._
 
 
 case class SelectCollector[R](
-      prefix: Prefix,
-      rowShape: RowShape[R],
-      sections: Vector[Section]
-    ) extends RenderCollector {
+    prefix: Prefix,
+    rowShape: RowShape[R],
+    sections: Vector[Section]
+  ) extends RenderCollector {
 
   def add(section: Section) = this.copy(sections = sections :+ section)
 

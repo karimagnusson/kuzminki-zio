@@ -23,47 +23,47 @@ import kuzminki.conv._
 
 
 trait StringColValue extends TypeCol[String] {
-  def conv = StringConv
+  val conv = StringConv
 }
 
 trait BooleanColValue extends TypeCol[Boolean] {
-  def conv = BooleanConv
+  val conv = BooleanConv
 }
 
 trait ShortColValue extends TypeCol[Short] {
-  def conv = ShortConv
+  val conv = ShortConv
 }
 
 trait IntColValue extends TypeCol[Int] {
-  def conv = IntConv
+  val conv = IntConv
 }
 
 trait LongColValue extends TypeCol[Long] {
-  def conv = LongConv
+  val conv = LongConv
 }
 
 trait FloatColValue extends TypeCol[Float] {
-  def conv = FloatConv
+  val conv = FloatConv
 }
 
 trait DoubleColValue extends TypeCol[Double] {
-  def conv = DoubleConv
+  val conv = DoubleConv
 }
 
 trait BigDecimalColValue extends TypeCol[BigDecimal] {
-  def conv = BigDecimalConv
+  val conv = BigDecimalConv
 }
 
 trait TimeColValue extends TypeCol[Time] {
-  def conv = TimeConv
+  val conv = TimeConv
 }
 
 trait DateColValue extends TypeCol[Date] {
-  def conv = DateConv
+  val conv = DateConv
 }
 
 trait TimestampColValue extends TypeCol[Timestamp] {
-  def conv = TimestampConv
+  val conv = TimestampConv
 }
 
 

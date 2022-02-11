@@ -24,22 +24,22 @@ trait Assign extends Renderable
 
 case class SetValue(col: ModelCol, value: Any) extends Assign {
   def render(prefix: Prefix) = s"${col.name} = ?"
-  def args = Vector(value)
+  val args = Vector(value)
 }
 
 case class SetToNull(col: ModelCol) extends Assign {  
   def render(prefix: Prefix) = s"${col.name} = NULL"
-  def args = Vector.empty[Any]
+  val args = Vector.empty[Any]
 }
 
 case class Increment(col: ModelCol, value: Any) extends Assign {
   def render(prefix: Prefix) = s"${col.name} = ${col.name} + ?"
-  def args = Vector(value)
+  val args = Vector(value)
 }
 
 case class Decrement(col: ModelCol, value: Any) extends Assign {
   def render(prefix: Prefix) = s"${col.name} = ${col.name} - ?"
-  def args = Vector(value)
+  val args = Vector(value)
 }
 
 

@@ -16,15 +16,21 @@
 
 package kuzminki.delete
 
+import zio._
+import zio.blocking._
+import kuzminki.api.{db, Kuzminki}
 import kuzminki.shape.ParamConv
-import kuzminki.render.RenderedOperation
+import kuzminki.render.{
+  RunOperationParams,
+  RenderedOperation
+}
 
 
 class StoredDeleteCondition[P](
-      statement: String,
-      args: Vector[Any],
-      paramConv: ParamConv[P]
-    ) {
+    statement: String,
+    args: Vector[Any],
+    paramConv: ParamConv[P]
+  ) extends RunOperationParams[P] {
 
   def render(params: P) = {
     RenderedOperation(

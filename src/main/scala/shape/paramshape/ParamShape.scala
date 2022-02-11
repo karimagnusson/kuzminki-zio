@@ -20,7 +20,7 @@ import kuzminki.column.AnyCol
 
 
 trait ParamShape[P] {
-  def size: Int
-  def cols: Vector[AnyCol]
-  def conv: ParamConv[P]
+  val size: Int
+  val cols: Vector[AnyCol]
+  val conv: ParamConv[P]
 }

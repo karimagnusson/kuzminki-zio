@@ -22,6 +22,42 @@ import kuzminki.column.{ColInfo, TypeCol}
 import kuzminki.model.ModelRead
 
 
+trait Join[A <: Model, B <: Model] {
+  val a: A
+  val b: B
+}
+
+object Join {
+
+  def create[A <: Model, B <: Model](implicit tagA: ClassTag[A], tagB: ClassTag[B]): Join[A, B] = {
+    DefaultJoin(Model.get[A], Model.get[B])
+  }
+}
+
+case class DefaultJoin[A <: Model, B <: Model](a: A, b: B) extends Join[A, B]
+
+abstract class JoinRead[A <: Model, B <: Model](
+      implicit tagA: ClassTag[A],
+               tagB: ClassTag[B]
+    ) extends Join[A, B]
+         with ModelRead {
+
+  val a = Model.get[A]
+  val b = Model.get[B]
+
+  val convert: Join[A, B] => this.type = _ => this
+}
+
+
+/*
+package kuzminki.api
+
+import scala.reflect.{classTag, ClassTag}
+import scala.annotation.tailrec
+import kuzminki.column.{ColInfo, TypeCol}
+import kuzminki.model.ModelRead
+
+
 sealed trait CustomJoin
 
 trait Join[A <: Model, B <: Model] {
@@ -84,12 +120,13 @@ abstract class ExtendedJoin[A <: Model, B <: Model](
       implicit tagA: ClassTag[A],
                tagB: ClassTag[B]
     ) extends Join[A, B]
-      with CustomJoin
-      with ModelRead {
+         with CustomJoin
+         with ModelRead {
 
   val a = Model.get[A]
   val b = Model.get[B]
 }
+*/
 
 
 

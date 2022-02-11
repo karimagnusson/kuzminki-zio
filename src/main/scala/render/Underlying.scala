@@ -28,7 +28,7 @@ trait UnderlyingRender extends UnderlyingRef {
 }
 
 trait UnderlyingArgs extends UnderlyingRef {
-  def args = underlying.args
+  val args = underlying.args
 }
 
 trait UnderlyingFunctionRender extends UnderlyingRef {

@@ -23,47 +23,47 @@ import kuzminki.conv._
 
 
 trait StringOptColValue extends TypeOptCol[String] {
-  def conv = StringOptConv
+  val conv = StringOptConv
 }
 
 trait BooleanOptColValue extends TypeOptCol[Boolean] {
-  def conv = BooleanOptConv
+  val conv = BooleanOptConv
 }
 
 trait ShortOptColValue extends TypeOptCol[Short] {
-  def conv = ShortOptConv
+  val conv = ShortOptConv
 }
 
 trait IntOptColValue extends TypeOptCol[Int] {
-  def conv = IntOptConv
+  val conv = IntOptConv
 }
 
 trait LongOptColValue extends TypeOptCol[Long] {
-  def conv = LongOptConv
+  val conv = LongOptConv
 }
 
 trait FloatOptColValue extends TypeOptCol[Float] {
-  def conv = FloatOptConv
+  val conv = FloatOptConv
 }
 
 trait DoubleOptColValue extends TypeOptCol[Double] {
-  def conv = DoubleOptConv
+  val conv = DoubleOptConv
 }
 
 trait BigDecimalOptColValue extends TypeOptCol[BigDecimal] {
-  def conv = BigDecimalOptConv
+  val conv = BigDecimalOptConv
 }
 
 trait TimeOptColValue extends TypeOptCol[Time] {
-  def conv = TimeOptConv
+  val conv = TimeOptConv
 }
 
 trait DateOptColValue extends TypeOptCol[Date] {
-  def conv = DateOptConv
+  val conv = DateOptConv
 }
 
 trait TimestampOptColValue extends TypeOptCol[Timestamp] {
-  def conv = TimestampOptConv
+  val conv = TimestampOptConv
 }
 
 

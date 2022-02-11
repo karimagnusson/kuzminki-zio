@@ -31,7 +31,7 @@ trait AndOrFilter extends Filter {
         template.format(filtersVector.map(_.render(prefix)).mkString(glue))
     }
   }
-  def args = filters.toVector.map(_.args).flatten
+  val args = filters.toVector.map(_.args).flatten
 }
 
 

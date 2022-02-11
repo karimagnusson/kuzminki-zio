@@ -35,7 +35,7 @@ package object insert extends ReturningSections {
       parts.map(_.col.render(prefix)).mkString(", "),
       fillNoBrackets(parts.size)
     )
-    def args = parts.map(_.value)
+    val args = parts.map(_.value)
   }
 
   case class InsertColumnsSec(parts: Vector[AnyCol]) extends MultiPartRender {
@@ -46,7 +46,7 @@ package object insert extends ReturningSections {
   case class InsertValuesSec(values: Vector[Any]) extends Section with FillValues {
     val expression = "VALUES %s"
     def render(prefix: Prefix) = expression.format(fillBrackets(values.size))
-    def args = values
+    val args = values
   }
 
   case class InsertBlankValuesSec(size: Int) extends Section with FillValues with NoArgs {
@@ -61,7 +61,7 @@ package object insert extends ReturningSections {
         valuesList.map(values => fillBrackets(values.size)).mkString(", ")
       )
     }
-    def args = valuesList.flatten
+    val args = valuesList.flatten
   }
 
   case class InsertBlankWhereNotExistsSec(size: Int, table: ModelTable, where: WhereSec) extends Section with FillValues with NoArgs {

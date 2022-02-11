@@ -22,9 +22,9 @@ import kuzminki.section.select.{HavingSec, HavingBlankSec}
 
 
 class Having[M, R](
-      model: M,
-      coll: SelectCollector[R]
-    ) {
+    model: M,
+    coll: SelectCollector[R]
+  ) {
 
   private def toOrderBy(section: Section) = {
     new OrderBy(

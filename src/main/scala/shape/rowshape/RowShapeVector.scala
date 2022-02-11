@@ -20,5 +20,5 @@ import kuzminki.column.TypeCol
 
 
 class RowShapeVector(val cols: Vector[TypeCol[_]]) extends RowShape[Vector[Any]] {
-  def conv = new RowConvVector(cols.map(_.conv)) 
+  val conv = new RowConvVector(cols.map(_.conv)) 
 }

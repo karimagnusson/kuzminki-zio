@@ -23,9 +23,9 @@ import kuzminki.section.select.{WhereSec, WhereBlankSec, GroupBySec}
 
 
 class Where[M, R](
-      model: M,
-      coll: SelectCollector[R]
-    ) {
+    model: M,
+    coll: SelectCollector[R]
+  ) {
 
   private def toOrderBy(section: Section) = {
     new OrderBy(

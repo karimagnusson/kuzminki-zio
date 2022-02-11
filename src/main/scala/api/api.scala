@@ -20,6 +20,10 @@ import kuzminki.column._
 import kuzminki.filter.Filter
 import kuzminki.sorting.Sorting
 import kuzminki.assign.Assign
+import kuzminki.select.RenderSelect
+import kuzminki.update.RenderUpdate
+import kuzminki.delete.RenderDelete
+import kuzminki.insert.RenderInsertData
 import kuzminki.render.{RawSQLStatement, RenderedQuery, RenderedOperation}
 
 import java.sql.Time
@@ -88,6 +92,13 @@ package object api {
 
   implicit val kzimplRawToQuery: RawSQLStatement => RenderedQuery[Vector[Any]] = rss => rss.toQuery
   implicit val kzimplRawToOperation: RawSQLStatement => RenderedOperation = rss => rss.toOperation
+
+  // render
+
+  implicit def kzimplRenderSelect[R](q: RenderSelect[_, R]): RenderedQuery[R] = q.render
+  implicit val kzimplRenderUpdate: RenderUpdate[_] => RenderedOperation = q => q.render
+  implicit val kzimplRenderDelete: RenderDelete[_] => RenderedOperation = q => q.render
+  implicit val kzimplRenderInsert: RenderInsertData[_, _] => RenderedOperation = q => q.render
 
   implicit class RawSQL(val sc: StringContext) extends AnyVal {
     def rsql(args: Any*): RawSQLStatement = {

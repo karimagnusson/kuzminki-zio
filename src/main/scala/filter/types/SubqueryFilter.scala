@@ -25,5 +25,5 @@ trait SubqueryFilter extends Filter {
   val col: AnyCol
   val sub: Renderable
   def render(prefix: Prefix) = template.format(col.render(prefix), sub.render(prefix))
-  def args = col.args ++ sub.args
+  val args = col.args ++ sub.args
 }

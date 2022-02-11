@@ -16,17 +16,22 @@
 
 package kuzminki.update
 
-import kuzminki.render.{RenderedOperation, SectionCollector}
+import kuzminki.render.{
+  RunOperation,
+  RenderedOperation,
+  SectionCollector
+}
 
 
 class RenderUpdate[M](
-      model: M,
-      coll: SectionCollector
-    ) extends PickUpdateReturning(model, coll) {
+    model: M,
+    coll: SectionCollector
+  ) extends PickUpdateReturning(model, coll)
+       with RunOperation {
   
   def render = RenderedOperation(coll.render, coll.args)
 
-  def sql(handler: String => Unit) = {
+  def debugSql(handler: String => Unit) = {
     handler(coll.render)
     this
   }

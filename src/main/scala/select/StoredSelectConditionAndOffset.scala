@@ -16,17 +16,20 @@
 
 package kuzminki.select
 
+import zio._
+import zio.blocking._
+import kuzminki.api.{db, Kuzminki}
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
 import kuzminki.render.RenderedQuery
 
 
 class StoredSelectConditionAndOffset[P, R](
-      statement: String,
-      cacheArgs: Tuple3[Vector[Any], Vector[Any], Vector[Any]],
-      paramConv: ParamConv[P],
-      rowConv: RowConv[R]
-    ) {
+    statement: String,
+    cacheArgs: Tuple3[Vector[Any], Vector[Any], Vector[Any]],
+    paramConv: ParamConv[P],
+    rowConv: RowConv[R]
+  ) {
 
   private val (args1, args2, args3) = cacheArgs
 
@@ -37,6 +40,17 @@ class StoredSelectConditionAndOffset[P, R](
       rowConv
     )
   }
+
+  // run
+
+  def run(params: P, offset: Int): RIO[Has[Kuzminki] with Blocking, List[R]] =
+    db.query(render(params, offset))
+
+  def runHead(params: P, offset: Int): RIO[Has[Kuzminki] with Blocking, R] =
+    db.queryHead(render(params, offset))
+
+  def runHeadOpt(params: P, offset: Int): RIO[Has[Kuzminki] with Blocking, Option[R]] =
+    db.queryHeadOpt(render(params, offset))
 
   def debugSql(handler: String => Unit) = {
     handler(statement)

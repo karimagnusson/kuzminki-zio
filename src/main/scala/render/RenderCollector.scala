@@ -32,7 +32,7 @@ trait RenderCollector {
 
   def render = sections.filter(notBlank).map(_.render(prefix)).mkString(" ")
   
-  def args = sections.toSeq.map(_.args).flatten.toVector
+  val args = sections.toSeq.map(_.args).flatten.toVector
 }
 
 

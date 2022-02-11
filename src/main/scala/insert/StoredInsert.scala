@@ -17,13 +17,18 @@
 package kuzminki.insert
 
 import kuzminki.shape.{ParamConv, RowConv}
-import kuzminki.render.RenderedOperation
+import kuzminki.render.{
+  RunQueryParams,
+  RunOperationParams,
+  RenderedQuery,
+  RenderedOperation
+}
 
 
 class StoredInsert[P](
-      statement: String,
-      paramConv: ParamConv[P]
-    ) {
+    statement: String,
+    paramConv: ParamConv[P]
+  ) extends RunOperationParams[P] {
 
   def render(params: P) = {
     RenderedOperation(
@@ -40,15 +45,16 @@ class StoredInsert[P](
 
 
 class StoredInsertReturning[P, R](
-      statement: String,
-      paramConv: ParamConv[P],
-      rowConv: RowConv[R]
-    ) {
+    statement: String,
+    paramConv: ParamConv[P],
+    rowConv: RowConv[R]
+  ) extends RunQueryParams[P, R] {
 
   def render(params: P) = {
-    RenderedOperation(
+    RenderedQuery(
       statement,
-      paramConv.fromShape(params)
+      paramConv.fromShape(params),
+      rowConv
     )
   }
 

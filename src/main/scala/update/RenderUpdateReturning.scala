@@ -17,14 +17,21 @@
 package kuzminki.update
 
 import kuzminki.shape.RowConv
-import kuzminki.render.{RenderedQuery, SectionCollector}
+import kuzminki.render.{
+  RunQuery,
+  RenderedQuery,
+  SectionCollector
+}
 
 
-class RenderUpdateReturning[R](coll: SectionCollector, rowConv: RowConv[R]) {
+class RenderUpdateReturning[R](
+    coll: SectionCollector,
+    rowConv: RowConv[R]
+  ) extends RunQuery[R] {
   
   def render = RenderedQuery(coll.render, coll.args, rowConv)
 
-  def sql(handler: String => Unit) = {
+  def debugSql(handler: String => Unit) = {
     handler(coll.render)
     this
   }

@@ -24,8 +24,8 @@ import kuzminki.section.operation.{UpdateSec, UpdateSetSec}
 
 
 class Update[M <: Model](
-      model: M
-    ) extends UpdateCacheSetMethods(model) {
+    model: M
+  ) extends UpdateCacheSetMethods(model) {
 
   def set(pick: M => Seq[Assign]) = {
     new UpdateWhere(

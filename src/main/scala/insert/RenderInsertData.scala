@@ -14,39 +14,33 @@
 * limitations under the License.
 */
 
-package kuzminki.select
+package kuzminki.insert
 
-import zio._
-import zio.blocking._
-import kuzminki.api.{db, Kuzminki}
-import kuzminki.render.{RunQueryParams, RenderedQuery}
-import kuzminki.shape.ParamConv
-import kuzminki.shape.RowConv
+import kuzminki.api.Model
+import kuzminki.render.{
+  RunOperation,
+  RenderedOperation,
+  SectionCollector
+}
 
 
-class StoredSelectCondition[P, R](
-    statement: String,
-    cacheArgs: Tuple2[Vector[Any], Vector[Any]],
-    paramConv: ParamConv[P],
-    rowConv: RowConv[R]
-  ) extends RunQueryParams[P, R] {
+class RenderInsertData[M <: Model, P](
+    model: M,
+    coll: SectionCollector,
+  ) extends RunOperation {
 
-  def render(params: P) = {
-    RenderedQuery(
-      statement,
-      cacheArgs._1 ++ paramConv.fromShape(params) ++ cacheArgs._2,
-      rowConv
+  def render = {
+    RenderedOperation(
+      coll.render,
+      coll.args
     )
   }
 
   def debugSql(handler: String => Unit) = {
-    handler(statement)
+    handler(coll.render)
     this
   }
 }
-
-
-
 
 
 

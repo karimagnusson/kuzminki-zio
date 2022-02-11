@@ -23,9 +23,9 @@ import kuzminki.filter.Filter
 
 
 class UpdateWhere[M](
-      model: M,
-      coll: SectionCollector
-    ) {
+    model: M,
+    coll: SectionCollector
+  ) {
 
   def all() = new RenderUpdate(model, coll)
 

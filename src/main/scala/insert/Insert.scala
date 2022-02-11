@@ -13,7 +13,7 @@ import kuzminki.shape._
 class Insert[M <: Model](model: M) {
 
   def data(pick: M => Seq[SetValue]) = {
-    new InsertDataOptions(
+    new RenderInsertData(
       model,
       SectionCollector(
         Vector(

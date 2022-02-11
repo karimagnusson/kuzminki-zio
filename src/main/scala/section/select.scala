@@ -74,7 +74,7 @@ package object select extends FilterSections {
 
   object OffsetCacheSec extends Section with NoRender {
     val expression = "OFFSET ?"
-    def args = Vector(CacheOffsetArgs)
+    val args = Vector(CacheOffsetArgs)
   }
 }
 

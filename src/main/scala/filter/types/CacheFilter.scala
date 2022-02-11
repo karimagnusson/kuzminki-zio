@@ -25,9 +25,9 @@ import kuzminki.render.{Renderable, Prefix}
 trait CacheFilter[T] extends CachePart[T] {
   val col: TypeCol[T]
   val template: String
-  def conv = col.conv
+  val conv = col.conv
   def render(prefix: Prefix) = template.format(col.render(prefix))
-  def args = col.args
+  val args = col.args
 }
 
 // universal

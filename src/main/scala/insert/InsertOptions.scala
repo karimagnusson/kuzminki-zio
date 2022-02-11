@@ -16,23 +16,28 @@
 
 package kuzminki.insert
 
+import zio._
+import zio.blocking._
+import kuzminki.api.{db, Kuzminki}
 import kuzminki.api.Model
 import kuzminki.shape.ParamShape
 import kuzminki.section.insert._
 import kuzminki.render.{
+  RunOperationParams,
   SectionCollector,
   RenderedOperation
 }
 
 
 class InsertOptions[M <: Model, P](
-      protected val model: M,
-      protected val coll: SectionCollector,
-      protected val paramShape: ParamShape[P]
-    ) extends PickInsertReturning[M, P]
-         with WhereNotExists[M, P]
-         with OnConflict[M, P]
-         with InsertSubquery[P] {
+    protected val model: M,
+    protected val coll: SectionCollector,
+    protected val paramShape: ParamShape[P]
+  ) extends PickInsertReturning[M, P]
+       with WhereNotExists[M, P]
+       with OnConflict[M, P]
+       with InsertSubquery[P]
+       with RunOperationParams[P] {
 
   def cache = {
     new StoredInsert(
@@ -55,10 +60,10 @@ class InsertOptions[M <: Model, P](
     )
   }
 
-  def renderList(paramsList: List[P]) = {
+  def renderSeq(paramsSeq: Seq[P]) = {
     val sections = coll.add(
       InsertMultipleValuesSec(
-        paramsList.toVector.map { params =>
+        paramsSeq.toVector.map { params =>
           paramShape.conv.fromShape(params)
         }
       )
@@ -67,6 +72,19 @@ class InsertOptions[M <: Model, P](
       sections.render,
       sections.args
     )
+  }
+
+  // run
+
+  def runSeq(paramsSeq: Seq[P]): RIO[Has[Kuzminki] with Blocking, Unit] =
+    db.exec(renderSeq(paramsSeq))
+
+  def runSeqNum(paramsSeq: Seq[P]): RIO[Has[Kuzminki] with Blocking, Int] =
+    db.execNum(renderSeq(paramsSeq))
+
+  def debugSql(handler: String => Unit) = {
+    handler(coll.render)
+    this
   }
 }
 

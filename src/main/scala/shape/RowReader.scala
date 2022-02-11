@@ -33,7 +33,7 @@ object RowReader extends RowTypeNames {
 
 
 class RowReader[R](val cols: Vector[TypeCol[_]], tag: ClassTag[R]) extends RowShape[R] {
-  def conv = new RowConvReader(cols.map(_.conv))(tag)
+  val conv = new RowConvReader(cols.map(_.conv))(tag)
 }
 
 

@@ -25,11 +25,11 @@ import kuzminki.section.insert._
 
 
 class DoUpdate[M, P](
-      model: M,
-      coll: SectionCollector,
-      paramShape: ParamShape[P],
-      conflictCol: ModelCol
-    ) {
+    model: M,
+    coll: SectionCollector,
+    paramShape: ParamShape[P],
+    conflictCol: ModelCol
+  ) {
 
   def doNothing = {
     new RenderInsert(

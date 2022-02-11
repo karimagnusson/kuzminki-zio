@@ -14,27 +14,42 @@
 * limitations under the License.
 */
 
-package kuzminki.insert
+package kuzminki.render
 
-import kuzminki.api.Model
-import kuzminki.render.{
-  SectionCollector,
-  RenderedOperation
+import zio._
+import zio.blocking._
+import kuzminki.api.{db, Kuzminki}
+
+
+trait RunOperation {
+
+  def render: RenderedOperation
+
+  def run: RIO[Has[Kuzminki] with Blocking, Unit] =
+    db.exec(render)
+
+  def runNum: RIO[Has[Kuzminki] with Blocking, Int] =
+    db.execNum(render)
 }
 
 
-class InsertDataOptions[M <: Model, P](
-      model: M,
-      coll: SectionCollector,
-    ) {
+trait RunOperationParams[P] {
 
-  def render = {
-    RenderedOperation(
-      coll.render,
-      coll.args
-    )
-  }
+  def render(params: P): RenderedOperation
+
+  def run(params: P): RIO[Has[Kuzminki] with Blocking, Unit] =
+    db.exec(render(params))
+
+  def runNum(params: P): RIO[Has[Kuzminki] with Blocking, Int] =
+    db.execNum(render(params))
 }
+
+
+
+
+
+
+
 
 
 

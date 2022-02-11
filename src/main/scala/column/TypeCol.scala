@@ -19,6 +19,6 @@ package kuzminki.column
 import kuzminki.conv.ValConv
 
 trait TypeCol[T] extends AnyCol {
-  def conv: ValConv[T]
+  val conv: ValConv[T]
 }
 

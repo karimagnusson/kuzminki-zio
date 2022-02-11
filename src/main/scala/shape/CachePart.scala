@@ -21,6 +21,6 @@ import kuzminki.conv.ValConv
 
 
 trait CachePart[T] extends Renderable {
-  def conv: ValConv[T]
+  val conv: ValConv[T]
   val template: String
 }

@@ -17,10 +17,18 @@
 package kuzminki.delete
 
 import kuzminki.shape.RowConv
-import kuzminki.render.{RenderedQuery, SectionCollector}
+import kuzminki.render.{
+  RunQuery,
+  RenderedQuery,
+  SectionCollector
+}
 
 
-class RenderDeleteReturning[R](coll: SectionCollector, rowConv: RowConv[R]) {
+class RenderDeleteReturning[R](
+    coll: SectionCollector,
+    rowConv: RowConv[R]
+  ) extends RunQuery[R] {
+
   def render = RenderedQuery(coll.render, coll.args, rowConv)
 }
 

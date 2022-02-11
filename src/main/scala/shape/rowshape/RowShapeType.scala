@@ -20,8 +20,9 @@ import kuzminki.column.TypeCol
 
 
 class RowShapeType[R](
-      val cols: Vector[TypeCol[_]],
-          typeReader: TypeReader[R]
-    ) extends RowShape[R] {
-  def conv = new RowConvType(typeReader)
+    val cols: Vector[TypeCol[_]],
+        typeReader: TypeReader[R]
+  ) extends RowShape[R] {
+
+  val conv = new RowConvType(typeReader)
 }

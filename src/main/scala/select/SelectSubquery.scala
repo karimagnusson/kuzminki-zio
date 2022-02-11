@@ -21,5 +21,5 @@ import kuzminki.render.{Renderable, Prefix}
 
 class SelectSubquery[R](coll: SelectCollector[R]) extends Renderable {
   def render(prefix: Prefix) = coll.render
-  def args = coll.args
+  val args = coll.args
 }

@@ -22,7 +22,7 @@ import kuzminki.render.{Renderable, Prefix}
 trait StaticCol extends Renderable {
   val value: Any
   def render(prefix: Prefix) = "?"
-  def args = Vector(value)
+  val args = Vector(value)
 }
 
 

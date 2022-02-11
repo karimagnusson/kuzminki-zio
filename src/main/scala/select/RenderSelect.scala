@@ -20,14 +20,15 @@ import kuzminki.api.KuzminkiError
 import kuzminki.render.Prefix
 import kuzminki.column.AnyCol
 import kuzminki.function.Aggregation
-import kuzminki.render.RenderedQuery
+import kuzminki.render.{RunQuery, RenderedQuery}
 import kuzminki.section.select._
 
 
 class RenderSelect[M, R](
-      model: M,
-      coll: SelectCollector[R]
-    ) extends SelectCacheMethods(model, coll) {
+    model: M,
+    coll: SelectCollector[R]
+  ) extends SelectCacheMethods(model, coll)
+       with RunQuery[R] {
 
   def render = RenderedQuery(coll.render, coll.args, coll.rowShape.conv)
 
@@ -60,6 +61,11 @@ class RenderSelect[M, R](
     }
 
     new AggregationSubquery(coll)
+  }
+
+  def debugSql(handler: String => Unit) = {
+    handler(coll.render)
+    this
   }
 }
 

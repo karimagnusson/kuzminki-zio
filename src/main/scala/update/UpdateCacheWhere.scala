@@ -23,10 +23,10 @@ import kuzminki.shape._
 
 
 class UpdateCacheWhere[M, A](
-      model: M,
-      coll: SectionCollector,
-      changes: PartShape[A]
-    ) {
+    model: M,
+    coll: SectionCollector,
+    changes: PartShape[A]
+  ) {
 
   private def next[B](filters: PartShape[B]) = {
     new StoredUpdate(

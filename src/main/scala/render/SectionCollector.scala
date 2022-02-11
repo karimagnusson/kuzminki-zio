@@ -29,5 +29,5 @@ case class SectionCollector(sections: Vector[Section]) {
 
   def render = sections.map(_.render(prefix)).mkString(" ")
   
-  def args = sections.map(_.args).flatten.toVector
+  val args = sections.map(_.args).flatten.toVector
 }

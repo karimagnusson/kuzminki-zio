@@ -16,15 +16,18 @@
 
 package kuzminki.update
 
+import zio._
+import zio.blocking._
+import kuzminki.api.{db, Kuzminki}
 import kuzminki.shape.ParamConv
 import kuzminki.render.RenderedOperation
 
 
 class StoredUpdate[P1, P2](
-      statement: String,
-      changes: ParamConv[P1],
-      filters: ParamConv[P2],
-    ) {
+    statement: String,
+    changes: ParamConv[P1],
+    filters: ParamConv[P2],
+  ) {
 
   def render(changeArgs: P1, filterArgs: P2) = {
     RenderedOperation(
@@ -32,6 +35,16 @@ class StoredUpdate[P1, P2](
       changes.fromShape(changeArgs) ++ filters.fromShape(filterArgs)
     )
   }
+
+  // run
+
+  def run(changeArgs: P1, filterArgs: P2): RIO[Has[Kuzminki] with Blocking, Unit] =
+    db.exec(render(changeArgs, filterArgs))
+
+  def runNum(changeArgs: P1, filterArgs: P2): RIO[Has[Kuzminki] with Blocking, Int] =
+    db.execNum(render(changeArgs, filterArgs))
+
+  // debug
 
   def debugSql(handler: String => Unit) = {
     handler(statement)
