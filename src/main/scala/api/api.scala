@@ -20,11 +20,19 @@ import kuzminki.column._
 import kuzminki.filter.Filter
 import kuzminki.sorting.Sorting
 import kuzminki.assign.Assign
-import kuzminki.select.RenderSelect
 import kuzminki.update.RenderUpdate
 import kuzminki.delete.RenderDelete
 import kuzminki.insert.RenderInsertData
-import kuzminki.render.{RawSQLStatement, RenderedQuery, RenderedOperation}
+import kuzminki.select.{
+  RenderSelect,
+  SelectSubquery,
+  AggregationSubquery
+}
+import kuzminki.render.{
+  RawSQLStatement,
+  RenderedQuery,
+  RenderedOperation
+}
 
 import java.sql.Time
 import java.sql.Date
@@ -96,6 +104,8 @@ package object api {
   // render
 
   implicit def kzimplRenderSelect[R](q: RenderSelect[_, R]): RenderedQuery[R] = q.render
+  implicit def kzimplRenderSubquery[R](q: RenderSelect[_, R]): SelectSubquery[R] = q.asSubquery
+  implicit val kzimplRenderAggregation: RenderSelect[_, _] => AggregationSubquery = q => q.asAggregation
   implicit val kzimplRenderUpdate: RenderUpdate[_] => RenderedOperation = q => q.render
   implicit val kzimplRenderDelete: RenderDelete[_] => RenderedOperation = q => q.render
   implicit val kzimplRenderInsert: RenderInsertData[_, _] => RenderedOperation = q => q.render

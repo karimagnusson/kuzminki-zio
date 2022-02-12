@@ -30,6 +30,11 @@ class RenderDeleteReturning[R](
   ) extends RunQuery[R] {
 
   def render = RenderedQuery(coll.render, coll.args, rowConv)
+
+  def debugSql(handler: String => Unit) = {
+    handler(coll.render)
+    this
+  }
 }
 
 
