@@ -2,7 +2,7 @@ scalaVersion := "2.12.12"
 
 name := "kuzminki-zio"
 
-version := "0.9.2-test2"
+version := "0.9.2"
 
 lazy val root = (project in file("."))
   .settings(
