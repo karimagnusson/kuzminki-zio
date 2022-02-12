@@ -12,7 +12,7 @@ See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
 #### Sbt
 ```sbt
-libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.1"
+libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.2"
 ```
 
 #### Example
@@ -34,28 +34,26 @@ object ExampleApp extends zio.App {
   val client = Model.get[Client]
 
   val job = for {
-    _ <- db.exec {
-      sql
-        .insert(client)
-        .cols2(t => (t.username, t.age))
-        .render(("Joe", 35))
-    }
-    _ <- db.exec {
-      sql
-        .update(client)
-        .setOne(_.age ==> 24)
-        .whereOne(_.id === 4)
-        .render
-    }
-    _ <- db.exec(sql.delete(client).whereOne(_.id === 7).render)
-    clients <- db.query {
-      sql
-        .select(client)
-        .cols3(_.all)
-        .whereOne(_.age > 25)
-        .limit(5)
-        .render
-    }
+    _ <- sql
+      .insert(client)
+      .cols2(t => (t.username, t.age))
+      .run(("Joe", 35))
+    
+    _ <- sql
+      .update(client)
+      .set(_.age ==> 24)
+      .where(_.id === 4)
+      .run
+    
+    _ <- sql.delete(client).where(_.id === 7).run
+    
+    clients <- sql
+      .select(client)
+      .cols3(_.all)
+      .where(_.age > 25)
+      .limit(5)
+      .run
+    
     _ <- ZIO.foreach(clients) {
       case (id, username, age) =>
         putStrLn(s"$id $username $age")
