@@ -6,7 +6,7 @@ Kuzminki-zio is query builder and access library for PostgreSQL and [ZIO](https:
 
 If you have any questions about the project feel free to post on Gitter or contact me directly on telegram @karimagnusson.
 
-This library is also available for ZIO 2 [kuzminki-zio](https://github.com/karimagnusson/kuzminki-zio-2)
+This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)
 
 See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
