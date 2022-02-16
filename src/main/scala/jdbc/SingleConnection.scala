@@ -33,7 +33,6 @@ import scala.reflect.{classTag, ClassTag}
 import scala.collection.mutable.ListBuffer
 
 import zio._
-import zio.console._
 import zio.blocking._
 
 import kuzminki.api.{DbConfig, KuzminkiError}

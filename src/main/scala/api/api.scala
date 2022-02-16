@@ -16,6 +16,11 @@
 
 package kuzminki
 
+import java.sql.Time
+import java.sql.Date
+import java.sql.Timestamp
+import scala.language.implicitConversions
+
 import kuzminki.column._
 import kuzminki.filter.Filter
 import kuzminki.sorting.Sorting
@@ -33,10 +38,6 @@ import kuzminki.render.{
   RenderedQuery,
   RenderedOperation
 }
-
-import java.sql.Time
-import java.sql.Date
-import java.sql.Timestamp
 
 
 package object api {
@@ -121,7 +122,7 @@ package object api {
       for (part <- strings) {
         sb.append(part)
         if (expressions.hasNext) {
-          params = params :+ expressions.next
+          params = params :+ expressions.next()
           sb.append("?")
         }
       }

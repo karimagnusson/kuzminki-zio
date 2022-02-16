@@ -17,7 +17,6 @@
 package kuzminki.insert
 
 import zio._
-import zio.blocking._
 import kuzminki.api.{db, Kuzminki}
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv

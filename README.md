@@ -4,9 +4,9 @@
 
 Kuzminki-zio is query builder and access library for PostgreSQL and [ZIO](https://zio.dev/) written in Scala.
 
-The project is currently under development and not fully tested. It currently works with ZIO 1.x.
-
 If you have any questions about the project feel free to post on Gitter or contact me directly on telegram @karimagnusson.
+
+This library is also available for ZIO 2 [kuzminki-zio](https://github.com/karimagnusson/kuzminki-zio-2)
 
 See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
