@@ -25,28 +25,3 @@ trait SingleFilter extends Filter {
   val col: AnyCol
   def render(prefix: Prefix) = template.format(col.render(prefix))
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

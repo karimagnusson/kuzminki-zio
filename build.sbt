@@ -2,7 +2,7 @@ scalaVersion := "2.13.8"
 
 name := "kuzminki-zio"
 
-version := "0.9.2"
+version := "0.9.2-test"
 
 scalacOptions ++= Seq(
   "-deprecation",

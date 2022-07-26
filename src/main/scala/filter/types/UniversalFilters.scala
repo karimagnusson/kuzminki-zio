@@ -27,17 +27,12 @@ case class FilterNot(col: AnyCol, arg: Any) extends SingleArgFilter {
   val template = "%s != ?"
 }
 
-case class FilterIn(col: AnyCol, argSeq: Seq[Any]) extends ArrayFilter {
-  val template = "%s = ANY(ARRAY[%s])"
+case class FilterIn(col: AnyCol, arg: Any) extends SingleArgFilter {
+  val template = "%s = ANY(?)"
 }
 
-case class FilterNotIn(col: AnyCol, argSeq: Seq[Any]) extends ArrayFilter {
-  val template = "NOT %s = ANY(ARRAY[%s])"
-}
-
-case class FilterBetween(col: AnyCol, argSeq: Seq[Any]) extends SingleFilter {
-  val template = "%s = BETWEEN ? AND ?"
-  val args = col.args ++ argSeq
+case class FilterNotIn(col: AnyCol, arg: Seq[Any]) extends SingleArgFilter {
+  val template = "NOT %s = ANY(?)"
 }
 
 case class FilterIsNull(col: AnyCol) extends NoArgFilter {
