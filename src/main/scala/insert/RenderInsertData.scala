@@ -26,7 +26,7 @@ import kuzminki.render.{
 
 class RenderInsertData[M <: Model, P](
     model: M,
-    coll: SectionCollector,
+    coll: SectionCollector
   ) extends RunOperation {
 
   def render = {

@@ -26,7 +26,7 @@ import kuzminki.render.RenderedOperation
 class StoredUpdate[P1, P2](
     statement: String,
     changes: ParamConv[P1],
-    filters: ParamConv[P2],
+    filters: ParamConv[P2]
   ) {
 
   def render(changeArgs: P1, filterArgs: P2) = {

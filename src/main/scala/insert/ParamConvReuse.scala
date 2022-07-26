@@ -21,7 +21,7 @@ import kuzminki.shape.ParamConv
 
 class ParamConvReuse[P](
     paramConv: ParamConv[P],
-    reuse: Reuse,
+    reuse: Reuse
   ) extends ParamConv[P] {
 
   def fromShape(params: P) = {
