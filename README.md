@@ -70,7 +70,7 @@ object ExampleApp extends zio.App {
 ```
 
 #### Support added for array fields
-Support for array fields is not yet in a released version.
+Support for array fields is not yet in a released version. Use git clone.
 
 #### Array field example
 ```scala
