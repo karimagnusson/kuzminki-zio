@@ -42,6 +42,26 @@ case class Decrement(col: ModelCol, value: Any) extends Assign {
   val args = Vector(value)
 }
 
+case class Append(col: ModelCol, value: Any) extends Assign {
+  def render(prefix: Prefix) = s"${col.name} = array_append(${col.name}, ?)"
+  val args = Vector(value)
+}
+
+case class Prepend(col: ModelCol, value: Any) extends Assign {
+  def render(prefix: Prefix) = s"${col.name} = array_prepend(?, ${col.name})"
+  val args = Vector(value)
+}
+
+case class Remove(col: ModelCol, value: Any) extends Assign {
+  def render(prefix: Prefix) = s"${col.name} = array_remove(${col.name}, ?)"
+  val args = Vector(value)
+}
+
+
+
+
+
+
 
 
 

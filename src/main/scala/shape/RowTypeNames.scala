@@ -28,28 +28,31 @@ import kuzminki.column._
 trait RowTypeNames {
 
   protected val colTypeName: TypeCol[_] => String = {
-    case col: StringCol             => "String"
-    case col: BooleanCol            => "Boolean"
-    case col: ShortCol              => "Short"
-    case col: IntCol                => "Int"
-    case col: LongCol               => "Long"
-    case col: FloatCol              => "Float"
-    case col: DoubleCol             => "Double"
-    case col: BigDecimalCol         => "BigDecimal"
-    case col: TimeCol               => "Time"
-    case col: DateCol               => "Date"
-    case col: TimestampCol          => "Timestamp"
-    case col: StringOptCol          => "Option[String]"
-    case col: BooleanOptCol         => "Option[Boolean]"
-    case col: ShortOptCol           => "Option[Short]"
-    case col: IntOptCol             => "Option[Int]"
-    case col: LongOptCol            => "Option[Long]"
-    case col: FloatOptCol           => "Option[Float]"
-    case col: DoubleOptCol          => "Option[Double]"
-    case col: BigDecimalOptCol      => "Option[BigDecimal]"
-    case col: TimeOptCol            => "Option[Time]"
-    case col: DateOptCol            => "Option[Date]"
-    case col: TimestampOptCol       => "Option[Timestamp]"
+    case col: StringCol       => "String"
+    case col: BooleanCol      => "Boolean"
+    case col: ShortCol        => "Short"
+    case col: IntCol          => "Int"
+    case col: LongCol         => "Long"
+    case col: FloatCol        => "Float"
+    case col: DoubleCol       => "Double"
+    case col: BigDecimalCol   => "BigDecimal"
+    case col: TimeCol         => "Time"
+    case col: DateCol         => "Date"
+    case col: TimestampCol    => "Timestamp"
+    case col: OptCol[_]      => col.underlying match {
+      case col: StringCol       => "Option[String]"
+      case col: BooleanCol      => "Option[Boolean]"
+      case col: ShortCol        => "Option[Short]"
+      case col: IntCol          => "Option[Int]"
+      case col: LongCol         => "Option[Long]"
+      case col: FloatCol        => "Option[Float]"
+      case col: DoubleCol       => "Option[Double]"
+      case col: BigDecimalCol   => "Option[BigDecimal]"
+      case col: TimeCol         => "Option[Time]"
+      case col: DateCol         => "Option[Date]"
+      case col: TimestampCol    => "Option[Timestamp]"
+      case col => throw KuzminkiError(s"Unsupported column type: [$col]")
+    }
     case col => throw KuzminkiError(s"Unsupported column type: [$col]")
   }
 

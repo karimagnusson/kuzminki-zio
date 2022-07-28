@@ -14,7 +14,16 @@
 * limitations under the License.
 */
 
-package kuzminki.conv
+package kuzminki.column
+
+import kuzminki.filter.Filter
+import kuzminki.filter.types._
+import kuzminki.assign._
 
 
-trait ValOptConv[T] extends ValConv[Option[T]]
+trait SeqMethods[T] {
+  val real: ModelCol
+  def append(value: T) = Append(real, value)
+  def prepend(value: T) = Prepend(real, value)
+  def remove(value: T) = Remove(real, value)
+}

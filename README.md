@@ -69,7 +69,40 @@ object ExampleApp extends zio.App {
 }
 ```
 
+#### Support added for array fields
+Support for array fields is not yet in a released version.
 
+#### Array field example
+```scala
+class Demo extends Model("demo") {
+  val id = column[Int]("id")
+  val numbers = column[Seq[Int]]("numbers")
+}
+
+val demo = Model.get[Demo]
+
+for {
+
+  id <- sql
+    .insert(demo)
+    .cols1(_.numbers)
+    .returning1(_.id)
+    .runHead(List(1, 2, 3))
+
+  _ <- sql
+    .update(demo)
+    .set(_.numbers.append(4)) // methods: append, prepend, remove
+    .where(_.id === id)
+    .run
+
+  numbers <- sql
+    .select(demo)
+    .cols1(_.numbers)
+    .where(_.id === id)
+    .run
+
+} yield numbers // Vector(1, 2, 3, 4)
+```
 
 
 

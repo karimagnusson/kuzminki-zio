@@ -66,8 +66,51 @@ trait TimestampColValue extends TypeCol[Timestamp] {
   val conv = TimestampConv
 }
 
+// seq
 
+trait StringSeqColValue extends TypeCol[Seq[String]] {
+  val conv = StringSeqConv
+}
 
+trait BooleanSeqColValue extends TypeCol[Seq[Boolean]] {
+  val conv = BooleanSeqConv
+}
+
+trait ShortSeqColValue extends TypeCol[Seq[Short]] {
+  val conv = ShortSeqConv
+}
+
+trait IntSeqColValue extends TypeCol[Seq[Int]] {
+  val conv = IntSeqConv
+}
+
+trait LongSeqColValue extends TypeCol[Seq[Long]] {
+  val conv = LongSeqConv
+}
+
+trait FloatSeqColValue extends TypeCol[Seq[Float]] {
+  val conv = FloatSeqConv
+}
+
+trait DoubleSeqColValue extends TypeCol[Seq[Double]] {
+  val conv = DoubleSeqConv
+}
+
+trait BigDecimalSeqColValue extends TypeCol[Seq[BigDecimal]] {
+  val conv = BigDecimalSeqConv
+}
+
+trait TimeSeqColValue extends TypeCol[Seq[Time]] {
+  val conv = TimeSeqConv
+}
+
+trait DateSeqColValue extends TypeCol[Seq[Date]] {
+  val conv = DateSeqConv
+}
+
+trait TimestampSeqColValue extends TypeCol[Seq[Timestamp]] {
+  val conv = TimestampSeqConv
+}
 
 
 

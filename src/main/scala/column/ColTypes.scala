@@ -26,7 +26,7 @@ trait StringCol extends StringColValue
                    with StringFilters {
 
   val self = this
-  def asOpt = StringOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -34,7 +34,7 @@ trait BooleanCol extends BooleanColValue
                     with UniversalFilters[Boolean] {
 
   val self = this
-  def asOpt = BooleanOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -44,7 +44,7 @@ trait ShortCol extends ShortColValue
                   with AggregationSubqueryFilters[Short] {
 
   val self = this
-  def asOpt = ShortOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -55,7 +55,7 @@ trait IntCol extends IntColValue
                 with AggregationSubqueryFilters[Int] {
 
   val self = this
-  def asOpt = IntOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -65,7 +65,7 @@ trait LongCol extends LongColValue
                  with AggregationSubqueryFilters[Long] {
 
   val self = this
-  def asOpt = LongOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -75,7 +75,7 @@ trait FloatCol extends FloatColValue
                   with AggregationSubqueryFilters[Float] {
 
   val self = this
-  def asOpt = FloatOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -85,7 +85,7 @@ trait DoubleCol extends DoubleColValue
                    with AggregationSubqueryFilters[Double] {
 
   val self = this
-  def asOpt = DoubleOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -95,7 +95,7 @@ trait BigDecimalCol extends BigDecimalColValue
                        with AggregationSubqueryFilters[BigDecimal] {
 
   val self = this
-  def asOpt = BigDecimalOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -104,7 +104,7 @@ trait TimeCol extends TimeColValue
                  with ComparativeFilters[Time] {
 
   val self = this
-  def asOpt = TimeOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -113,7 +113,7 @@ trait DateCol extends DateColValue
                  with ComparativeFilters[Date] {
 
   val self = this
-  def asOpt = DateOptCol(this)
+  def asOpt = OptCol(this)
 }
 
 
@@ -122,13 +122,97 @@ trait TimestampCol extends TimestampColValue
                       with ComparativeFilters[Timestamp] {
 
   val self = this
-  def asOpt = TimestampOptCol(this)
+  def asOpt = OptCol(this)
+}
+
+// seq
+
+trait StringSeqCol extends StringSeqColValue
+                      with SeqFilters[String] {
+
+  val self = this
+  def asOpt = OptCol(this)
 }
 
 
+trait BooleanSeqCol extends BooleanSeqColValue
+                       with SeqFilters[Boolean] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
 
 
+trait ShortSeqCol extends ShortSeqColValue
+                     with SeqFilters[Short] {
 
+  val self = this
+  def asOpt = OptCol(this)
+}
+
+
+trait IntSeqCol extends IntSeqColValue
+                   with SeqFilters[Int] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
+
+
+trait LongSeqCol extends LongSeqColValue
+                    with SeqFilters[Long] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
+
+
+trait FloatSeqCol extends FloatSeqColValue
+                     with SeqFilters[Float] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
+
+
+trait DoubleSeqCol extends DoubleSeqColValue
+                      with SeqFilters[Double] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
+
+
+trait BigDecimalSeqCol extends BigDecimalSeqColValue
+                          with SeqFilters[BigDecimal] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
+
+
+trait TimeSeqCol extends TimeSeqColValue
+                    with SeqFilters[Time] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
+
+
+trait DateSeqCol extends DateSeqColValue
+                    with SeqFilters[Date] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
+
+
+trait TimestampSeqCol extends TimestampSeqColValue
+                         with SeqFilters[Timestamp] {
+
+  val self = this
+  def asOpt = OptCol(this)
+}
 
 
 

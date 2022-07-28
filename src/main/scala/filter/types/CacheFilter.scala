@@ -92,6 +92,16 @@ case class CacheReNotIMatch(col: TypeCol[String]) extends CacheFilter[String] {
   val template = "%s !~* ?"
 }
 
+// seq
+
+case class CacheSeqEq[T](col: TypeCol[T]) extends CacheFilter[T] {
+  val template = "? = ANY(%s)"
+}
+
+case class CacheSeqNot[T](col: TypeCol[T]) extends CacheFilter[T] {
+  val template = "NOT ? = ANY(%s)"
+}
+
 
 
 

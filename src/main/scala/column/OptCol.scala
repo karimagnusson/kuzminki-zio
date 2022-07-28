@@ -16,5 +16,11 @@
 
 package kuzminki.column
 
+import kuzminki.conv.{ValConv, ValOptConv}
+import kuzminki.render.UnderlyingRenderAndArgs
 
-trait TypeOptCol[T] extends TypeCol[Option[T]] with AnyCol
+case class OptCol[T](underlying: TypeCol[T]) extends TypeCol[Option[T]]
+                                                with UnderlyingRenderAndArgs {
+  val conv = ValOptConv(underlying.conv)
+}
+
