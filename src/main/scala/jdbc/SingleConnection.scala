@@ -56,6 +56,7 @@ class SingleConnection(conn: Connection) {
 
   private val pgTypeName: Any => String = {
     case v: String      => "text"
+    case v: Boolean      => "bool"
     case v: Short       => "int2"
     case v: Int         => "int4"
     case v: Long        => "int8"
