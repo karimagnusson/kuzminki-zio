@@ -20,6 +20,7 @@ import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
 import java.sql.ResultSet
+import java.math.{BigDecimal => JBigDecimal}
 
 
 trait ValConv[T] {
@@ -70,7 +71,7 @@ object DoubleConv extends ValConv[Double] {
 }
 
 object BigDecimalConv extends ValConv[BigDecimal] {
-  def get(rs: ResultSet, index: Int) = rs.getBigDecimal(index)
+  def get(rs: ResultSet, index: Int) = BigDecimal(rs.getBigDecimal(index))
 }
 
 object TimeConv extends ValConv[Time] {
@@ -124,7 +125,7 @@ object DoubleSeqConv extends ValSeqConv[Double] {
 
 object BigDecimalSeqConv extends ValSeqConv[BigDecimal] {
   def get(rs: ResultSet, index: Int): Seq[BigDecimal] =
-    cast(rs, index).map(_.asInstanceOf[BigDecimal])
+    cast(rs, index).map(o => BigDecimal(o.asInstanceOf[JBigDecimal]))
 }
 
 object TimeSeqConv extends ValSeqConv[Time] {

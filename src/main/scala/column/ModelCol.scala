@@ -135,17 +135,17 @@ case class FloatSeqModelCol(info: ColInfo) extends ModelCol
 
 
 case class DoubleSeqModelCol(info: ColInfo) extends ModelCol
-                                               with BigDecimalSeqCol
-                                               with SeqFilters[BigDecimal]
-                                               with SeqMethods[BigDecimal]
-                                               with ModelTypeCol[Seq[BigDecimal]]
+                                               with DoubleSeqCol
+                                               with SeqFilters[Double]
+                                               with SeqMethods[Double]
+                                               with ModelTypeCol[Seq[Double]]
 
 
 case class BigDecimalSeqModelCol(info: ColInfo) extends ModelCol
-                                                   with DoubleSeqCol
-                                                   with SeqFilters[Double]
-                                                   with SeqMethods[Double]
-                                                   with ModelTypeCol[Seq[Double]]
+                                                   with BigDecimalSeqCol
+                                                   with SeqFilters[BigDecimal]
+                                                   with SeqMethods[BigDecimal]
+                                                   with ModelTypeCol[Seq[BigDecimal]]
 
 
 case class TimeSeqModelCol(info: ColInfo) extends ModelCol

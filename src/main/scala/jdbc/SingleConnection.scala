@@ -55,16 +55,16 @@ object SingleConnection {
 class SingleConnection(conn: Connection) {
 
   private val pgTypeName: Any => String = {
-    case v: String      => "VARCHAR"
-    case v: Short       => "SMALLINT"
-    case v: Int         => "INTEGER"
-    case v: Long        => "BIGINT"
-    case v: Float       => "REAL"
-    case v: Double      => "DOUBLE PRECISION"
-    case v: BigDecimal  => "NUMERIC"
-    case v: Time        => "TIME"
-    case v: Date        => "DATE"
-    case v: Timestamp   => "TIMESTAMP"
+    case v: String      => "text"
+    case v: Short       => "int2"
+    case v: Int         => "int4"
+    case v: Long        => "int8"
+    case v: Float       => "float4"
+    case v: Double      => "float8"
+    case v: BigDecimal  => "decimal"
+    case v: Time        => "time"
+    case v: Date        => "date"
+    case v: Timestamp   => "timestamp"
     case v: Any         => throw KuzminkiError(s"type not supported [$v]")
   }
 
