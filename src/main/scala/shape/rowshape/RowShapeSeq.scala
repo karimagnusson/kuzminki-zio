@@ -19,6 +19,7 @@ package kuzminki.shape
 import kuzminki.column.TypeCol
 
 
-class RowShapeVector(val cols: Vector[TypeCol[_]]) extends RowShape[Vector[Any]] {
-  val conv = new RowConvVector(cols.map(_.conv)) 
+class RowShapeSeq(val picked: Seq[TypeCol[_]]) extends RowShape[Seq[Any]] {
+  val cols = picked.toVector
+  val conv = new RowConvSeq(cols.map(_.conv).toVector) 
 }

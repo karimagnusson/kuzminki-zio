@@ -28,11 +28,20 @@ trait RunQuery[R] {
   def run: RIO[Has[Kuzminki] with Blocking, List[R]] =
     db.query(render)
 
+  def runAs[T](implicit transform: R => T): RIO[Has[Kuzminki] with Blocking, List[T]] =
+    db.queryAs(render, transform)
+
   def runHead: RIO[Has[Kuzminki] with Blocking, R] =
     db.queryHead(render)
 
+  def runHeadAs[T](implicit transform: R => T): RIO[Has[Kuzminki] with Blocking, T] =
+    db.queryHeadAs(render, transform)
+
   def runHeadOpt: RIO[Has[Kuzminki] with Blocking, Option[R]] =
     db.queryHeadOpt(render)
+
+  def runHeadOptAs[T](implicit transform: R => T): RIO[Has[Kuzminki] with Blocking, Option[T]] =
+    db.queryHeadOptAs(render, transform)
 }
 
 

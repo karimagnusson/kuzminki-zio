@@ -70,9 +70,15 @@ trait Kuzminki {
 
   def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]]
 
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]]
+
   def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R]
 
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T]
+
   def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]]
+
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]]
 
   def exec(render: => RenderedOperation): RIO[Blocking, Unit]
 
@@ -96,6 +102,13 @@ private class DefaultApi(pool: Pool) extends Kuzminki {
     rows <- conn.query(stm).ensuring { pool.queue.offer(conn) }
   } yield rows
 
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]] = for {
+    stm  <- Task.effect { render }
+    conn <- pool.queue.take
+    rows <- conn.query(stm).ensuring { pool.queue.offer(conn) }
+    res  <- Task.effect { rows.map(transform) }
+  } yield res
+
   def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] = for {
     stm  <- Task.effect { render }
     conn <- pool.queue.take
@@ -103,11 +116,25 @@ private class DefaultApi(pool: Pool) extends Kuzminki {
     head <- Task.effect { rows.head }
   } yield head
 
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T] = for {
+    stm  <- Task.effect { render }
+    conn <- pool.queue.take
+    rows <- conn.query(stm).ensuring { pool.queue.offer(conn) }
+    head <- Task.effect { transform(rows.head) }
+  } yield head
+
   def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] = for {
     stm     <- Task.effect { render }
     conn    <- pool.queue.take
     rows    <- conn.query(stm).ensuring { pool.queue.offer(conn) }
     headOpt <- Task.effect { rows.headOption }
+  } yield headOpt
+
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]] = for {
+    stm     <- Task.effect { render }
+    conn    <- pool.queue.take
+    rows    <- conn.query(stm).ensuring { pool.queue.offer(conn) }
+    headOpt <- Task.effect { rows.headOption.map(transform) }
   } yield headOpt
 
   def exec(render: => RenderedOperation): RIO[Blocking, Unit] = for {
@@ -137,6 +164,13 @@ private class SplitApi(getPool: Pool, setPool: Pool) extends Kuzminki {
     rows <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
   } yield rows
 
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]] = for {
+    stm  <- Task.effect { render }
+    conn <- getPool.queue.take
+    rows <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
+    res  <- Task.effect { rows.map(transform) }
+  } yield res
+
   def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] = for {
     stm  <- Task.effect { render }
     conn <- getPool.queue.take
@@ -144,11 +178,25 @@ private class SplitApi(getPool: Pool, setPool: Pool) extends Kuzminki {
     head <- Task.effect { rows.head }
   } yield head
 
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T] = for {
+    stm  <- Task.effect { render }
+    conn <- getPool.queue.take
+    rows <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
+    head <- Task.effect { transform(rows.head) }
+  } yield head
+
   def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] = for {
     stm     <- Task.effect { render }
     conn    <- getPool.queue.take
     rows    <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
     headOpt <- Task.effect { rows.headOption }
+  } yield headOpt
+
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]] = for {
+    stm     <- Task.effect { render }
+    conn    <- getPool.queue.take
+    rows    <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
+    headOpt <- Task.effect { rows.headOption.map(transform) }
   } yield headOpt
 
   def exec(render: => RenderedOperation): RIO[Blocking, Unit] = for {
