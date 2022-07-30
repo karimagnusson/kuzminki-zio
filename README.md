@@ -69,10 +69,10 @@ object ExampleApp extends zio.App {
 }
 ```
 
-#### Support added for array fields
-Support for array fields is not yet in a released version. Use git clone.
+#### Support for array fields and JSON results
+The following features are not yet in a released version. Use git clone.
 
-#### Array field example
+#### Array field
 ```scala
 class Demo extends Model("demo") {
   val id = column[Int]("id")
@@ -91,17 +91,67 @@ for {
 
   _ <- sql
     .update(demo)
-    .set(_.numbers.append(4)) // methods: append, prepend, remove
+    .set(_.numbers.append(4)) // append, prepend, remove
     .where(_.id === id)
     .run
 
   numbers <- sql
     .select(demo)
     .cols1(_.numbers)
-    .where(_.id === id)
+    .where(_.numbers.has(2))  // has, overlap
     .run
 
 } yield numbers // Vector(1, 2, 3, 4)
+```
+
+#### Return JSON
+You can get the result as JSON, using your favorite JSON library. It comes in handy if you are, for example, writing a REST web service.
+```scala
+// See PlayJsonLoader example below
+implicit val loadJson: Seq[Tuple2[String, Any]] => JsValue = data => PlayJsonLoader.load(data)
+
+for {
+  clients <- sql
+    .select(client)
+    .colsNamed(t => Seq(
+      t.id,           // Column name is used as a key.
+      t.username,     // If you want a different key:
+      t.age           // ("client_id"  -> t.id)
+    ))
+    .all
+    .runAs[JsValue]   // Vector[JsValue]
+    .map(JsArray(_))  // JsValue
+  } yield clients
+```
+
+#### Example JSON loader
+Write something along these lines to use the JSON library of your choosing.
+```scala
+import play.api.libs.json._
+
+object PlayJsonLoader {
+
+  val toJsValue: Any => JsValue = {
+    case v: String      => JsString(v)
+    case v: Boolean     => JsBoolean(v)
+    case v: Short       => JsNumber(v)
+    case v: Int         => JsNumber(v)
+    case v: Long        => JsNumber(v)
+    case v: Float       => JsNumber(v)
+    case v: Double      => JsNumber(v)
+    case v: BigDecimal  => JsNumber(v)
+    case v: Time        => Json.toJson(v)
+    case v: Date        => Json.toJson(v)
+    case v: Timestamp   => Json.toJson(v)
+    case v: Option[_]   => v.map(toJsValue).getOrElse(JsNull)
+    case v: Seq[_]      => JsArray(v.map(toJsValue))
+    case _              => throw new Exception("Cannot convert to JsValue")
+  }
+
+  def load(data: Seq[Tuple2[String, Any]]): JsValue = {
+    JsObject(data.map(p => (p._1, toJsValue(p._2))))
+  }
+}
 ```
 
 

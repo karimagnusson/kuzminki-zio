@@ -120,6 +120,13 @@ package object api {
   implicit val kzimplTypeColToDateSeqCol: TypeCol[Seq[Date]] => DateSeqCol = col => col.asInstanceOf[DateSeqCol]
   implicit val kzimplTypeColToTimestampSeqCol: TypeCol[Seq[Timestamp]] => TimestampSeqCol = col => col.asInstanceOf[TimestampSeqCol]
 
+  // named cols
+  
+  implicit val addColName: TypeCol[_] => Tuple2[String, TypeCol[_]] = {
+    case col: ModelCol => (col.name, col)
+    case _ => throw KuzminkiError("Column used in colsNamed must be a ModelCol")
+  }
+
   // pick one
 
   implicit val kzimplFilterToSeq: Filter => Seq[Filter] = filter => Seq(filter)
