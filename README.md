@@ -12,7 +12,7 @@ See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
 #### Sbt
 ```sbt
-libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.2"
+libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.3"
 ```
 
 #### Example
