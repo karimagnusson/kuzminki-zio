@@ -2,7 +2,7 @@
 [![Gitter](https://img.shields.io/gitter/room/gitterHQ/gitter.svg?style=flat-square)](https://gitter.im/kuzminki/kuzminki-zio)
 # kuzminki-zio
 
-Kuzminki-zio is query builder and access library for PostgreSQL and [ZIO](https://zio.dev/) written in Scala.
+Kuzminki is query builder and access library for PostgreSQL and [ZIO](https://zio.dev/) written in Scala.
 
 Kuzminki is written for those who like SQL. Queries are written with the same logic you write SQL statements. As a result the code is easy to read and memorise while the resulting SQL statement is predictable.
 
