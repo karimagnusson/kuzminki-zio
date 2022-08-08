@@ -4,9 +4,13 @@
 
 Kuzminki-zio is query builder and access library for PostgreSQL and [ZIO](https://zio.dev/) written in Scala.
 
+Kuzminki is written for those who like SQL. Queries are written with the same logic you write SQL statements. As a result the code is easy to read and memorise while the resulting SQL statement is predictable.
+
 If you have any questions about the project feel free to post on Gitter or contact me directly on telegram @karimagnusson.
 
 This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)
+And For Akka [kuzminki-akka](https://github.com/karimagnusson/kuzminki-akka)
+And For Akka 
 
 See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
@@ -18,7 +22,6 @@ libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.3"
 #### Example
 ```scala
 import zio._
-import zio.console._
 import zio.blocking._
 import kuzminki.api._
 

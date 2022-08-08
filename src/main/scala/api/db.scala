@@ -23,7 +23,6 @@ import kuzminki.render.{
 }
 
 import zio._
-import zio.console._
 import zio.blocking._
 
 

@@ -17,6 +17,7 @@
 package kuzminki.api
 
 import kuzminki.api._
+
 import kuzminki.jdbc.SingleConnection
 import kuzminki.render.{
   RenderedQuery,
@@ -24,7 +25,6 @@ import kuzminki.render.{
 }
 
 import zio._
-import zio.console._
 import zio.blocking._
 
 
