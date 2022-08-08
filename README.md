@@ -8,7 +8,7 @@ Kuzminki is written for those who like SQL. Queries are written with the same lo
 
 If you have any questions about the project feel free to post on Gitter or contact me directly on telegram @karimagnusson.
 
-This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)
+This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
 And For Akka [kuzminki-akka](https://github.com/karimagnusson/kuzminki-akka)
 And For Akka 
 
