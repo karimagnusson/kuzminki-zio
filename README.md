@@ -11,7 +11,6 @@ If you have any questions about the project feel free to post on Gitter or conta
 
 This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
 And For Akka [kuzminki-akka](https://github.com/karimagnusson/kuzminki-akka)
-And For Akka 
 
 See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
