@@ -12,15 +12,16 @@ And For Akka [kuzminki-akka](https://github.com/karimagnusson/kuzminki-akka)
 
 See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
+You can take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
+
 #### Sbt
 ```sbt
-libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.3"
+libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.4-RC1"
 ```
 
 #### Example
 ```scala
 import zio._
-import zio.blocking._
 import kuzminki.api._
 
 object ExampleApp extends zio.App {

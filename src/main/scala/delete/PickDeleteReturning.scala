@@ -21,13 +21,13 @@ abstract class PickDeleteReturning[M](model: M, coll: SectionCollector) {
     )
   }
 
-  def colsSeq(pick: M => Seq[TypeCol[_]]) = {
+  def returningSeq(pick: M => Seq[TypeCol[_]]) = {
     next(
       new RowShapeSeq(pick(model))
     )
   }
 
-  def colsNamed(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
+  def returningNamed(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
     next(
       new RowShapeNamed(pick(model))
     )
