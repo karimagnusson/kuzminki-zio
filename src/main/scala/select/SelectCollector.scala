@@ -61,17 +61,6 @@ case class SelectCollector[R](
     }
   }
 
-  private def validataOffset(): Unit = {
-    
-    sections.foreach {
-    
-      case sec: OffsetSec =>
-        throw KuzminkiError("OFFSET is already defined")
-    
-      case _ =>
-    }
-  }
-
   private def replaceWhereSec[P](modifiedSections: Vector[Section], partShape: PartShape[P]) = {
 
     modifiedSections.map {
@@ -102,18 +91,6 @@ case class SelectCollector[R](
     }
   }
 
-  private def insertOffsetCacheSec(modifiedSections: Vector[Section]) = {
-    
-    modifiedSections.last match {
-    
-      case limitSec: LimitSec =>
-        modifiedSections.dropRight(1) ++ Vector(OffsetCacheSec, limitSec)
-    
-      case _ =>
-        modifiedSections :+ OffsetCacheSec
-    }
-  }
-
   private def argSplit(args: Vector[Any], splitter: CacheArgs) = {
 
     val index = args.indexOf(splitter)
@@ -140,21 +117,6 @@ case class SelectCollector[R](
     (template, argParts)
   }
 
-  private def renderForCacheWithOffset[P](modifiedSections: Vector[Section]) = {
-
-    val (template, argsTwoParts) = renderForCache(modifiedSections)
-
-    val argsThreeParts = argsTwoParts match {
-      case (args1, rest) =>
-        argSplit(rest, CacheOffsetArgs) match {
-          case (args2, args3) =>
-            (args1, args2, args3)
-        }
-    }
-
-    (template, argsThreeParts)
-  }
-
   def cacheWhere[P](partShape: PartShape[P]) = {
 
     validataWhere()
@@ -166,20 +128,6 @@ case class SelectCollector[R](
     new StoredSelectCondition(template, args, partShape.conv, rowShape.conv)
   }
 
-  def cacheWhereWithOffset[P](partShape: PartShape[P]) = {
-
-    validataWhere()
-    validataOffset()
-
-    val sectionsWithWhere = replaceWhereSec(sections, partShape)
-
-    val sectionsWithWhereAndOffset = insertOffsetCacheSec(sectionsWithWhere)
-
-    val (template, args) = renderForCacheWithOffset(sectionsWithWhereAndOffset)
-
-    new StoredSelectConditionAndOffset(template, args, partShape.conv, rowShape.conv)
-  }
-
   def cacheHaving[P](partShape: PartShape[P]) = {
 
     validataHaving()
@@ -189,20 +137,6 @@ case class SelectCollector[R](
     val (template, args) = renderForCache(sectionsWithHaving)
 
     new StoredSelectCondition(template, args, partShape.conv, rowShape.conv)
-  }
-
-  def cacheHavingWithOffset[P](partShape: PartShape[P]) = {
-
-    validataHaving()
-    validataOffset()
-
-    val sectionsWithHaving = replaceHavingSec(sections, partShape)
-
-    val sectionsWithHavingAndOffset = insertOffsetCacheSec(sectionsWithHaving)
-
-    val (template, args) = renderForCacheWithOffset(sectionsWithHavingAndOffset)
-
-    new StoredSelectConditionAndOffset(template, args, partShape.conv, rowShape.conv)
   }
 }
 
