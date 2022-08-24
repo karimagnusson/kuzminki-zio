@@ -25,11 +25,6 @@ import java.sql.ResultSet
 import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
-
-import scala.concurrent.duration._
-import scala.reflect.runtime.universe._
-import scala.util.{Try, Success, Failure}
-import scala.reflect.{classTag, ClassTag}
 import scala.collection.mutable.ListBuffer
 
 import zio._
@@ -134,6 +129,26 @@ class SingleConnection(conn: Connection) {
       val num = jdbcStm.executeUpdate()
       jdbcStm.close()
       num
+    }
+  }
+
+  def execList(stms: Seq[RenderedOperation]): RIO[Blocking, Unit] = {
+    effectBlocking {
+      try {
+        conn.setAutoCommit(false)
+        stms.foreach { stm => 
+          val jdbcStm = getStatement(stm.statement, stm.args)
+          jdbcStm.execute()
+        }
+        conn.commit()
+        conn.setAutoCommit(true)
+        ()
+      } catch {
+        case th: Throwable =>
+          conn.rollback()
+          conn.setAutoCommit(true)
+          throw th
+      }
     }
   }
 

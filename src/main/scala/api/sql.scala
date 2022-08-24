@@ -16,9 +16,6 @@
 
 package kuzminki.api
 
-import scala.util.{Try, Success, Failure}
-import scala.concurrent.duration._
-
 import kuzminki.api._
 import kuzminki.select.{
   Select,

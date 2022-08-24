@@ -2,24 +2,26 @@
 [![Gitter](https://img.shields.io/gitter/room/gitterHQ/gitter.svg?style=flat-square)](https://gitter.im/kuzminki/kuzminki-zio)
 # kuzminki-zio
 
-Kuzminki-zio is query builder and access library for PostgreSQL and [ZIO](https://zio.dev/) written in Scala.
+Kuzminki is query builder and access library for PostgreSQL written in Scala.  
+This version is for ZIO 1.
 
-If you have any questions about the project feel free to post on Gitter or contact me directly on telegram @karimagnusson.
+Kuzminki is written for those who like SQL. Queries are written with the same logic you write SQL statements. As a result the code is easy to read and memorise while the resulting SQL statement is predictable.
 
-This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)
+This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
+And For Akka [kuzminki-akka](https://github.com/karimagnusson/kuzminki-akka)
 
 See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
+You can take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
+
 #### Sbt
 ```sbt
-libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.2"
+libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.4-RC1"
 ```
 
 #### Example
 ```scala
 import zio._
-import zio.console._
-import zio.blocking._
 import kuzminki.api._
 
 object ExampleApp extends zio.App {
@@ -51,7 +53,6 @@ object ExampleApp extends zio.App {
       .select(client)
       .cols3(_.all)
       .where(_.age > 25)
-      .limit(5)
       .run
     
     _ <- ZIO.foreach(clients) {
@@ -60,8 +61,7 @@ object ExampleApp extends zio.App {
     }
   } yield ()
 
-  val dbConfig = DDbConfig.forDb("company").getConfig
-  val dbLayer = Kuzminki.layer(dbConfig)
+  val dbLayer = Kuzminki.layer(DbConfig.forDb("company"))
 
   override def run(args: List[String]): ZIO[ZEnv, Nothing, ExitCode] = {
     job.provideCustomLayer(dbLayer).exitCode
@@ -69,90 +69,75 @@ object ExampleApp extends zio.App {
 }
 ```
 
-#### Support for array fields and JSON results
-The following features are not yet in a released version. Use git clone.
+#### Streaming
+Streaming is available in the latest push, not in version 0.9.4-RC1.
 
-#### Array field
+Streaming from the database.
 ```scala
-class Demo extends Model("demo") {
-  val id = column[Int]("id")
-  val numbers = column[Seq[Int]]("numbers")
-}
-
-val demo = Model.get[Demo]
-
-for {
-
-  id <- sql
-    .insert(demo)
-    .cols1(_.numbers)
-    .returning1(_.id)
-    .runHead(List(1, 2, 3))
-
-  _ <- sql
-    .update(demo)
-    .set(_.numbers.append(4)) // append, prepend, remove
-    .where(_.id === id)
-    .run
-
-  numbers <- sql
-    .select(demo)
-    .cols1(_.numbers)
-    .where(_.numbers.has(2))  // has, overlap
-    .run
-
-} yield numbers // Vector(1, 2, 3, 4)
+sql
+  .select(client)
+  .cols3(_.all)
+  .all
+  .orderBy(_.id.asc)
+  .stream
+  .map(makeLine)
+  .run(fileSink(Paths.get("clints.txt")))
 ```
 
-#### Return JSON
-You can get the result as JSON, using your favorite JSON library. It comes in handy if you are, for example, writing a REST web service.
+Streaming into the database. The same logic can be used for UPDATE and DELETE.
 ```scala
-// See PlayJsonLoader example below
-implicit val loadJson: Seq[Tuple2[String, Any]] => JsValue = data => PlayJsonLoader.load(data)
+val insertStm = sql
+  .insert(client)
+  .cols2(t => (t.username, t.age))
+  .cache
 
-for {
-  clients <- sql
-    .select(client)
-    .colsNamed(t => Seq(
-      t.id,           // Column name is used as a key.
-      t.username,     // If you want a different key:
-      t.age           // ("client_id"  -> t.id)
-    ))
-    .all
-    .runAs[JsValue]   // Vector[JsValue]
-    .map(JsArray(_))  // JsValue
-  } yield clients
+// insert one at a time.
+readFileIntoStream("clints.txt")
+  .map(makeTupleFromLine)
+  .run(insertStm.asSink)
+
+// insert in chunks of 100 using transaction.
+readFileIntoStream("clints.txt")
+  .map(makeTupleFromLine)
+  .aggregate(ZTransducer.collectAllN(100))
+  .run(insertStm.asChunkSink)
 ```
 
-#### Example JSON loader
-Write something along these lines to use the JSON library of your choosing.
+#### Transaction
+Transaction is available in the latest push, not in version 0.9.4-RC1.
+
+Do INSERT, UPDATE and DELETE in one transaction.
 ```scala
-import play.api.libs.json._
-
-object PlayJsonLoader {
-
-  val toJsValue: Any => JsValue = {
-    case v: String      => JsString(v)
-    case v: Boolean     => JsBoolean(v)
-    case v: Short       => JsNumber(v)
-    case v: Int         => JsNumber(v)
-    case v: Long        => JsNumber(v)
-    case v: Float       => JsNumber(v)
-    case v: Double      => JsNumber(v)
-    case v: BigDecimal  => JsNumber(v)
-    case v: Time        => Json.toJson(v)
-    case v: Date        => Json.toJson(v)
-    case v: Timestamp   => Json.toJson(v)
-    case v: Option[_]   => v.map(toJsValue).getOrElse(JsNull)
-    case v: Seq[_]      => JsArray(v.map(toJsValue))
-    case _              => throw new Exception("Cannot convert to JsValue")
-  }
-
-  def load(data: Seq[Tuple2[String, Any]]): JsValue = {
-    JsObject(data.map(p => (p._1, toJsValue(p._2))))
-  }
-}
+db.execList(List(
+  sql.insert(client).cols2(t => (t.username, t.age)).render(("Joe", 25)),
+  sql.update(client).set(_.age ==> 31).where(_.id === 45).render,
+  sql.delete(client).where(_.id === 83).render
+))
 ```
+
+Insert many rows in one transaction. The same logic can be used for UPDATE and DELETE.
+```scala
+val clientList: List[Tuple2[String, Int]] = //...
+
+insertStm.execList(clientList)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

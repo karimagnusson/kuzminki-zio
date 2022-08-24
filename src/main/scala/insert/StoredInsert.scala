@@ -20,6 +20,7 @@ import kuzminki.shape.{ParamConv, RowConv}
 import kuzminki.render.{
   RunQueryParams,
   RunOperationParams,
+  RunOperationAsSink,
   RenderedQuery,
   RenderedOperation
 }
@@ -28,7 +29,8 @@ import kuzminki.render.{
 class StoredInsert[P](
     statement: String,
     paramConv: ParamConv[P]
-  ) extends RunOperationParams[P] {
+  ) extends RunOperationParams[P]
+       with RunOperationAsSink[P] {
 
   def render(params: P) = {
     RenderedOperation(

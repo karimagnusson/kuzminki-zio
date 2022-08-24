@@ -22,6 +22,7 @@ import kuzminki.api.{db, Kuzminki}
 import kuzminki.shape.ParamConv
 import kuzminki.render.{
   RunOperationParams,
+  RunOperationAsSink,
   RenderedOperation
 }
 
@@ -30,7 +31,8 @@ class StoredDeleteCondition[P](
     statement: String,
     args: Vector[Any],
     paramConv: ParamConv[P]
-  ) extends RunOperationParams[P] {
+  ) extends RunOperationParams[P]
+       with RunOperationAsSink[P] {
 
   def render(params: P) = {
     RenderedOperation(

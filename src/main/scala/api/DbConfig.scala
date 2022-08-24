@@ -17,29 +17,24 @@
 package kuzminki.api
 
 import java.util.Properties
+import scala.deprecated
 
-
-case class DbConfig(url: String, props: Properties, poolSize: Int)
 
 object DbConfig {
-  def forDb(dbName: String) = new DbConfigBuilder(dbName)
+  def forDb(db: String) = new DbConfig(db)
 }
 
-class DbConfigBuilder(dbName: String) {
+class DbConfig(db: String) {
 
-  private var poolSize = 10
+  val props = new Properties()
 
-  private var hostOpt: Option[String] = None
+  var poolSize = 10
 
-  private var portOpt: Option[String] = None
+  private var host = "localhost"
 
-  private val props = new Properties()
+  private var port = "5432"
 
-  private def getUrl = {
-    val host = hostOpt.getOrElse("localhost")
-    val port = portOpt.getOrElse("5432")
-    s"jdbc:postgresql://$host:$port/$dbName"
-  }
+  def url = s"jdbc:postgresql://$host:$port/$db"
 
   def withPoolSize(value: Int) = {
     poolSize = value
@@ -47,12 +42,12 @@ class DbConfigBuilder(dbName: String) {
   }
 
   def withHost(value: String) = {
-    hostOpt = Some(value)
+    host = value
     this
   }
 
   def withPort(value: String) = {
-    portOpt = Some(value)
+    port = value
     this
   }
 
@@ -74,10 +69,9 @@ class DbConfigBuilder(dbName: String) {
     this
   }
 
-  def getConfig = DbConfig(getUrl, props, poolSize)
+  @deprecated("Not used", "01-08-2022")
+  def getConfig = this
 }
-
-
 
 
 

@@ -19,7 +19,7 @@ package kuzminki.select
 import zio._
 import kuzminki.render.RenderedQuery
 import kuzminki.shape.RowConv
-import kuzminki.api.{db, Kuzminki}
+import kuzminki.api.db
 
 
 object StreamQuery {

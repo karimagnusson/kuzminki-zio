@@ -18,30 +18,24 @@ package kuzminki.render
 
 import zio._
 import zio.blocking._
-import kuzminki.api.{db, Kuzminki}
+import kuzminki.api.db
 
 
 trait RunQuery[R] {
 
   def render: RenderedQuery[R]
 
-  def run: RIO[Has[Kuzminki] with Blocking, List[R]] =
-    db.query(render)
+  def run = db.query(render)
 
-  def runAs[T](implicit transform: R => T): RIO[Has[Kuzminki] with Blocking, List[T]] =
-    db.queryAs(render, transform)
+  def runAs[T](implicit transform: R => T) = db.queryAs(render, transform)
 
-  def runHead: RIO[Has[Kuzminki] with Blocking, R] =
-    db.queryHead(render)
+  def runHead = db.queryHead(render)
 
-  def runHeadAs[T](implicit transform: R => T): RIO[Has[Kuzminki] with Blocking, T] =
-    db.queryHeadAs(render, transform)
+  def runHeadAs[T](implicit transform: R => T) = db.queryHeadAs(render, transform)
 
-  def runHeadOpt: RIO[Has[Kuzminki] with Blocking, Option[R]] =
-    db.queryHeadOpt(render)
+  def runHeadOpt = db.queryHeadOpt(render)
 
-  def runHeadOptAs[T](implicit transform: R => T): RIO[Has[Kuzminki] with Blocking, Option[T]] =
-    db.queryHeadOptAs(render, transform)
+  def runHeadOptAs[T](implicit transform: R => T) = db.queryHeadOptAs(render, transform)
 }
 
 
@@ -49,14 +43,17 @@ trait RunQueryParams[P, R] {
 
   def render(params: P): RenderedQuery[R]
 
-  def run(params: P): RIO[Has[Kuzminki] with Blocking, List[R]] =
-    db.query(render(params))
+  def run(params: P) = db.query(render(params))
 
-  def runHead(params: P): RIO[Has[Kuzminki] with Blocking, R] =
-    db.queryHead(render(params))
+  def runAs[T](params: P)(implicit transform: R => T) = db.queryAs(render(params), transform)
 
-  def runHeadOpt(params: P): RIO[Has[Kuzminki] with Blocking, Option[R]] =
-    db.queryHeadOpt(render(params))
+  def runHead(params: P) = db.queryHead(render(params))
+
+  def runHeadAs[T](params: P)(implicit transform: R => T) = db.queryHeadAs(render(params), transform)
+
+  def runHeadOpt(params: P) = db.queryHeadOpt(render(params))
+
+  def runHeadOptAs[T](params: P)(implicit transform: R => T) = db.queryHeadOptAs(render(params), transform)
 }
 
 

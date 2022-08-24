@@ -23,7 +23,6 @@ import kuzminki.render.{
 }
 
 import zio._
-import zio.console._
 import zio.blocking._
 
 
@@ -31,58 +30,65 @@ object db {
 
   def query[R](render: => RenderedQuery[R]): RIO[Has[Kuzminki] with Blocking, List[R]] = {
     for {
-      db   <- Kuzminki.get
-      rows <- db.query(render)
+      inst <- Kuzminki.get
+      rows <- inst.query(render)
     } yield rows
   }
 
   def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Has[Kuzminki] with Blocking, List[T]] = {
     for {
-      db   <- Kuzminki.get
-      rows <- db.queryAs(render, transform)
+      inst <- Kuzminki.get
+      rows <- inst.queryAs(render, transform)
     } yield rows
   }
 
   def queryHead[R](render: => RenderedQuery[R]): RIO[Has[Kuzminki] with Blocking, R] = {
     for {
-      db   <- Kuzminki.get
-      head <- db.queryHead(render)
+      inst <- Kuzminki.get
+      head <- inst.queryHead(render)
     } yield head
   }
 
   def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Has[Kuzminki] with Blocking, T] = {
     for {
-      db   <- Kuzminki.get
-      rows <- db.queryHeadAs(render, transform)
+      inst <- Kuzminki.get
+      rows <- inst.queryHeadAs(render, transform)
     } yield rows
   }
 
   def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Has[Kuzminki] with Blocking, Option[R]] = {
     for {
-      db      <- Kuzminki.get
-      headOpt <- db.queryHeadOpt(render)
+      inst    <- Kuzminki.get
+      headOpt <- inst.queryHeadOpt(render)
     } yield headOpt
   }
 
   def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Has[Kuzminki] with Blocking, Option[T]] = {
     for {
-      db   <- Kuzminki.get
-      rows <- db.queryHeadOptAs(render, transform)
+      inst <- Kuzminki.get
+      rows <- inst.queryHeadOptAs(render, transform)
     } yield rows
   }
 
   def exec(render: => RenderedOperation): RIO[Has[Kuzminki] with Blocking, Unit] = {
     for {
-      db <- Kuzminki.get
-      _  <- db.exec(render)
+      inst <- Kuzminki.get
+      _    <- inst.exec(render)
     } yield ()
   }
 
   def execNum(render: => RenderedOperation): RIO[Has[Kuzminki] with Blocking, Int] = {
     for {
-      db   <- Kuzminki.get
-      num  <- db.execNum(render)
+      inst <- Kuzminki.get
+      num  <- inst.execNum(render)
     } yield num
+  }
+
+  def execList(stms: Seq[RenderedOperation]): RIO[Has[Kuzminki] with Blocking, Unit] = {
+    for {
+      inst <- Kuzminki.get
+      _    <- inst.execList(stms)
+    } yield ()
   }
 }
 
