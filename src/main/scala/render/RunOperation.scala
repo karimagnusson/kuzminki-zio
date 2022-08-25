@@ -18,7 +18,7 @@ package kuzminki.render
 
 import zio._
 import zio.blocking._
-import zio.stream.ZSink
+import zio.stream.{ZSink, ZTransducer}
 import kuzminki.shape.ParamConv
 import kuzminki.api.{db, Kuzminki}
 
@@ -50,6 +50,8 @@ trait RunOperationAsSink[P] {
   def runList(paramList: Seq[P]) = db.execList(paramList.map(render(_)))
 
   def asSink = ZSink.foreach((params: P) => db.exec(render(params)))
+
+  def collect(size: Int) = ZTransducer.collectAllN[P](size)
 
   def asChunkSink = ZSink.foreach { (chunk: Chunk[P]) =>
     db.execList(chunk.toList.map(p => render(p)))

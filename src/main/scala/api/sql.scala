@@ -27,6 +27,7 @@ import kuzminki.delete.{Delete, DeleteWhere}
 import kuzminki.insert.Insert
 import kuzminki.update.Update
 import kuzminki.fn.Count
+import kuzminki.render.{Transaction, RenderedOperation}
 
 
 object sql {
@@ -66,6 +67,8 @@ object sql {
   def delete[M <: Model](model: M): DeleteWhere[M] = {
     Delete.from(model)
   }
+
+  def transaction(stms: RenderedOperation*) = new Transaction(stms)
 }
 
 

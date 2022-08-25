@@ -99,7 +99,7 @@ readFileIntoStream("clints.txt")
 // insert in chunks of 100 using transaction.
 readFileIntoStream("clints.txt")
   .map(makeTupleFromLine)
-  .aggregate(ZTransducer.collectAllN(100))
+  .transduce(testStm.collect(100))
   .run(insertStm.asChunkSink)
 ```
 
@@ -108,11 +108,11 @@ Transaction is available in the latest push, not in version 0.9.4-RC1.
 
 Do INSERT, UPDATE and DELETE in one transaction.
 ```scala
-db.execList(List(
+sql.transaction(
   sql.insert(client).cols2(t => (t.username, t.age)).render(("Joe", 25)),
-  sql.update(client).set(_.age ==> 31).where(_.id === 45).render,
-  sql.delete(client).where(_.id === 83).render
-))
+  sql.update(client).set(_.age ==> 31).where(_.id === 45),
+  sql.delete(client).where(_.id === 83)
+).run
 ```
 
 Insert many rows in one transaction. The same logic can be used for UPDATE and DELETE.
