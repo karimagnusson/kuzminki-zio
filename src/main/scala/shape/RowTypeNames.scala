@@ -39,7 +39,7 @@ trait RowTypeNames {
     case col: TimeCol         => "Time"
     case col: DateCol         => "Date"
     case col: TimestampCol    => "Timestamp"
-    case col: OptCol[_]      => col.underlying match {
+    case col: OptCol[_]      => col.col match {
       case col: StringCol       => "Option[String]"
       case col: BooleanCol      => "Option[Boolean]"
       case col: ShortCol        => "Option[Short]"

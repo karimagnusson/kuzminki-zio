@@ -16,11 +16,11 @@
 
 package kuzminki.shape
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 
 
 trait RowShape[R] {
-  val cols: Vector[AnyCol]
+  val cols: Vector[TypeCol[_]]
   val conv: RowConv[R]
 }
 

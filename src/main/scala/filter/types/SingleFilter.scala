@@ -17,11 +17,11 @@
 package kuzminki.filter.types
 
 import kuzminki.filter.Filter
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 import kuzminki.render.Prefix
 
 
 trait SingleFilter extends Filter {
-  val col: AnyCol
+  val col: TypeCol[_]
   def render(prefix: Prefix) = template.format(col.render(prefix))
 }

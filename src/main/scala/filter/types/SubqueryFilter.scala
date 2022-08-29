@@ -17,12 +17,12 @@
 package kuzminki.filter.types
 
 import kuzminki.filter.Filter
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 import kuzminki.render.{Renderable, Prefix}
 
 
 trait SubqueryFilter extends Filter {
-  val col: AnyCol
+  val col: TypeCol[_]
   val sub: Renderable
   def render(prefix: Prefix) = template.format(col.render(prefix), sub.render(prefix))
   val args = col.args ++ sub.args

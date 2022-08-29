@@ -14,29 +14,30 @@
 * limitations under the License.
 */
 
-package kuzminki.column
+package kuzminki.filter
 
-import kuzminki.filter.Filter
+import kuzminki.column.TypeCol
+import kuzminki.assign._
 import kuzminki.filter.types._
 
 
-trait StringFilters extends SelfRef[String] {
+trait StringFilters extends TypeFilter[String] {
 
-  def like(value: String): Filter = FilterLike(self, value)
-  def startsWith(value: String): Filter = FilterStartsWith(self, value)
-  def endsWith(value: String): Filter = FilterEndsWith(self, value)
-  def similarTo(value: String): Filter = FilterSimilarTo(self, value)
+  def like(value: String): Filter = FilterLike(col, value)
+  def startsWith(value: String): Filter = FilterStartsWith(col, value)
+  def endsWith(value: String): Filter = FilterEndsWith(col, value)
+  def similarTo(value: String): Filter = FilterSimilarTo(col, value)
 
-  def reMatch(value: String): Filter = FilterReIMatch(self, value)
+  def reMatch(value: String): Filter = FilterReIMatch(col, value)
   def ~(value: String): Filter = reMatch(value)
 
-  def reIMatch(value: String): Filter = FilterReIMatch(self, value)
+  def reIMatch(value: String): Filter = FilterReIMatch(col, value)
   def ~*(value: String): Filter = reIMatch(value)
 
-  def reNotMatch(value: String): Filter = FilterReNotMatch(self, value)
+  def reNotMatch(value: String): Filter = FilterReNotMatch(col, value)
   def !~(value: String): Filter = reNotMatch(value)
 
-  def reNotIMatch(value: String): Filter = FilterReNotIMatch(self, value)
+  def reNotIMatch(value: String): Filter = FilterReNotIMatch(col, value)
   def !~*(value: String): Filter = reNotIMatch(value)
 
   // optional
@@ -60,15 +61,15 @@ trait StringFilters extends SelfRef[String] {
 
   // cache
 
-  def cacheLike = CacheLike(self)
-  def cacheStartsWith = CacheStartsWith(self)
-  def cacheEndsWith = CacheEndsWith(self)
-  def cacheSimilarTo = CacheSimilarTo(self)
+  def cacheLike = CacheLike(col)
+  def cacheStartsWith = CacheStartsWith(col)
+  def cacheEndsWith = CacheEndsWith(col)
+  def cacheSimilarTo = CacheSimilarTo(col)
   
-  def cacheReMatch = CacheReMatch(self)
-  def cacheReIMatch = CacheReIMatch(self)
-  def cacheReNotMatch = CacheReNotMatch(self)
-  def cacheReNotIMatch = CacheReNotIMatch(self)
+  def cacheReMatch = CacheReMatch(col)
+  def cacheReIMatch = CacheReIMatch(col)
+  def cacheReNotMatch = CacheReNotMatch(col)
+  def cacheReNotIMatch = CacheReNotIMatch(col)
 }
 
 

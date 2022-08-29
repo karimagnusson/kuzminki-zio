@@ -16,11 +16,16 @@
 
 package kuzminki.assign
 
-import kuzminki.column.ModelCol
+import kuzminki.column.{TypeCol, ModelCol}
 import kuzminki.render.{Renderable, Prefix, NoArgs}
+import kuzminki.api.KuzminkiError
 
 
-case class SetUpsert(col: ModelCol) extends Renderable with NoArgs {
+case class SetUpsert(col: TypeCol[_]) extends Renderable with NoArgs {
+  col match {
+    case col: ModelCol =>
+    case _ => throw KuzminkiError("cannot upsert a function") 
+  }
   def render(prefix: Prefix) = "%s = ?".format(col.render(prefix))
 }
 

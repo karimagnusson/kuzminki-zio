@@ -16,7 +16,7 @@
 
 package kuzminki.insert
 
-import kuzminki.column.{ModelCol, TypeCol}
+import kuzminki.column.TypeCol
 import kuzminki.api.KuzminkiError
 import kuzminki.shape.ParamShape
 import kuzminki.assign.SetUpsert
@@ -28,7 +28,7 @@ class DoUpdate[M, P](
     model: M,
     coll: SectionCollector,
     paramShape: ParamShape[P],
-    conflictCol: ModelCol
+    conflictCol: TypeCol[_]
   ) {
 
   def doNothing = {
@@ -48,20 +48,13 @@ class DoUpdate[M, P](
     )
   }
 
-  @deprecated("use doUpdate", "0.9.2")
-  def doUpdateOne[T](pick: M => TypeCol[T]) = {
-    doUpdateApply(
-      Vector(pick(model))
-    )
-  }
-
   protected def validate(
-        conflictCol: ModelCol,
+        conflictCol: TypeCol[_],
         updateTypeCols: Vector[TypeCol[_]]
       ) = {
 
     val updateCols = updateTypeCols.map {
-      case col: ModelCol => col
+      case col: TypeCol[_] => col
       case _ => throw KuzminkiError("no update columns selected")
     }
 

@@ -14,13 +14,13 @@
 * limitations under the License.
 */
 
-package kuzminki.render
+package kuzminki.run
 
 import zio._
-import zio.blocking._
 import zio.stream.{ZSink, ZTransducer}
+import kuzminki.api.db
 import kuzminki.shape.ParamConv
-import kuzminki.api.{db, Kuzminki}
+import kuzminki.render.RenderedOperation
 
 
 trait RunOperation {

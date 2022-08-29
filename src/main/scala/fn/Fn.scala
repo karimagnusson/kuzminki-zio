@@ -16,16 +16,18 @@
 
 package kuzminki.fn
 
+import kuzminki.column._
+import kuzminki.fn.types._
 import kuzminki.column.TypeCol
-import kuzminki.render.{Prefix, UnderlyingFunctionRender, UnderlyingArgs}
-import kuzminki.function.ColFunction
-import kuzminki.function.types.StringFunction
+import kuzminki.render.Prefix
 
 // coalesce
 
 object Fn {
 
   import general._
+
+  // string
 
   def coalesce[T](col: TypeCol[T], default: T) = Coalesce(col, default)
 
@@ -39,30 +41,38 @@ object Fn {
 
   def replace(col: TypeCol[String], from: String, to: String) = Replace(col, from, to)
 
-  def trim(col: TypeCol[String]) = Trim(col)
+  def trim(col: TypeCol[String]) = CustomStringFn(col, "trim(%s)")
 
-  def upper(col: TypeCol[String]) = Upper(col)
+  def upper(col: TypeCol[String]) = CustomStringFn(col, "upper(%s)")
 
-  def lower(col: TypeCol[String]) = Lower(col)
+  def lower(col: TypeCol[String]) = CustomStringFn(col, "lower(%s)")
 
-  def initcap(col: TypeCol[String]) = Initcap(col)
+  def initcap(col: TypeCol[String]) = CustomStringFn(col, "initcap(%s)")
+
+  // numeric
+
+  def round[T](col: TypeCol[BigDecimal], size: Int) = Round(col, size)
+
+  def roundStr[T](col: TypeCol[BigDecimal], size: Int) = RoundStr(col, size)
+
+  def roundAny[T](col: TypeCol[_], size: Int) = RoundAny(col, size)
+
+  def roundAnyStr[T](col: TypeCol[BigDecimal], size: Int) = RoundAnyStr(col, size)
 }
 
 
 package object general {
 
-  case class Coalesce[T](underlying: TypeCol[T], default: T) extends TypeCol[T]
-                                                                with ColFunction {
+  case class CustomStringFn(col: TypeCol[String], template: String) extends StringFn
 
+  case class Coalesce[T](col: TypeCol[T], default: T) extends TypeFn[T] {
     val template = "coalesce(%s, ?)"
-    val conv = underlying.conv
-    def render(prefix: Prefix) = template.format(underlying.render(prefix))
-    val args = underlying.args ++ Vector(default)
+    val params = Vector(default)
   }
 
-
-  case class Concat(cols: Vector[TypeCol[_]]) extends StringFunction {
+  case class Concat(cols: Vector[TypeCol[_]]) extends StringCol {
     val template = "concat(%s)"
+    def name = cols.map(_.name).mkString("_")
     def render(prefix: Prefix) = {
       template.format(
         cols.map(_.render(prefix)).mkString(", ")
@@ -71,9 +81,9 @@ package object general {
     val args = cols.map(_.args).flatten
   }
 
-
-  case class ConcatWs(glue: String, cols: Vector[TypeCol[_]]) extends StringFunction {
+  case class ConcatWs(glue: String, cols: Vector[TypeCol[_]]) extends StringCol {
     val template = s"concat_ws('$glue', %s)"
+    def name = cols.map(_.name).mkString("_")
     def render(prefix: Prefix) = {
       template.format(
         cols.map(_.render(prefix)).mkString(", ")
@@ -81,61 +91,48 @@ package object general {
     }
     val args = cols.map(_.args).flatten
   }
-
 
   case class Substr(
-        underlying: TypeCol[String],
-        start: Int,
-        lenOpt: Option[Int]
-      ) extends StringFunction
-           with UnderlyingFunctionRender
-           with UnderlyingArgs {
-
+    col: TypeCol[String],
+    start: Int,
+    lenOpt: Option[Int]
+  ) extends StringFn {
     val template = lenOpt match {
       case Some(len) => s"substr(%s, $start, $len)"
       case None => s"substr(%s, $start)"
     }
   }
 
-
   case class Replace(
-        underlying: TypeCol[String],
-        from: String,
-        to: String
-      ) extends StringFunction
-           with UnderlyingFunctionRender
-           with UnderlyingArgs {
-
+    col: TypeCol[String],
+    from: String,
+    to: String
+  ) extends StringFn {
     val template = s"replace(%s, '$from', '$to')"
   }
 
+  // round
 
-  case class Trim(underlying: TypeCol[String]) extends StringFunction
-                                                  with UnderlyingFunctionRender
-                                                  with UnderlyingArgs {
-
-    val template = "replace(%s)"
+  trait RoundFn extends FnRender {
+    val size: Int
+    def name = col.name
+    val args = col.args ++ Vector(size)
   }
 
-  case class Upper(underlying: TypeCol[String]) extends StringFunction
-                                                   with UnderlyingFunctionRender
-                                                   with UnderlyingArgs {
-
-    val template = "upper(%s)"
+  case class Round(col: TypeCol[BigDecimal], size: Int) extends BigDecimalCol with RoundFn {
+    val template = "round(%s, ?)"
   }
 
-  case class Lower(underlying: TypeCol[String]) extends StringFunction
-                                                   with UnderlyingFunctionRender
-                                                   with UnderlyingArgs {
-
-    val template = "replace(%s)"
+  case class RoundStr(col: TypeCol[BigDecimal], size: Int) extends StringCol with RoundFn {
+    val template = "round(%s, ?)::text"
   }
 
-  case class Initcap(underlying: TypeCol[String]) extends StringFunction
-                                                     with UnderlyingFunctionRender
-                                                     with UnderlyingArgs {
+  case class RoundAny(col: TypeCol[_], size: Int) extends BigDecimalCol with RoundFn {
+    val template = "round(%s::numeric, ?)"
+  }
 
-    val template = "initcap(%s)"
+  case class RoundAnyStr(col: TypeCol[_], size: Int) extends StringCol with RoundFn {
+    val template = "round(%s::numeric, ?)::text"
   }
 }
 

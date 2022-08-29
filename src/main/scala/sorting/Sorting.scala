@@ -16,21 +16,21 @@
 
 package kuzminki.sorting
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 import kuzminki.render.{Renderable, Prefix}
 
 
 sealed trait Sorting extends Renderable {
-  def col: AnyCol
+  def col: TypeCol[_]
   def template: String
   def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = Vector.empty[Any]
 }
 
-case class Asc(col: AnyCol) extends Sorting {
+case class Asc[T](col: TypeCol[T]) extends Sorting {
   def template = "%s ASC"
 }
 
-case class Desc(col: AnyCol) extends Sorting {
+case class Desc[T](col: TypeCol[T]) extends Sorting {
   def template = "%s DESC"
 }

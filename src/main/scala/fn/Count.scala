@@ -16,20 +16,20 @@
 
 package kuzminki.fn
 
-import kuzminki.column.AnyCol
+import kuzminki.column.{TypeCol, LongCol}
 import kuzminki.render.{Prefix, NoArgs}
-import kuzminki.function.types.LongFunctionSingle
+import kuzminki.fn.types.{LongFn, FnNoArgs}
 
 
 object Count {
   def all = Count(CountAll)
 }
 
-case class Count(underlying: AnyCol) extends LongFunctionSingle {
+case class Count(col: TypeCol[_]) extends LongFn {
   val template = "count(%s)"
 }
 
-object CountAll extends AnyCol with NoArgs {
-  val self = this
-  def render(prefix: Prefix) = "*"
+object CountAll extends LongCol with NoArgs {
+  def name = "*"
+  def render(prefix: Prefix) = name
 }

@@ -16,30 +16,30 @@
 
 package kuzminki.filter.types
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 import kuzminki.render.Renderable
 
 
-case class FilterAggMatches(col: AnyCol, sub: Renderable) extends SubqueryFilter {
+case class FilterAggMatches[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
   val template = "%s = (%s)"
 }
 
-case class FilterAggNot(col: AnyCol, sub: Renderable) extends SubqueryFilter {
+case class FilterAggNot[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
   val template = "%s != (%s)"
 }
 
-case class FilterAggGt(col: AnyCol, sub: Renderable) extends SubqueryFilter {
+case class FilterAggGt[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
   val template = "%s > (%s)"
 }
 
-case class FilterAggGte(col: AnyCol, sub: Renderable) extends SubqueryFilter {
+case class FilterAggGte[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
   val template = "%s >= (%s)"
 }
 
-case class FilterAggLt(col: AnyCol, sub: Renderable) extends SubqueryFilter {
+case class FilterAggLt[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
   val template = "%s < (%s)"
 }
 
-case class FilterAggLte(col: AnyCol, sub: Renderable) extends SubqueryFilter {
+case class FilterAggLte[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
   val template = "%s <= (%s)"
 }

@@ -16,30 +16,30 @@
 
 package kuzminki.filter.types
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 
 
-case class FilterSeqMatches(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterSeqMatches[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "%s = ?"
 }
 
-case class FilterSeqNot(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterSeqNot[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "NOT %s = ?"
 }
 
-case class FilterSeqHas(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterSeqHas[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "? = ANY(%s)"
 }
 
-case class FilterSeqHasNot(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterSeqHasNot[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "NOT ? = ANY(%s)"
 }
 
-case class FilterSeqOverlap(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterSeqOverlap[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "%s && ?"
 }
 
-case class FilterSeqOverlapNot(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterSeqOverlapNot[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "NOT %s && ?"
 }
 

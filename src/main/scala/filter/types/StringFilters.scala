@@ -16,38 +16,38 @@
 
 package kuzminki.filter.types
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 
 
-case class FilterLike(col: AnyCol, arg: String) extends SingleArgFilter {
+case class FilterLike[T](col: TypeCol[T], arg: String) extends SingleArgFilter {
   val template = "%s LIKE concat('%%', ?, '%%')"
 }
 
-case class FilterStartsWith(col: AnyCol, arg: String) extends SingleArgFilter {
+case class FilterStartsWith[T](col: TypeCol[T], arg: String) extends SingleArgFilter {
   val template = "%s LIKE concat(?, '%%')"
 }
 
-case class FilterEndsWith(col: AnyCol, arg: String) extends SingleArgFilter {
+case class FilterEndsWith[T](col: TypeCol[T], arg: String) extends SingleArgFilter {
   val template = "%s LIKE concat('%%', ?)"
 }
 
-case class FilterSimilarTo(col: AnyCol, arg: String) extends SingleArgFilter {
+case class FilterSimilarTo[T](col: TypeCol[T], arg: String) extends SingleArgFilter {
   val template = "%s SIMILAR TO ?"
 }
 
-case class FilterReMatch(col: AnyCol, arg: String) extends SingleArgFilter {
+case class FilterReMatch[T](col: TypeCol[T], arg: String) extends SingleArgFilter {
   val template = "%s ~ ?"
 }
 
-case class FilterReIMatch(col: AnyCol, arg: String) extends SingleArgFilter {
+case class FilterReIMatch[T](col: TypeCol[T], arg: String) extends SingleArgFilter {
   val template = "%s ~* ?"
 }
 
-case class FilterReNotMatch(col: AnyCol, arg: String) extends SingleArgFilter {
+case class FilterReNotMatch[T](col: TypeCol[T], arg: String) extends SingleArgFilter {
   val template = "%s !~ ?"
 }
 
-case class FilterReNotIMatch(col: AnyCol, arg: String) extends SingleArgFilter {
+case class FilterReNotIMatch[T](col: TypeCol[T], arg: String) extends SingleArgFilter {
   val template = "%s !~* ?"
 }
 

@@ -18,7 +18,7 @@ package kuzminki.select
 
 import kuzminki.api.{Model, Join}
 import kuzminki.model.ModelTable
-import kuzminki.column.ModelCol
+import kuzminki.column.TypeCol
 import kuzminki.section.join._
 
 
@@ -28,49 +28,49 @@ class JoinOn[A <: Model, B <: Model, R](join: Join[A, B], coll: SelectCollector[
     new Where(join, coll.extend(Vector(joinSec, onSec)))
   }
 
-  def joinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+  def joinOn(pickLeft: A => TypeCol[_], pickRight: B => TypeCol[_]) = {
     next(
       InnerJoinSec(ModelTable(join.b)),
       OnSec(pickLeft(join.a), pickRight(join.b))
     )
   }
 
-  def innerJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+  def innerJoinOn(pickLeft: A => TypeCol[_], pickRight: B => TypeCol[_]) = {
     next(
       InnerJoinSec(ModelTable(join.b)),
       OnSec(pickLeft(join.a), pickRight(join.b))
     )
   }
 
-  def leftJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+  def leftJoinOn(pickLeft: A => TypeCol[_], pickRight: B => TypeCol[_]) = {
     next(
       LeftJoinSec(ModelTable(join.b)),
       OnSec(pickLeft(join.a), pickRight(join.b))
     )
   }
 
-  def leftOuterJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+  def leftOuterJoinOn(pickLeft: A => TypeCol[_], pickRight: B => TypeCol[_]) = {
     next(
       LeftOuterJoinSec(ModelTable(join.b)),
       OnSec(pickLeft(join.a), pickRight(join.b))
     )
   }
 
-  def rightJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+  def rightJoinOn(pickLeft: A => TypeCol[_], pickRight: B => TypeCol[_]) = {
     next(
       RightJoinSec(ModelTable(join.b)),
       OnSec(pickLeft(join.a), pickRight(join.b))
     )
   }
 
-  def rightOuterJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+  def rightOuterJoinOn(pickLeft: A => TypeCol[_], pickRight: B => TypeCol[_]) = {
     next(
       RightOuterJoinSec(ModelTable(join.b)),
       OnSec(pickLeft(join.a), pickRight(join.b))
     )
   }
 
-  def fullOuterJoinOn(pickLeft: A => ModelCol, pickRight: B => ModelCol) = {
+  def fullOuterJoinOn(pickLeft: A => TypeCol[_], pickRight: B => TypeCol[_]) = {
     next(
       FullOuterJoinSec(ModelTable(join.b)),
       OnSec(pickLeft(join.a), pickRight(join.b))

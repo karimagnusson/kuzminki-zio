@@ -14,24 +14,29 @@
 * limitations under the License.
 */
 
-package kuzminki.column
+package kuzminki.filter
 
-import kuzminki.filter.Filter
+import java.sql.Time
+import java.sql.Date
+import java.sql.Timestamp
+import kuzminki.column.TypeCol
+import kuzminki.assign._
 import kuzminki.filter.types._
+import kuzminki.select.AggregationSubquery
 
 
-trait ComparativeFilters[T] extends SelfRef[T] {
+trait ComparativeFilters[T] extends TypeFilter[T] {
 
-  def gt(value: T): Filter = FilterGt(self, value)
+  def gt(value: T): Filter = FilterGt(col, value)
   def >(value: T): Filter = gt(value)
 
-  def gte(value: T): Filter = FilterGte(self, value)
+  def gte(value: T): Filter = FilterGte(col, value)
   def >=(value: T): Filter = gte(value)
 
-  def lt(value: T): Filter = FilterLt(self, value)
+  def lt(value: T): Filter = FilterLt(col, value)
   def <(value: T): Filter = lt(value)
 
-  def lte(value: T): Filter = FilterLte(self, value)
+  def lte(value: T): Filter = FilterLte(col, value)
   def <=(value: T): Filter = lte(value)
 
   // optional
@@ -48,12 +53,28 @@ trait ComparativeFilters[T] extends SelfRef[T] {
   def lte(opt: Option[T]): Option[Filter] = opt.map(lte)
   def <=(opt: Option[T]): Option[Filter] = opt.map(lte)
 
+  // subquery
+
+  def matches(sub: AggregationSubquery): Filter = FilterAggMatches(col, sub)
+  def not(sub: AggregationSubquery): Filter = FilterAggNot(col, sub)
+  def gt(sub: AggregationSubquery): Filter = FilterAggGt(col, sub)
+  def gte(sub: AggregationSubquery): Filter = FilterAggGte(col, sub)
+  def lt(sub: AggregationSubquery): Filter = FilterAggLt(col, sub)
+  def lte(sub: AggregationSubquery): Filter = FilterAggLte(col, sub)
+
   // cache
 
-  def cacheGt = CacheGt(self)
-  def cacheLt = CacheLt(self)
-  def cacheGte = CacheGte(self)
-  def cacheLte = CacheLte(self)
+  def cacheGt = CacheGt(col)
+  def cacheLt = CacheLt(col)
+  def cacheGte = CacheGte(col)
+  def cacheLte = CacheLte(col)
+
+  // assign
+
+  def +=(value: T) = Increment(col, value)
+  def -=(value: T) = Decrement(col, value)
+  def cacheIncrement = CacheIncrement(col)
+  def cacheDecrement = CacheDecrement(col)
 }
 
 

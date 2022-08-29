@@ -17,7 +17,6 @@
 package kuzminki.api
 
 import java.util.Properties
-import scala.deprecated
 
 
 object DbConfig {
@@ -68,9 +67,6 @@ class DbConfig(db: String) {
     }
     this
   }
-
-  @deprecated("Not used", "01-08-2022")
-  def getConfig = this
 }
 
 

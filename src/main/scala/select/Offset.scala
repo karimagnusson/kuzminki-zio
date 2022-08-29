@@ -16,7 +16,6 @@
 
 package kuzminki.select
 
-import zio.stream.ZStream
 import kuzminki.section.select.OffsetSec
 
 
@@ -29,14 +28,5 @@ class Offset[M, R](model: M, coll: SelectCollector[R]) extends Limit(model, coll
         OffsetSec(num)
       )
     )
-  }
-
-  def stream = streamBatchBuffer(100, 3)
-
-  def streamBatch(size: Int) = streamBatchBuffer(size, 3)
-
-  def streamBatchBuffer(batchSize: Int, bufferSize: Int) = {
-    val gen = StreamQuery(offset(0).limit(batchSize).render)
-    ZStream.unfoldChunkM(gen)(a => a.next).buffer(bufferSize)
   }
 }

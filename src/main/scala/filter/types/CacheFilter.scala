@@ -60,45 +60,45 @@ case class CacheLte[T](col: TypeCol[T]) extends CacheFilter[T] {
 
 // string
 
-case class CacheLike(col: TypeCol[String]) extends CacheFilter[String] {
+case class CacheLike[T](col: TypeCol[T]) extends CacheFilter[T] {
   val template = "%s LIKE concat('%%', ?, '%%')"
 }
 
-case class CacheStartsWith(col: TypeCol[String]) extends CacheFilter[String] {
+case class CacheStartsWith[T](col: TypeCol[T]) extends CacheFilter[T] {
   val template = "%s LIKE concat(?, '%%')"
 }
 
-case class CacheEndsWith(col: TypeCol[String]) extends CacheFilter[String] {
+case class CacheEndsWith[T](col: TypeCol[T]) extends CacheFilter[T] {
   val template = "%s LIKE concat('%%', ?)"
 }
 
-case class CacheSimilarTo(col: TypeCol[String]) extends CacheFilter[String] {
+case class CacheSimilarTo[T](col: TypeCol[T]) extends CacheFilter[T] {
   val template = "%s SIMILAR TO ?"
 }
 
-case class CacheReMatch(col: TypeCol[String]) extends CacheFilter[String] {
+case class CacheReMatch[T](col: TypeCol[T]) extends CacheFilter[T] {
   val template = "%s ~ ?"
 }
 
-case class CacheReIMatch(col: TypeCol[String]) extends CacheFilter[String] {
+case class CacheReIMatch[T](col: TypeCol[T]) extends CacheFilter[T] {
   val template = "%s ~* ?"
 }
 
-case class CacheReNotMatch(col: TypeCol[String]) extends CacheFilter[String] {
+case class CacheReNotMatch[T](col: TypeCol[T]) extends CacheFilter[T] {
   val template = "%s !~ ?"
 }
 
-case class CacheReNotIMatch(col: TypeCol[String]) extends CacheFilter[String] {
+case class CacheReNotIMatch[T](col: TypeCol[T]) extends CacheFilter[T] {
   val template = "%s !~* ?"
 }
 
 // seq
 
-case class CacheSeqEq[T](col: TypeCol[T]) extends CacheFilter[T] {
+case class CacheSeqEq[T](col: TypeCol[Seq[T]]) extends CacheFilter[Seq[T]] {
   val template = "? = ANY(%s)"
 }
 
-case class CacheSeqNot[T](col: TypeCol[T]) extends CacheFilter[T] {
+case class CacheSeqNot[T](col: TypeCol[Seq[T]]) extends CacheFilter[Seq[T]] {
   val template = "NOT ? = ANY(%s)"
 }
 

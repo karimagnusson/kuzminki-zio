@@ -14,11 +14,26 @@
 * limitations under the License.
 */
 
-package kuzminki.fn
+package kuzminki.render
 
-import kuzminki.column.StaticStringCol
+import kuzminki.column.TypeCol
 
 
-object Static {
-  def string(value: String) = StaticStringCol(value)
+trait SubRef {
+  val col: TypeCol[_]
 }
+
+trait SubRender extends SubRef {
+  def render(prefix: Prefix) = col.render(prefix)
+}
+
+trait SubArgs extends SubRef {
+  val args = col.args
+}
+
+trait SubFnRender extends SubRef {
+  val template: String
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+}
+
+trait SubRenderAndArgs extends SubRender with SubArgs

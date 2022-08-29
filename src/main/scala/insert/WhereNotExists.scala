@@ -36,13 +36,6 @@ trait WhereNotExists[M <: Model, P] {
     whereNotExistsApply(pick(model).toVector)
   }
 
-  @deprecated("use whereNotExists", "0.9.2")
-  def whereNotExistsOne[T](pick: M => TypeCol[T]) = {
-    whereNotExistsApply(
-      Vector(pick(model))
-    )
-  }
-
   private def whereNotExistsApply(uniqueCols: Vector[TypeCol[_]]) = {
 
     if (uniqueCols.isEmpty) {

@@ -17,10 +17,12 @@
 package kuzminki.insert
 
 import kuzminki.shape.{ParamConv, RowConv}
-import kuzminki.render.{
+import kuzminki.run.{
   RunQueryParams,
   RunOperationParams,
-  RunOperationAsSink,
+  RunOperationAsSink
+}
+import kuzminki.render.{
   RenderedQuery,
   RenderedOperation
 }

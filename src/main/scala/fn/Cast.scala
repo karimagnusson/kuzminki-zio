@@ -16,50 +16,59 @@
 
 package kuzminki.fn
 
-import kuzminki.column.AnyCol
-import kuzminki.function.types._
+import kuzminki.column._
+import kuzminki.fn.types._
+import kuzminki.render.NoArgs
 
 
 object Cast {
-  import cast._
-  def asString(col: AnyCol) = CastString(col)
-  def asFloat(col: AnyCol) = CastFloat(col)
-  def asDouble(col: AnyCol) = CastDouble(col)
-  def asShort(col: AnyCol) = CastShort(col)
-  def asInt(col: AnyCol) = CastInt(col)
-  def asLong(col: AnyCol) = CastLong(col)
-  def asBigDecimal(col: AnyCol) = CastBigDecimal(col)
+  import castFn._
+  def asString(col: TypeCol[_]) = CastString(col)
+  def asShort(col: TypeCol[_]) = CastShort(col)
+  def asInt(col: TypeCol[_]) = CastInt(col)
+  def asLong(col: TypeCol[_]) = CastLong(col)
+  def asFloat(col: TypeCol[_]) = CastFloat(col)
+  def asDouble(col: TypeCol[_]) = CastDouble(col)
+  def asBigDecimal(col: TypeCol[_]) = CastBigDecimal(col)
 }
 
+package object castFn {
 
-package object cast {
+  trait CastFn extends FnRender with NoArgs
 
-  case class CastString(underlying: AnyCol) extends StringFunctionSingle {
+  case class CastString(col: TypeCol[_]) extends StringCol with CastFn {
     val template = "%s::text"
+    def name = "string_%s".format(col.name)
   }
 
-  case class CastFloat(underlying: AnyCol) extends StringFunctionSingle {
-    val template = "%s::real"
-  }
-
-  case class CastDouble(underlying: AnyCol) extends StringFunctionSingle {
-    val template = "%s::float8"
-  }
-
-  case class CastShort(underlying: AnyCol) extends StringFunctionSingle {
+  case class CastShort(col: TypeCol[_]) extends ShortCol with CastFn {
     val template = "%s::smallint"
+    def name = "short_%s".format(col.name)
   }
 
-  case class CastInt(underlying: AnyCol) extends StringFunctionSingle {
+  case class CastInt(col: TypeCol[_]) extends IntCol with CastFn {
     val template = "%s::int"
+    def name = "int_%s".format(col.name)
   }
 
-  case class CastLong(underlying: AnyCol) extends StringFunctionSingle {
-    val template = "%s::text"
+  case class CastLong(col: TypeCol[_]) extends LongCol with CastFn {
+    val template = "%s::bigint"
+    def name = "long_%s".format(col.name)
   }
 
-  case class CastBigDecimal(underlying: AnyCol) extends StringFunctionSingle {
+  case class CastFloat(col: TypeCol[_]) extends FloatCol with CastFn {
+    val template = "%s::real"
+    def name = "float_%s".format(col.name)
+  }
+
+  case class CastDouble(col: TypeCol[_]) extends DoubleCol with CastFn {
+    val template = "%s::float8"
+    def name = "double_%s".format(col.name)
+  }
+
+  case class CastBigDecimal(col: TypeCol[_]) extends BigDecimalCol with CastFn {
     val template = "%s::numeric"
+    def name = "bigdecimal_%s".format(col.name)
   }
 }
 

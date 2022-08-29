@@ -16,21 +16,21 @@
 
 package kuzminki.filter.types
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 
 
-case class FilterGt(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterGt[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "%s > ?"
 }
 
-case class FilterLt(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterLt[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "%s < ?"
 }
 
-case class FilterGte(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterGte[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "%s >= ?"
 }
 
-case class FilterLte(col: AnyCol, arg: Any) extends SingleArgFilter {
+case class FilterLte[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "%s <= ?"
 }

@@ -16,12 +16,12 @@
 
 package kuzminki.section
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 
 
 trait ReturningSections {
 
-  case class ReturningSec(parts: Vector[AnyCol]) extends MultiPartRender {
+  case class ReturningSec(parts: Vector[TypeCol[_]]) extends MultiPartRender {
     val expression = "RETURNING %s"
     val glue = ", "
   }

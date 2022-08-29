@@ -14,17 +14,18 @@
 * limitations under the License.
 */
 
-package kuzminki.column
+package kuzminki.fn.types
 
-import kuzminki.filter.Filter
-import kuzminki.filter.types._
-import kuzminki.assign._
+import kuzminki.column.TypeCol
+import kuzminki.render.NoArgs
 
 
-trait NumericMethods[T] extends SelfRef[T] {
-  val real: ModelCol
-  def +=(value: T) = Increment(real, value)
-  def -=(value: T) = Decrement(real, value)
-  def cacheIncrement = CacheIncrement(self)
-  def cacheDecrement = CacheDecrement(self)
+trait TypeFn[T] extends TypeCol[T] with FnNoArgs {
+  val col: TypeCol[T]
+  val conv = col.conv
+}
+
+trait TypeArgsFn[T] extends TypeCol[T] with FnArgs {
+  val col: TypeCol[T]
+  val conv = col.conv
 }

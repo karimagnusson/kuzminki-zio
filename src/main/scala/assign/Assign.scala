@@ -16,43 +16,57 @@
 
 package kuzminki.assign
 
-import kuzminki.column.ModelCol
+import kuzminki.column.{TypeCol, ModelCol}
 import kuzminki.render.{Renderable, Prefix}
+import kuzminki.api.KuzminkiError
 
 
-trait Assign extends Renderable
+trait Assign extends Renderable {
+  val col: TypeCol[_]
+  def validateCol() = col match {
+    case col: ModelCol =>
+    case _ => throw KuzminkiError("cannot update a function") 
+  }
+}
 
-case class SetValue(col: ModelCol, value: Any) extends Assign {
+case class SetValue(col: TypeCol[_], value: Any) extends Assign {
+  validateCol()
   def render(prefix: Prefix) = s"${col.name} = ?"
   val args = Vector(value)
 }
 
-case class SetToNull(col: ModelCol) extends Assign {  
+case class SetToNull(col: TypeCol[_]) extends Assign {
+  validateCol()
   def render(prefix: Prefix) = s"${col.name} = NULL"
   val args = Vector.empty[Any]
 }
 
-case class Increment(col: ModelCol, value: Any) extends Assign {
+case class Increment(col: TypeCol[_], value: Any) extends Assign {
+  validateCol()
   def render(prefix: Prefix) = s"${col.name} = ${col.name} + ?"
   val args = Vector(value)
 }
 
-case class Decrement(col: ModelCol, value: Any) extends Assign {
+case class Decrement(col: TypeCol[_], value: Any) extends Assign {
+  validateCol()
   def render(prefix: Prefix) = s"${col.name} = ${col.name} - ?"
   val args = Vector(value)
 }
 
-case class Append(col: ModelCol, value: Any) extends Assign {
+case class Append(col: TypeCol[_], value: Any) extends Assign {
+  validateCol()
   def render(prefix: Prefix) = s"${col.name} = array_append(${col.name}, ?)"
   val args = Vector(value)
 }
 
-case class Prepend(col: ModelCol, value: Any) extends Assign {
+case class Prepend(col: TypeCol[_], value: Any) extends Assign {
+  validateCol()
   def render(prefix: Prefix) = s"${col.name} = array_prepend(?, ${col.name})"
   val args = Vector(value)
 }
 
-case class Remove(col: ModelCol, value: Any) extends Assign {
+case class Remove(col: TypeCol[_], value: Any) extends Assign {
+  validateCol()
   def render(prefix: Prefix) = s"${col.name} = array_remove(${col.name}, ?)"
   val args = Vector(value)
 }

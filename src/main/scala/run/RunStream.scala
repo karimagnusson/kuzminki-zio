@@ -14,12 +14,29 @@
 * limitations under the License.
 */
 
-package kuzminki.select
+package kuzminki.run
 
 import zio._
+import zio.stream.ZStream
+import kuzminki.select.Offset
 import kuzminki.render.RenderedQuery
 import kuzminki.shape.RowConv
 import kuzminki.api.db
+
+
+trait RunStream[M, R] {
+
+  val  query: Offset[M, R]
+
+  def stream = streamBatchBuffer(100, 3)
+
+  def streamBatch(size: Int) = streamBatchBuffer(size, 3)
+
+  def streamBatchBuffer(batchSize: Int, bufferSize: Int) = {
+    val gen = StreamQuery(query.offset(0).limit(batchSize).render)
+    ZStream.unfoldChunkM(gen)(a => a.next).buffer(bufferSize)
+  }
+}
 
 
 object StreamQuery {
@@ -55,10 +72,3 @@ class StreamQuery[T](
 
   def next = db.query(nextQuery).map(toChunk)
 }
-
-
-
-
-
-
-

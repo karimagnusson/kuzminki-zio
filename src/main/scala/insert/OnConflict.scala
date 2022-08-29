@@ -16,7 +16,7 @@
 
 package kuzminki.insert
 
-import kuzminki.column.ModelCol
+import kuzminki.column.TypeCol
 import kuzminki.shape.ParamShape
 import kuzminki.render.SectionCollector
 import kuzminki.section.insert._
@@ -39,7 +39,7 @@ trait OnConflict[M, P] {
     )
   }
 
-  def onConflictOnColumn(pick: M => ModelCol) = {
+  def onConflictOnColumn(pick: M => TypeCol[_]) = {
     new DoUpdate(
       model,
       coll,

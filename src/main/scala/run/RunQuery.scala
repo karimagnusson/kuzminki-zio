@@ -14,11 +14,11 @@
 * limitations under the License.
 */
 
-package kuzminki.render
+package kuzminki.run
 
 import zio._
-import zio.blocking._
 import kuzminki.api.db
+import kuzminki.render.RenderedQuery
 
 
 trait RunQuery[R] {
@@ -27,15 +27,18 @@ trait RunQuery[R] {
 
   def run = db.query(render)
 
-  def runAs[T](implicit transform: R => T) = db.queryAs(render, transform)
+  def runAs[T](implicit transform: R => T) =
+    db.queryAs(render, transform)
 
   def runHead = db.queryHead(render)
 
-  def runHeadAs[T](implicit transform: R => T) = db.queryHeadAs(render, transform)
+  def runHeadAs[T](implicit transform: R => T) =
+    db.queryHeadAs(render, transform)
 
   def runHeadOpt = db.queryHeadOpt(render)
 
-  def runHeadOptAs[T](implicit transform: R => T) = db.queryHeadOptAs(render, transform)
+  def runHeadOptAs[T](implicit transform: R => T) =
+    db.queryHeadOptAs(render, transform)
 }
 
 
@@ -45,15 +48,18 @@ trait RunQueryParams[P, R] {
 
   def run(params: P) = db.query(render(params))
 
-  def runAs[T](params: P)(implicit transform: R => T) = db.queryAs(render(params), transform)
+  def runAs[T](params: P)(implicit transform: R => T) =
+    db.queryAs(render(params), transform)
 
   def runHead(params: P) = db.queryHead(render(params))
 
-  def runHeadAs[T](params: P)(implicit transform: R => T) = db.queryHeadAs(render(params), transform)
+  def runHeadAs[T](params: P)(implicit transform: R => T) =
+    db.queryHeadAs(render(params), transform)
 
   def runHeadOpt(params: P) = db.queryHeadOpt(render(params))
 
-  def runHeadOptAs[T](params: P)(implicit transform: R => T) = db.queryHeadOptAs(render(params), transform)
+  def runHeadOptAs[T](params: P)(implicit transform: R => T) =
+    db.queryHeadOptAs(render(params), transform)
 }
 
 

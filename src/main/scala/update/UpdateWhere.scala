@@ -27,19 +27,7 @@ class UpdateWhere[M](
     coll: SectionCollector
   ) {
 
-  def all() = new RenderUpdate(model, coll)
-
-  @deprecated("use where", "0.9.2")
-  def whereOne(pick: M => Filter) = {
-    new RenderUpdate(
-      model,
-      coll.add(
-        WhereSec(
-          Vector(pick(model))
-        )
-      )
-    )
-  }
+  def all = new RenderUpdate(model, coll)
 
   def where(pick: M => Seq[Filter]) = {
     pick(model) match {
@@ -53,6 +41,7 @@ class UpdateWhere[M](
     }
   }
 
+  @deprecated("use where whereOpt", "0.9.4-RC1")
   def whereOpts(pick: M => Seq[Option[Filter]]) = {
     pick(model).flatten match {
       case Nil =>
@@ -60,22 +49,24 @@ class UpdateWhere[M](
       case filters =>
         new RenderUpdate(
           model,
-          coll.add(WhereSec(filters.toVector))
+          coll.add(
+            WhereSec(filters.toVector)
+          )
         )
     }
   }
 
-  def whereOpt(pick: M => Option[Filter]) = {
-    pick(model) match {
-      case Some(filter) =>
+  def whereOpt(pick: M => Seq[Option[Filter]]) = {
+    pick(model).flatten match {
+      case Nil =>
+        new RenderUpdate(model, coll)
+      case filters =>
         new RenderUpdate(
           model,
           coll.add(
-            WhereSec(Vector(filter))
+            WhereSec(filters.toVector)
           )
         )
-      case None =>
-        new RenderUpdate(model, coll)
     }
   }
 }

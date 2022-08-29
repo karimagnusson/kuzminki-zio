@@ -16,7 +16,7 @@
 
 package kuzminki.section
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 import kuzminki.assign.{SetValue, SetUpsert}
 import kuzminki.model.ModelTable
 import kuzminki.render.{Renderable, Prefix, NoArgs}
@@ -38,7 +38,7 @@ package object insert extends ReturningSections {
     val args = parts.map(_.value)
   }
 
-  case class InsertColumnsSec(parts: Vector[AnyCol]) extends MultiPartRender {
+  case class InsertColumnsSec(parts: Vector[TypeCol[_]]) extends MultiPartRender {
     val expression = "(%s)"
     val glue = ", "
   }
@@ -52,16 +52,6 @@ package object insert extends ReturningSections {
   case class InsertBlankValuesSec(size: Int) extends Section with FillValues with NoArgs {
     val expression = "VALUES %s"
     def render(prefix: Prefix) = expression.format(fillBrackets(size))
-  }
-
-  case class InsertMultipleValuesSec(valuesList: Vector[Vector[Any]]) extends Section with FillValues {
-    val expression = "VALUES %s"
-    def render(prefix: Prefix) = {
-      expression.format(
-        valuesList.map(values => fillBrackets(values.size)).mkString(", ")
-      )
-    }
-    val args = valuesList.flatten
   }
 
   case class InsertBlankWhereNotExistsSec(size: Int, table: ModelTable, where: WhereSec) extends Section with FillValues with NoArgs {
@@ -79,7 +69,7 @@ package object insert extends ReturningSections {
     val expression = "ON CONFLICT"
   }
 
-  case class InsertOnConflictColumnSec(part: AnyCol) extends SinglePartRender {
+  case class InsertOnConflictColumnSec(part: TypeCol[_]) extends SinglePartRender {
     val expression = "ON CONFLICT (%s)"
   }
 

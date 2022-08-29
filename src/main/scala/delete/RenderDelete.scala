@@ -16,8 +16,8 @@
 
 package kuzminki.delete
 
+import kuzminki.run.RunOperation
 import kuzminki.render.{
-  RunOperation,
   RenderedOperation,
   SectionCollector
 }

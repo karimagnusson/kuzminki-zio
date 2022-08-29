@@ -16,7 +16,6 @@
 
 package kuzminki.section
 
-import kuzminki.column.AnyCol
 import kuzminki.assign.Assign
 import kuzminki.model.ModelTable
 import kuzminki.render.{Renderable, Prefix, NoArgs}

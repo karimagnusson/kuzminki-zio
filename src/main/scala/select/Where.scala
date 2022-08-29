@@ -16,7 +16,7 @@
 
 package kuzminki.select
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 import kuzminki.filter.Filter
 import kuzminki.section.Section
 import kuzminki.section.select.{WhereSec, WhereBlankSec, GroupBySec}
@@ -44,55 +44,38 @@ class Where[M, R](
     )
   }
 
-  @deprecated("use where", "0.9.2")
-  def whereOne(pick: M => Filter) = {
+  @deprecated("use where whereOpt", "0.9.4-RC1")
+  def whereOpts(pick: M => Seq[Option[Filter]]) = {
     toOrderBy(
-      WhereSec(
-        Vector(pick(model))
-      )
+      pick(model).flatten.toVector match {
+        case Nil =>
+          WhereBlankSec
+        case filters =>
+          WhereSec(filters.toVector)
+      }
     )
   }
 
-  def whereOpts(pick: M => Seq[Option[Filter]]) = {
+  def whereOpt(pick: M => Seq[Option[Filter]]) = {
     toOrderBy(
       pick(model).flatten match {
         case Nil =>
           WhereBlankSec
         case filters =>
-          WhereSec(pick(model).toVector.flatten)
-      }
-    )
-  }
-
-  def whereOpt(pick: M => Option[Filter]) = {
-    toOrderBy(
-      pick(model) match {
-        case Some(filter) =>
-          WhereSec(Vector(filter))
-        case None =>
-          WhereBlankSec
+          WhereSec(filters.toVector)
       }
     )
   }
 
   // group by
 
-  private def toHaving(cols: Vector[AnyCol]) = {
+  def groupBy(pick: M => Seq[TypeCol[_]]) = {
     new Having(
       model,
-      coll.add(GroupBySec(cols))
+      coll.add(
+        GroupBySec(pick(model).toVector)
+      )
     )
-  }
-
-  @deprecated("use groupBy", "0.9.2")
-  def groupByOne(pick: M => AnyCol) = {
-    toHaving(
-      Vector(pick(model))
-    )
-  }
-
-  def groupBy(pick: M => Seq[AnyCol]) = {
-    toHaving(pick(model).toVector)
   }
 }
 

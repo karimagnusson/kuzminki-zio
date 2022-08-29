@@ -14,7 +14,55 @@
 * limitations under the License.
 */
 
-package kuzminki.function
+package kuzminki.fn.types
+
+import kuzminki.column.TypeCol
+import kuzminki.render.{Prefix, NoArgs}
 
 
-trait Aggregation
+trait FnBase {
+  val col: TypeCol[_]
+  val template: String
+}
+
+trait FnRender extends FnBase {
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+}
+
+trait FnName extends FnBase {
+  def name = "%s_%s".format(template.splitAt(template.indexOf('('))._1, col.name)
+}
+
+trait FnArgs extends FnRender with FnName {
+  def fnArgs: Vector[Any]
+  val args = col.args ++ fnArgs
+}
+
+trait FnNoArgs extends FnRender with FnName with NoArgs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

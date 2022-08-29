@@ -14,9 +14,13 @@
 * limitations under the License.
 */
 
-package kuzminki.column
+package kuzminki.filter
 
-import kuzminki.filter._
+import java.sql.Time
+import java.sql.Date
+import java.sql.Timestamp
+import kuzminki.column.TypeCol
+import kuzminki.assign._
 import kuzminki.filter.types._
 import kuzminki.select.SelectSubquery
 import kuzminki.assign.{Append, Prepend, Remove}
@@ -24,19 +28,19 @@ import kuzminki.assign.{Append, Prepend, Remove}
 
 trait SeqFilters[T] {
 
-  val self: TypeCol[Seq[T]]
+  val col: TypeCol[Seq[T]]
 
-  def matches(value: Seq[T]): Filter = FilterSeqMatches(self, value)
+  def matches(value: Seq[T]): Filter = FilterSeqMatches(col, value)
   def ===(value: Seq[T]): Filter = matches(value)
   
-  def not(value: Seq[T]): Filter = FilterSeqNot(self, value)
+  def not(value: Seq[T]): Filter = FilterSeqNot(col, value)
   def !==(value: Seq[T]): Filter = not(value)
 
-  def has(value: T) = FilterSeqHas(self, value)
-  def hasNot(value: T) = FilterSeqHasNot(self, value)
+  def has(value: T): Filter = FilterSeqHas(col, value)
+  def hasNot(value: T): Filter = FilterSeqHasNot(col, value)
 
-  def overlap(value: Seq[T]) = FilterSeqOverlap(self, value)
-  def overlapNot(value: Seq[T]) = FilterSeqOverlapNot(self, value)
+  def overlap(value: Seq[T]): Filter = FilterSeqOverlap(col, value)
+  def overlapNot(value: Seq[T]): Filter = FilterSeqOverlapNot(col, value)
   
   // optional
 
@@ -54,13 +58,19 @@ trait SeqFilters[T] {
 
   // null
 
-  def isNull: Filter = FilterIsNull(self)
-  def isNotNull: Filter = FilterIsNotNull(self)
+  def isNull: Filter = FilterIsNull(col)
+  def isNotNull: Filter = FilterIsNotNull(col)
 
   // cache
 
-  def cacheEq = CacheSeqEq(self)
-  def cacheNot = CacheSeqNot(self)
+  def cacheEq = CacheSeqEq(col)
+  def cacheNot = CacheSeqNot(col)
+
+  // assign
+
+  def append(value: T) = Append(col, value)
+  def prepend(value: T) = Prepend(col, value)
+  def remove(value: T) = Remove(col, value)
 }
 
 

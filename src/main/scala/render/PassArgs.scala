@@ -16,7 +16,10 @@
 
 package kuzminki.render
 
+import kuzminki.column.TypeCol
 
-trait PassArgs extends ColRef {
+
+trait PassArgs {
+  val col: TypeCol[_]
   val args = col.args
 }

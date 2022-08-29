@@ -34,11 +34,4 @@ class OrderBy[M, R](model: M, coll: SelectCollector[R]) extends Offset(model, co
   def orderBy(pick: M => Seq[Sorting]) = {
     toOffset(pick(model).toVector)
   }
-
-  @deprecated("use orderBy", "0.9.2")
-  def orderByOne(pick: M => Sorting) = {
-    toOffset(
-      Vector(pick(model))
-    )
-  }
 }

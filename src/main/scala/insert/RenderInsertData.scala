@@ -17,8 +17,8 @@
 package kuzminki.insert
 
 import kuzminki.api.Model
+import kuzminki.run.RunOperation
 import kuzminki.render.{
-  RunOperation,
   RenderedOperation,
   SectionCollector
 }

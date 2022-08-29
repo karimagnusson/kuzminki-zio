@@ -17,8 +17,8 @@
 package kuzminki.update
 
 import kuzminki.shape.RowConv
+import kuzminki.run.RunQuery
 import kuzminki.render.{
-  RunQuery,
   RenderedQuery,
   SectionCollector
 }

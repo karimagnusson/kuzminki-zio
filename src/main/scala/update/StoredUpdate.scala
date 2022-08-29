@@ -16,10 +16,7 @@
 
 package kuzminki.update
 
-import zio._
-import zio.blocking._
-import zio.stream.{ZSink, ZTransducer}
-import kuzminki.api.db
+import kuzminki.run.RunUpdate
 import kuzminki.shape.ParamConv
 import kuzminki.render.RenderedOperation
 
@@ -27,32 +24,14 @@ import kuzminki.render.RenderedOperation
 class StoredUpdate[P1, P2](
   statement: String,
   changes: ParamConv[P1],
-  filters: ParamConv[P2]) {
+  filters: ParamConv[P2]
+) extends RunUpdate[P1, P2] {
 
   def render(args1: P1, args2: P2) = {
     RenderedOperation(
       statement,
       changes.fromShape(args1) ++ filters.fromShape(args2)
     )
-  }
-
-  // run
-
-  def run(args1: P1, args2: P2) = db.exec(render(args1, args2))
-
-  def runNum(args1: P1, args2: P2) = db.execNum(render(args1, args2))
-
-  def runList(args: Seq[Tuple2[P1, P2]]) =
-    db.execList(args.map(arg => render(arg._1, arg._2)))
-
-  def asSink = ZSink.foreach { (arg: Tuple2[P1, P2]) =>
-    db.exec(render(arg._1, arg._2))
-  }
-
-  def collect(size: Int) = ZTransducer.collectAllN[Tuple2[P1, P2]](size)
-
-  def asChunkSink = ZSink.foreach { (chunk: Chunk[Tuple2[P1, P2]]) =>
-    db.execList(chunk.toList.map(arg => render(arg._1, arg._2)))
   }
 
   // debug

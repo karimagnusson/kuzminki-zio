@@ -16,18 +16,18 @@
 
 package kuzminki.update
 
+import kuzminki.run.RunOperation
 import kuzminki.render.{
-  RunOperation,
   RenderedOperation,
   SectionCollector
 }
 
 
 class RenderUpdate[M](
-    model: M,
-    coll: SectionCollector
-  ) extends PickUpdateReturning(model, coll)
-       with RunOperation {
+  model: M,
+  coll: SectionCollector
+) extends PickUpdateReturning(model, coll)
+     with RunOperation {
   
   def render = RenderedOperation(coll.render, coll.args)
 

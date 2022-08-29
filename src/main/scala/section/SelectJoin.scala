@@ -17,7 +17,7 @@
 package kuzminki.section
 
 import kuzminki.model.ModelTable
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 import kuzminki.sorting.Sorting
 import kuzminki.render.{Renderable, Prefix, NoArgs}
 
@@ -26,7 +26,7 @@ package object join {
 
   sealed trait JoinSec extends SinglePartRender
 
-  case class OnSec(leftCol: AnyCol, rightCol: AnyCol) extends Section with NoArgs {
+  case class OnSec(leftCol: TypeCol[_], rightCol: TypeCol[_]) extends Section with NoArgs {
     val expression = "ON %s = %s"
     def render(prefix: Prefix) = expression.format(leftCol.render(prefix), rightCol.render(prefix))
   }

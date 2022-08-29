@@ -38,21 +38,6 @@ class Update[M <: Model](
       )
     )
   }
-
-  @deprecated("use set", "0.9.2")
-  def setOne(pick: M => Assign) = {
-    new UpdateWhere(
-      model,
-      SectionCollector(
-        Vector(
-          UpdateSec(ModelTable(model)),
-          UpdateSetSec(
-            Vector(pick(model))
-          )
-        )
-      )
-    )
-  }
 }
 
 

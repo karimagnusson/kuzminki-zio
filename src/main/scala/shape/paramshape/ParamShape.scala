@@ -16,11 +16,11 @@
 
 package kuzminki.shape
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 
 
 trait ParamShape[P] {
   val size: Int
-  val cols: Vector[AnyCol]
+  val cols: Vector[TypeCol[_]]
   val conv: ParamConv[P]
 }

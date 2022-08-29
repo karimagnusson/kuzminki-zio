@@ -16,9 +16,9 @@
 
 package kuzminki.filter.types
 
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 
 
-case class FilterMatchesNoArg(col: AnyCol) extends NoArgFilter {
+case class FilterMatchesNoArg[T](col: TypeCol[T]) extends NoArgFilter {
   val template = "%s = ?"
 }

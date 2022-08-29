@@ -16,14 +16,14 @@
 
 package kuzminki.insert
 
-import zio._
-import kuzminki.api.{db, Kuzminki}
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
-import kuzminki.render.{
+import kuzminki.run.{
   RunQueryParams,
   RunOperation,
-  RunOperationParams,
+  RunOperationParams
+}
+import kuzminki.render.{
   RenderedQuery,
   RenderedOperation,
   SectionCollector
@@ -48,6 +48,8 @@ class RenderInsert[P](
       paramConv.fromShape(params)
     )
   }
+
+  def runList(paramList: Seq[P]) = cache.runList(paramList)
 
   def debugSql(handler: String => Unit) = {
     handler(coll.render)

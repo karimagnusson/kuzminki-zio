@@ -18,9 +18,10 @@ package kuzminki.select
 
 import kuzminki.api.KuzminkiError
 import kuzminki.render.Prefix
-import kuzminki.column.AnyCol
-import kuzminki.function.Aggregation
-import kuzminki.render.{RunQuery, RenderedQuery}
+import kuzminki.column.TypeCol
+import kuzminki.fn.aggFn.AggFn
+import kuzminki.run.RunQuery
+import kuzminki.render.RenderedQuery
 import kuzminki.section.select._
 
 
@@ -45,7 +46,7 @@ class RenderSelect[M, R](
   
   def asSubquery = {
     firstColumn match {
-      case col: AnyCol =>
+      case col: TypeCol[_] =>
       case _ =>
         throw KuzminkiError("Subquery column cannot use modifiers")
     }
@@ -55,7 +56,7 @@ class RenderSelect[M, R](
   
   def asAggregation = {
     firstColumn match {
-      case col: Aggregation =>
+      case col: AggFn =>
       case _ =>
         throw KuzminkiError("Subquery column must be an aggregation function")
     }

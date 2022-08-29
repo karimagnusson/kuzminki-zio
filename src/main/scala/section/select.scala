@@ -17,14 +17,13 @@
 package kuzminki.section
 
 import kuzminki.model.ModelTable
-import kuzminki.column.AnyCol
 import kuzminki.sorting.Sorting
 import kuzminki.render.{Renderable, Prefix, NoArgs}
 
 
 package object select extends FilterSections {
 
-  case class SelectSec(parts: Vector[AnyCol]) extends NotEmpty(parts) with MultiPartRender {
+  case class SelectSec(parts: Vector[Renderable]) extends NotEmpty(parts) with MultiPartRender {
     def error = "no columns selected"
     val expression = "SELECT %s"
     val glue = ", "
@@ -34,7 +33,7 @@ package object select extends FilterSections {
     val expression = "FROM %s"
   }
 
-  case class GroupBySec(parts: Vector[AnyCol]) extends NotEmpty(parts) with MultiPartRender {
+  case class GroupBySec(parts: Vector[Renderable]) extends NotEmpty(parts) with MultiPartRender {
     def error = "WHERE BY cannot be empty"
     val expression = "GROUP BY %s"
     val glue = ", "

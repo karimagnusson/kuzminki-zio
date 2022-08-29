@@ -17,14 +17,14 @@
 package kuzminki.insert
 
 import kuzminki.api.KuzminkiError
-import kuzminki.column.AnyCol
+import kuzminki.column.TypeCol
 
 
 object Reuse {
 
   def noChange: Reuse = NoChange
 
-  def fromIndex(insertCols: Vector[AnyCol], reuseCols: Vector[AnyCol]): Reuse = {
+  def fromIndex(insertCols: Vector[TypeCol[_]], reuseCols: Vector[TypeCol[_]]): Reuse = {
 
     val indexes = reuseCols.map { col =>
       insertCols.indexOf(col) match {
