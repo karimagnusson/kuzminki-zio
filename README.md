@@ -160,7 +160,7 @@ implicit class RoundBigDecimal(col: TypeCol[BigDecimal]) {
 
 sql
   .select(profile)
-  .colsNamed(t => Seq(
+  .cols2(t => Seq(
     bigNum.round(2),
     bigNum.roundStr(2)
   ))
@@ -183,7 +183,7 @@ case class Left(col: TypeCol[String], size: Int) extends StringArgsFn {
 
 sql
   .select(profile)
-  .colsNamed(t => Seq(
+  .cols2(t => Seq(
     Length(t.firstName),
     Left(t.lastName, 4)
   ))
