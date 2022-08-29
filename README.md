@@ -154,8 +154,8 @@ Use functions as methods on columns.
 import kuzminki.column.TypeCol
 
 implicit class RoundBigDecimal(col: TypeCol[BigDecimal]) {
-  def round(size: Int) = Fn.round(col, 2)
-  def roundStr(size: Int) = Fn.roundStr(col, 2)
+  def round(size: Int) = Fn.round(col, size)
+  def roundStr(size: Int) = Fn.roundStr(col, size)
 }
 
 sql
