@@ -160,7 +160,7 @@ implicit class RoundBigDecimal(col: TypeCol[BigDecimal]) {
 
 sql
   .select(profile)
-  .cols2(t => Seq(
+  .cols2(t => (
     bigNum.round(2),
     bigNum.roundStr(2)
   ))
@@ -183,7 +183,7 @@ case class Left(col: TypeCol[String], size: Int) extends StringArgsFn {
 
 sql
   .select(profile)
-  .cols2(t => Seq(
+  .cols2(t => (
     Length(t.firstName),
     Left(t.lastName, 4)
   ))
@@ -195,7 +195,7 @@ Aggregation now takes this form.
 ```scala
 sql
   .select(profile)
-  .cols4(t => Seq(
+  .cols4(t => (
     Agg.avg(t.bigNum),
     Agg.sum(t.bigNum),
     Agg.max(t.bigNum),
