@@ -45,7 +45,7 @@ trait WhereNotExists[M <: Model, P] {
     new RenderInsert(
       coll.add(
         InsertBlankWhereNotExistsSec(
-          paramShape.size,
+          paramShape.cols,
           ModelTable(model),
           WhereSec(
             uniqueCols.map(FilterMatchesNoArg(_))

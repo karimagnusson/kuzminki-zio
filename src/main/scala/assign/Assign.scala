@@ -19,6 +19,7 @@ package kuzminki.assign
 import kuzminki.column.{TypeCol, ModelCol}
 import kuzminki.render.{Renderable, Prefix}
 import kuzminki.api.KuzminkiError
+import kuzminki.api.Jsonb
 
 
 trait Assign extends Renderable {
@@ -28,6 +29,8 @@ trait Assign extends Renderable {
     case _ => throw KuzminkiError("cannot update a function") 
   }
 }
+
+// general
 
 case class SetValue(col: TypeCol[_], value: Any) extends Assign {
   validateCol()
@@ -41,6 +44,8 @@ case class SetToNull(col: TypeCol[_]) extends Assign {
   val args = Vector.empty[Any]
 }
 
+// numeric
+
 case class Increment(col: TypeCol[_], value: Any) extends Assign {
   validateCol()
   def render(prefix: Prefix) = s"${col.name} = ${col.name} + ?"
@@ -52,6 +57,8 @@ case class Decrement(col: TypeCol[_], value: Any) extends Assign {
   def render(prefix: Prefix) = s"${col.name} = ${col.name} - ?"
   val args = Vector(value)
 }
+
+// array
 
 case class Append(col: TypeCol[_], value: Any) extends Assign {
   validateCol()
@@ -70,6 +77,34 @@ case class Remove(col: TypeCol[_], value: Any) extends Assign {
   def render(prefix: Prefix) = s"${col.name} = array_remove(${col.name}, ?)"
   val args = Vector(value)
 }
+
+// jsonb
+
+case class JsonbSetValue(col: TypeCol[Jsonb], value: Any) extends Assign {
+  validateCol()
+  def render(prefix: Prefix) = s"${col.name} = ?::jsonb"
+  val args = Vector(value)
+}
+
+case class JsonbUpdate(col: TypeCol[Jsonb], value: Any) extends Assign {
+  validateCol()
+  def render(prefix: Prefix) = s"${col.name} = ${col.name} || ?::jsonb"
+  val args = Vector(value)
+}
+
+case class JsonbDel(col: TypeCol[Jsonb], value: Any) extends Assign {
+  validateCol()
+  def render(prefix: Prefix) = s"${col.name} = ${col.name} - ?"
+  val args = Vector(value)
+}
+
+case class JsonbDelPath(col: TypeCol[Jsonb], value: Any) extends Assign {
+  validateCol()
+  def render(prefix: Prefix) = s"${col.name} = ${col.name} #- ?"
+  val args = Vector(value)
+}
+
+
 
 
 

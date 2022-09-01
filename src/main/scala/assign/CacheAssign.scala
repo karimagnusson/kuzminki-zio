@@ -19,6 +19,7 @@ package kuzminki.assign
 import kuzminki.column.TypeCol
 import kuzminki.shape.CachePart
 import kuzminki.render.{Renderable, Prefix}
+import kuzminki.api.Jsonb
 
 
 trait CacheAssign[T] extends CachePart[T] {
@@ -36,6 +37,8 @@ case class CacheSet[T](col: TypeCol[T]) extends CacheAssign[T] {
   }
 }
 
+// numeric
+
 case class CacheIncrement[T](col: TypeCol[T]) extends CacheAssign[T] {
   def render(prefix: Prefix) = {
     val name = col.render(prefix)
@@ -47,6 +50,15 @@ case class CacheDecrement[T](col: TypeCol[T]) extends CacheAssign[T] {
   def render(prefix: Prefix) = {
     val name = col.render(prefix)
     s"$name = $name - ?"
+  }
+}
+
+// jsonb
+
+case class CacheSetJsonb(col: TypeCol[Jsonb]) extends CacheAssign[Jsonb] {
+  def render(prefix: Prefix) = {
+    val name = col.render(prefix)
+    s"$name = ?::jsonb"
   }
 }
 

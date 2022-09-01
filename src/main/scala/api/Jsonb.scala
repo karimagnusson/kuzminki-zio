@@ -14,18 +14,7 @@
 * limitations under the License.
 */
 
-package kuzminki.column
-
-import kuzminki.render.Renderable
-import kuzminki.conv.ValConv
-import kuzminki.sorting.{Asc, Desc}
+package kuzminki.api
 
 
-trait TypeCol[T] extends Renderable {
-  def name: String
-  val conv: ValConv[T]
-  def asOpt = OptCol(this)
-  def asc = Asc(this)
-  def desc = Desc(this)
-}
-
+case class Jsonb(value: String)

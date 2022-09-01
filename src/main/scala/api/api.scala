@@ -57,6 +57,7 @@ package object api {
   implicit val kzimplTimeCol: ColInfo => TypeCol[Time] = info => TimeModelCol(info)
   implicit val kzimplDateCol: ColInfo => TypeCol[Date] = info => DateModelCol(info)
   implicit val kzimplTimestampCol: ColInfo => TypeCol[Timestamp] = info => TimestampModelCol(info)
+  implicit val kzimplJsonbCol: ColInfo => TypeCol[Jsonb] = info => JsonbModelCol(info)
 
   implicit val kzimplStringSeqCol: ColInfo => TypeCol[Seq[String]] = info => StringSeqModelCol(info)
   implicit val kzimplBooleanSeqCol: ColInfo => TypeCol[Seq[Boolean]] = info => BooleanSeqModelCol(info)
@@ -72,29 +73,30 @@ package object api {
 
   // filters
 
-  implicit class StringMethods(val col: TypeCol[String]) extends StringFilters
-  implicit class BooleanMethods(val col: TypeCol[Boolean]) extends TypeFilter[Boolean]
-  implicit class ShortMethods(val col: TypeCol[Short]) extends ComparativeFilters[Short]
-  implicit class IntMethods(val col: TypeCol[Int]) extends ComparativeFilters[Int]
-  implicit class LongMethods(val col: TypeCol[Long]) extends ComparativeFilters[Long]
-  implicit class FloatMethods(val col: TypeCol[Float]) extends ComparativeFilters[Float]
-  implicit class DoubleMethods(val col: TypeCol[Double]) extends ComparativeFilters[Double]
-  implicit class BigDecimalMethods(val col: TypeCol[BigDecimal]) extends ComparativeFilters[BigDecimal]
-  implicit class TimeMethods(val col: TypeCol[Time]) extends ComparativeFilters[Time]
-  implicit class DateMethods(val col: TypeCol[Date]) extends ComparativeFilters[Date]
-  implicit class TimestampMethods(val col: TypeCol[Timestamp]) extends ComparativeFilters[Timestamp]
+  implicit class StringImpl(val col: TypeCol[String]) extends StringMethods
+  implicit class BooleanImpl(val col: TypeCol[Boolean]) extends TypeMethods[Boolean]
+  implicit class ShortImpl(val col: TypeCol[Short]) extends ComparativeMethods[Short]
+  implicit class IntImpl(val col: TypeCol[Int]) extends ComparativeMethods[Int]
+  implicit class LongImpl(val col: TypeCol[Long]) extends ComparativeMethods[Long]
+  implicit class FloatImpl(val col: TypeCol[Float]) extends ComparativeMethods[Float]
+  implicit class DoubleImpl(val col: TypeCol[Double]) extends ComparativeMethods[Double]
+  implicit class BigDecimalImpl(val col: TypeCol[BigDecimal]) extends ComparativeMethods[BigDecimal]
+  implicit class TimeImpl(val col: TypeCol[Time]) extends ComparativeMethods[Time]
+  implicit class DateImpl(val col: TypeCol[Date]) extends ComparativeMethods[Date]
+  implicit class TimestampImpl(val col: TypeCol[Timestamp]) extends ComparativeMethods[Timestamp]
+  implicit class JsonbImpl(val col: TypeCol[Jsonb]) extends JsonbMethods
 
-  implicit class StringSeqMethods(val col: TypeCol[Seq[String]]) extends SeqFilters[String]
-  implicit class BooleanSeqMethods(val col: TypeCol[Seq[Boolean]]) extends SeqFilters[Boolean]
-  implicit class ShortSeqMethods(val col: TypeCol[Seq[Short]]) extends SeqFilters[Short]
-  implicit class IntSeqMethods(val col: TypeCol[Seq[Int]]) extends SeqFilters[Int]
-  implicit class LongSeqMethods(val col: TypeCol[Seq[Long]]) extends SeqFilters[Long]
-  implicit class FloatSeqMethods(val col: TypeCol[Seq[Float]]) extends SeqFilters[Float]
-  implicit class DoubleSeqMethods(val col: TypeCol[Seq[Double]]) extends SeqFilters[Double]
-  implicit class BigDecimalSeqMethods(val col: TypeCol[Seq[BigDecimal]]) extends SeqFilters[BigDecimal]
-  implicit class TimeSeqMethods(val col: TypeCol[Seq[Time]]) extends SeqFilters[Time]
-  implicit class DateSeqMethods(val col: TypeCol[Seq[Date]]) extends SeqFilters[Date]
-  implicit class TimestampSeqMethods(val col: TypeCol[Seq[Timestamp]]) extends SeqFilters[Timestamp]
+  implicit class StringSeqImpl(val col: TypeCol[Seq[String]]) extends SeqMethods[String]
+  implicit class BooleanSeqImpl(val col: TypeCol[Seq[Boolean]]) extends SeqMethods[Boolean]
+  implicit class ShortSeqImpl(val col: TypeCol[Seq[Short]]) extends SeqMethods[Short]
+  implicit class IntSeqImpl(val col: TypeCol[Seq[Int]]) extends SeqMethods[Int]
+  implicit class LongSeqImpl(val col: TypeCol[Seq[Long]]) extends SeqMethods[Long]
+  implicit class FloatSeqImpl(val col: TypeCol[Seq[Float]]) extends SeqMethods[Float]
+  implicit class DoubleSeqImpl(val col: TypeCol[Seq[Double]]) extends SeqMethods[Double]
+  implicit class BigDecimalSeqImpl(val col: TypeCol[Seq[BigDecimal]]) extends SeqMethods[BigDecimal]
+  implicit class TimeSeqImpl(val col: TypeCol[Seq[Time]]) extends SeqMethods[Time]
+  implicit class DateSeqImpl(val col: TypeCol[Seq[Date]]) extends SeqMethods[Date]
+  implicit class TimestampSeqImpl(val col: TypeCol[Seq[Timestamp]]) extends SeqMethods[Timestamp]
 
   // render
 

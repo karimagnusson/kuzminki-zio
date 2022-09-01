@@ -17,11 +17,29 @@
 package kuzminki.section
 
 import kuzminki.api.KuzminkiError
+import kuzminki.column.TypeCol
+import kuzminki.api.Jsonb
+import kuzminki.conv.JsonbConv
 
 
 trait FillValues {
-  def fillNoBrackets(size: Int) = Vector.fill(size)("?").mkString(", ")
-  def fillBrackets(size: Int) = "(%s)".format(fillNoBrackets(size))
+  
+  def fillByValues(args: Vector[Any]) = {
+    args.map {
+      case obj: Jsonb => "?::jsonb"
+      case _ => "?"
+    }.mkString(", ")
+  }
+  
+  def fillByCols(args: Vector[TypeCol[_]]) = {
+    args.map(_.conv).map {
+      case JsonbConv => "?::jsonb"
+      case _ => "?"
+    }.mkString(", ")
+  }
+
+  //def fillNoBrackets(size: Int) = Vector.fill(size)("?").mkString(", ")
+  //def fillBrackets(size: Int) = "(%s)".format(fillNoBrackets(size))
 }
 
 abstract class NotEmpty(parts: Vector[Any]) {

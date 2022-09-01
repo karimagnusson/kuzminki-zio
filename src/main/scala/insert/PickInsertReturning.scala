@@ -15,7 +15,7 @@ trait PickInsertReturning[M, P] {
   def next[R](rowShape: RowShape[R]) = {
     new RenderInsertReturning(
       coll.extend(Vector(
-        InsertBlankValuesSec(paramShape.size),
+        InsertBlankValuesSec(paramShape.cols),
         ReturningSec(rowShape.cols)
       )),
       paramShape.conv,

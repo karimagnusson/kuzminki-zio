@@ -35,6 +35,8 @@ case class DateModelCol(info: ColInfo) extends DateCol with ModelCol
 
 case class TimestampModelCol(info: ColInfo) extends TimestampCol with ModelCol
 
+case class JsonbModelCol(info: ColInfo) extends JsonbCol with ModelCol
+
 case class StringSeqModelCol(info: ColInfo) extends StringSeqCol with ModelCol
 
 case class BooleanSeqModelCol(info: ColInfo) extends BooleanSeqCol with ModelCol
