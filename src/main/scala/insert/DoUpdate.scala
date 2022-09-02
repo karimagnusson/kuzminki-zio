@@ -34,7 +34,7 @@ class DoUpdate[M, P](
   def doNothing = {
     new RenderInsert(
       coll.extend(Vector(
-        InsertBlankValuesSec(paramShape.size),
+        InsertBlankValuesSec(paramShape.cols),
         InsertOnConflictSec,
         InsertDoNothingSec
       )),
@@ -73,7 +73,7 @@ class DoUpdate[M, P](
     val updateCols = validate(conflictCol, updateTypeCols)
     new RenderInsert(
       coll.extend(Vector(
-        InsertBlankValuesSec(paramShape.size),
+        InsertBlankValuesSec(paramShape.cols),
         InsertOnConflictColumnSec(conflictCol),
         InsertDoUpdateNoArgsSec(updateCols.map(SetUpsert(_)))
       )),

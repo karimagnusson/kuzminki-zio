@@ -205,6 +205,98 @@ sql
   .runHead
 ```
 
+#### Jsonb field
+
+[https://www.postgresql.org/docs/11/functions-json.html](https://www.postgresql.org/docs/11/functions-json.html)
+
+```scala
+{
+  "name": "Angela Barton",
+  "is_active": true,
+  "company": "Magnafone",
+  "address": "178 Howard Place, Gulf, Washington, 702",
+  "latitude": 19.793713,
+  "longitude": 86.513373,
+  "tags": ["enim", "aliquip", "qui"],
+  "residents": {
+    "name" : "Rick",
+    "age" : 31
+  }
+}
+```
+
+```scala
+class Customer extends Model("customer") {
+  val data = column[Jsonb]("data")
+}
+
+sql
+  .insert(customer)
+  .cols1(_.data)
+  .run(Jsonb(jsonString))
+
+// select
+
+sql
+  .select(customer)
+  .cols1(_.data ->> "company")
+  .where(_.id === 3)
+  .runHead // "Magnafone"
+
+
+sql
+  .select(customer)
+  .cols1(_.data #> Seq("residents", "name"))
+  .where(_.id === 3)
+  .runHead // "Rick"
+
+
+sql
+  .select(customer)
+  .cols1(_.data -> "tags" ->> 1)
+  .where(_.id === 3)
+  .runHead // "aliquip"
+
+
+sql
+  .select(customer)
+  .cols1(_.data -> "residents")
+  .where(_.id === 3)
+  .runHead // Jsonb({"name" : "Rick", "age" : 31})
+
+// update
+
+sql
+  .update(customer)
+  .set(_.data - "address")
+  .where(_.id === 3)
+  .run
+
+
+sql
+  .update(customer)
+  .set(_.data += Json.obj("address" -> "Somewhere 12"))
+  .where(_.id === 3)
+  .run
+
+
+sql
+  .update(customer)
+  .set(_.data -& Seq("residents", "name"))
+  .where(_.id === 3)
+  .run
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 

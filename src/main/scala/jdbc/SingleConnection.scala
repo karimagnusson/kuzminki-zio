@@ -30,7 +30,7 @@ import scala.collection.mutable.ListBuffer
 import zio._
 import zio.blocking._
 
-import kuzminki.api.{DbConfig, KuzminkiError}
+import kuzminki.api.{DbConfig, KuzminkiError, Jsonb}
 import kuzminki.shape.RowConv
 import kuzminki.render.{
   RenderedQuery,
@@ -84,6 +84,7 @@ class SingleConnection(conn: Connection) {
       case value: Time        => jdbcStm.setTime(index, value)
       case value: Date        => jdbcStm.setDate(index, value)
       case value: Timestamp   => jdbcStm.setTimestamp(index, value)
+      case value: Jsonb       => jdbcStm.setString(index, value.value)
       case value: Seq[_]      => jdbcStm.setArray(index, arrayArg(value))
       case _                  => throw KuzminkiError(s"type not supported [$arg]")
     }

@@ -25,7 +25,7 @@ import kuzminki.filter.types._
 import kuzminki.select.AggregationSubquery
 
 
-trait ComparativeFilters[T] extends TypeFilter[T] {
+trait ComparativeMethods[T] extends TypeMethods[T] {
 
   def gt(value: T): Filter = FilterGt(col, value)
   def >(value: T): Filter = gt(value)

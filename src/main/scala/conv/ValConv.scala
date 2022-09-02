@@ -21,6 +21,7 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.sql.ResultSet
 import java.math.{BigDecimal => JBigDecimal}
+import kuzminki.api.Jsonb
 
 
 trait ValConv[T] {
@@ -29,7 +30,7 @@ trait ValConv[T] {
 
 trait ValSeqConv[T] extends ValConv[Seq[T]] {
   def cast(rs: ResultSet, index: Int): Seq[AnyRef] = {
-     rs.getArray(index)
+    rs.getArray(index)
       .getArray
       .asInstanceOf[Array[AnyRef]]
       .toVector
@@ -84,6 +85,10 @@ object DateConv extends ValConv[Date] {
 
 object TimestampConv extends ValConv[Timestamp] {
   def get(rs: ResultSet, index: Int) = rs.getTimestamp(index)
+}
+
+object JsonbConv extends ValConv[Jsonb] {
+  def get(rs: ResultSet, index: Int) = Jsonb(rs.getString(index))
 }
 
 // seq
@@ -141,6 +146,11 @@ object DateSeqConv extends ValSeqConv[Date] {
 object TimestampSeqConv extends ValSeqConv[Timestamp] {
   def get(rs: ResultSet, index: Int): Seq[Timestamp] =
     cast(rs, index).map(_.asInstanceOf[Timestamp])
+}
+
+object JsonbSeqConv extends ValSeqConv[Jsonb] {
+  def get(rs: ResultSet, index: Int): Seq[Jsonb] =
+    cast(rs, index).map(o => Jsonb(o.asInstanceOf[String]))
 }
 
 

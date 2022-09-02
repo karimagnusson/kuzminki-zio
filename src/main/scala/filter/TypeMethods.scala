@@ -23,7 +23,7 @@ import kuzminki.conv.ValConv
 import kuzminki.select.SelectSubquery
 
 
-trait TypeFilter[T] {
+trait TypeMethods[T] {
   
   val col: TypeCol[T]
 

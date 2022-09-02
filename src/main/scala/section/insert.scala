@@ -33,7 +33,7 @@ package object insert extends ReturningSections {
     val expression = "(%s) VALUES (%s)"
     def render(prefix: Prefix) = expression.format(
       parts.map(_.col.render(prefix)).mkString(", "),
-      fillNoBrackets(parts.size)
+      fillByValues(parts.map(_.value))
     )
     val args = parts.map(_.value)
   }
@@ -44,21 +44,21 @@ package object insert extends ReturningSections {
   }
 
   case class InsertValuesSec(values: Vector[Any]) extends Section with FillValues {
-    val expression = "VALUES %s"
-    def render(prefix: Prefix) = expression.format(fillBrackets(values.size))
+    val expression = "VALUES (%s)"
+    def render(prefix: Prefix) = expression.format(fillByValues(values))
     val args = values
   }
 
-  case class InsertBlankValuesSec(size: Int) extends Section with FillValues with NoArgs {
-    val expression = "VALUES %s"
-    def render(prefix: Prefix) = expression.format(fillBrackets(size))
+  case class InsertBlankValuesSec(cols: Vector[TypeCol[_]]) extends Section with FillValues with NoArgs {
+    val expression = "VALUES (%s)"
+    def render(prefix: Prefix) = expression.format(fillByCols(cols))
   }
 
-  case class InsertBlankWhereNotExistsSec(size: Int, table: ModelTable, where: WhereSec) extends Section with FillValues with NoArgs {
+  case class InsertBlankWhereNotExistsSec(cols: Vector[TypeCol[_]], table: ModelTable, where: WhereSec) extends Section with FillValues with NoArgs {
     val expression = "SELECT %s WHERE NOT EXISTS (SELECT 1 FROM %s %s)"
     def render(prefix: Prefix) = {
       expression.format(
-        fillNoBrackets(size),
+        fillByCols(cols),
         table.render(prefix),
         where.render(prefix)
       )

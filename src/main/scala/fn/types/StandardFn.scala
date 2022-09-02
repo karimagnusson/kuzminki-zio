@@ -53,6 +53,9 @@ trait DateArgsFn extends DateCol with FnArgs
 trait TimestampFn extends TimestampCol with FnNoArgs
 trait TimestampArgsFn extends TimestampCol with FnArgs
 
+trait JsonbFn extends JsonbCol with FnNoArgs
+trait JsonbArgsFn extends JsonbCol with FnArgs
+
 trait StringSeqFn extends StringSeqCol with FnNoArgs
 trait StringSeqArgsFn extends StringSeqCol with FnArgs
 

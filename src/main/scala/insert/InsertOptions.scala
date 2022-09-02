@@ -39,7 +39,7 @@ class InsertOptions[M <: Model, P](
   def cache = {
     new StoredInsert(
       coll.add(
-        InsertBlankValuesSec(paramShape.size)
+        InsertBlankValuesSec(paramShape.cols)
       ).render,
       paramShape.conv
     )

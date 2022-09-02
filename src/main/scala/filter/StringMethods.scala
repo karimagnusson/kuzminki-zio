@@ -21,7 +21,7 @@ import kuzminki.assign._
 import kuzminki.filter.types._
 
 
-trait StringFilters extends TypeFilter[String] {
+trait StringMethods extends TypeMethods[String] {
 
   def like(value: String): Filter = FilterLike(col, value)
   def startsWith(value: String): Filter = FilterStartsWith(col, value)

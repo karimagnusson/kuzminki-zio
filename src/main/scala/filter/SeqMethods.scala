@@ -26,7 +26,7 @@ import kuzminki.select.SelectSubquery
 import kuzminki.assign.{Append, Prepend, Remove}
 
 
-trait SeqFilters[T] {
+trait SeqMethods[T] {
 
   val col: TypeCol[Seq[T]]
 
