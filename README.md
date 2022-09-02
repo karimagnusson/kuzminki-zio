@@ -268,14 +268,14 @@ sql
 
 sql
   .update(customer)
-  .set(_.data - "address")
+  .set(_.data += Json.obj("address" -> "Somewhere 12"))
   .where(_.id === 3)
   .run
 
-
+  
 sql
   .update(customer)
-  .set(_.data += Json.obj("address" -> "Somewhere 12"))
+  .set(_.data - "address")
   .where(_.id === 3)
   .run
 
