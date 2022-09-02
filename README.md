@@ -219,8 +219,8 @@ sql
   "longitude": 86.513373,
   "tags": ["enim", "aliquip", "qui"],
   "residents": {
-    "name" : "Rick",
-    "age" : 31
+    "name": "Rick",
+    "age": 31
   }
 }
 ```
