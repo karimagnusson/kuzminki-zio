@@ -75,9 +75,13 @@ trait JsonbMethods{
   def ==>(obj: Jsonb) = JsonbSetValue(col, obj.value)
   def setToNull = SetToNull(col)
   def update(obj: Jsonb) = JsonbUpdate(col, obj.value)
+  def +=(obj: Jsonb) = update(obj)
   def del(value: String) = JsonbDel(col, value)
+  def -(value: String) = del(value)
   def del(value: Int) = JsonbDel(col, value)
+  def -(value: Int) = del(value)
   def delPath(value: Seq[Any]) = JsonbDelPath(col, value)
+  def -&(value: Seq[Any]) = delPath(value)
 
   def cacheAssign = CacheSetJsonb(col)
 }
