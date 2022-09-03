@@ -57,6 +57,8 @@ class InsertOptions[M <: Model, P](
     )
   }
 
+  def values(params: P) = render(params)
+
   // run
 
   def debugSql(handler: String => Unit) = {

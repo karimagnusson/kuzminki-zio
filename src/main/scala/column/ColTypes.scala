@@ -3,6 +3,7 @@ package kuzminki.column
 import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
+import java.util.UUID
 import kuzminki.conv._
 import kuzminki.filter._
 import kuzminki.api.Jsonb
@@ -54,6 +55,10 @@ trait TimestampCol extends TypeCol[Timestamp] {
 
 trait JsonbCol extends TypeCol[Jsonb] {
   val conv = JsonbConv
+}
+
+trait UUIDCol extends TypeCol[UUID] {
+  val conv = UUIDConv
 }
 
 trait StringSeqCol extends TypeCol[Seq[String]] {

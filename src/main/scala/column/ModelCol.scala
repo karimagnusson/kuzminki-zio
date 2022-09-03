@@ -3,6 +3,7 @@ package kuzminki.column
 import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
+import java.util.UUID
 import kuzminki.filter._
 import kuzminki.render.{Prefix, NoArgs}
 
@@ -36,6 +37,8 @@ case class DateModelCol(info: ColInfo) extends DateCol with ModelCol
 case class TimestampModelCol(info: ColInfo) extends TimestampCol with ModelCol
 
 case class JsonbModelCol(info: ColInfo) extends JsonbCol with ModelCol
+
+case class UUIDModelCol(info: ColInfo) extends UUIDCol with ModelCol
 
 case class StringSeqModelCol(info: ColInfo) extends StringSeqCol with ModelCol
 

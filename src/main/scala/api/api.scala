@@ -19,6 +19,7 @@ package kuzminki
 import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
+import java.util.UUID
 import scala.language.implicitConversions
 
 import kuzminki.column._
@@ -58,6 +59,7 @@ package object api {
   implicit val kzimplDateCol: ColInfo => TypeCol[Date] = info => DateModelCol(info)
   implicit val kzimplTimestampCol: ColInfo => TypeCol[Timestamp] = info => TimestampModelCol(info)
   implicit val kzimplJsonbCol: ColInfo => TypeCol[Jsonb] = info => JsonbModelCol(info)
+  implicit val kzimplUUIDCol: ColInfo => TypeCol[UUID] = info => UUIDModelCol(info)
 
   implicit val kzimplStringSeqCol: ColInfo => TypeCol[Seq[String]] = info => StringSeqModelCol(info)
   implicit val kzimplBooleanSeqCol: ColInfo => TypeCol[Seq[Boolean]] = info => BooleanSeqModelCol(info)
@@ -85,6 +87,7 @@ package object api {
   implicit class DateImpl(val col: TypeCol[Date]) extends ComparativeMethods[Date]
   implicit class TimestampImpl(val col: TypeCol[Timestamp]) extends ComparativeMethods[Timestamp]
   implicit class JsonbImpl(val col: TypeCol[Jsonb]) extends JsonbMethods
+  implicit class UUIDImpl(val col: TypeCol[UUID]) extends TypeMethods[UUID]
 
   implicit class StringSeqImpl(val col: TypeCol[Seq[String]]) extends SeqMethods[String]
   implicit class BooleanSeqImpl(val col: TypeCol[Seq[Boolean]]) extends SeqMethods[Boolean]

@@ -19,6 +19,7 @@ package kuzminki.conv
 import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
+import java.util.UUID
 import java.sql.ResultSet
 import java.math.{BigDecimal => JBigDecimal}
 import kuzminki.api.Jsonb
@@ -89,6 +90,10 @@ object TimestampConv extends ValConv[Timestamp] {
 
 object JsonbConv extends ValConv[Jsonb] {
   def get(rs: ResultSet, index: Int) = Jsonb(rs.getString(index))
+}
+
+object UUIDConv extends ValConv[UUID] {
+  def get(rs: ResultSet, index: Int) = rs.getObject(index).asInstanceOf[UUID]
 }
 
 // seq
