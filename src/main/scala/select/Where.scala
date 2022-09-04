@@ -19,7 +19,14 @@ package kuzminki.select
 import kuzminki.column.TypeCol
 import kuzminki.filter.Filter
 import kuzminki.section.Section
-import kuzminki.section.select.{WhereSec, WhereBlankSec, GroupBySec}
+import kuzminki.section.select.{
+  WhereSec,
+  WhereBlankSec,
+  SelectSec,
+  SelectDistinctSec,
+  SelectDistinctOnSec,
+  GroupBySec
+}
 
 
 class Where[M, R](
@@ -77,11 +84,44 @@ class Where[M, R](
       )
     )
   }
+
+  // distinct
+
+  def distinct = {
+    val sections = coll.sections.map {
+      case sec: SelectSec => SelectDistinctSec(sec.parts)
+      case sec => sec
+    }
+    new Where(
+      model,
+      SelectCollector(
+        coll.prefix,
+        coll.rowShape,
+        sections
+      )
+    )
+  }
+
+  def distinctOn(pick: M => Seq[TypeCol[_]]) = {
+    val picks = pick(model)
+    val sections = coll.sections.map {
+      case sec: SelectSec =>
+        SelectDistinctOnSec(
+          sec.parts.filter(p => picks.contains(p)),
+          sec.parts
+        )
+      case sec => sec
+    }
+    new Where(
+      model,
+      SelectCollector(
+        coll.prefix,
+        coll.rowShape,
+        sections
+      )
+    )
+  }
 }
-
-
-
-
 
 
 

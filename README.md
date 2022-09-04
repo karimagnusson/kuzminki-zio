@@ -287,6 +287,54 @@ sql
   .run
 ```
 
+#### UUID field
+```scala
+import java.util.UUID
+
+val id = column[UUID]("id")
+```
+
+#### Distinct
+
+```scala
+sql
+  .select(client)
+  .cols2(t => (
+    t.username,
+    t.age
+  ))
+  .distinct
+  .all
+  .orderBy(_.age.asc)
+  .run
+
+
+sql
+  .select(client)
+  .cols2(t => (
+    t.username,
+    t.age
+  ))
+  .distinctOn(_.age)
+  .all
+  .orderBy(_.age.asc)
+  .run
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
