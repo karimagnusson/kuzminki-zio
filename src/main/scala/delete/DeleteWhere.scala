@@ -25,7 +25,7 @@ import kuzminki.filter.Filter
 class DeleteWhere[M](
     model: M,
     coll: SectionCollector
-  ) extends CacheDeleteWhereMethods(model, coll) {
+  ) extends PickDeleteWhere(model, coll) {
 
   def all = new RenderDelete(model, coll)
 
@@ -37,21 +37,6 @@ class DeleteWhere[M](
         new RenderDelete(
           model,
           coll.add(WhereSec(conds.toVector))
-        )
-    }
-  }
-
-  @deprecated("use where whereOpt", "0.9.4-RC1")
-  def whereOpts(pick: M => Seq[Option[Filter]]) = {
-    pick(model).flatten match {
-      case Nil =>
-        new RenderDelete(model, coll)
-      case filters =>
-        new RenderDelete(
-          model,
-          coll.add(
-            WhereSec(filters.toVector)
-          )
         )
     }
   }

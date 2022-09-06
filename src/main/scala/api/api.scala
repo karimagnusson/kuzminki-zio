@@ -28,7 +28,6 @@ import kuzminki.sorting.Sorting
 import kuzminki.assign.Assign
 import kuzminki.update.RenderUpdate
 import kuzminki.delete.RenderDelete
-import kuzminki.insert.RenderInsertData
 import kuzminki.run.RunStream
 import kuzminki.select.{
   RenderSelect,
@@ -108,7 +107,6 @@ package object api {
   implicit val kzimplRenderAggregation: RenderSelect[_, _] => AggregationSubquery = q => q.asAggregation
   implicit val kzimplRenderUpdate: RenderUpdate[_] => RenderedOperation = q => q.render
   implicit val kzimplRenderDelete: RenderDelete[_] => RenderedOperation = q => q.render
-  implicit val kzimplRenderInsert: RenderInsertData[_, _] => RenderedOperation = q => q.render
 
   // named cols
   

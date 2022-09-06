@@ -29,10 +29,10 @@ import kuzminki.render.{
 
 
 class StoredInsert[P](
-    statement: String,
-    paramConv: ParamConv[P]
-  ) extends RunOperationParams[P]
-       with RunOperationAsSink[P] {
+  statement: String,
+  paramConv: ParamConv[P]
+) extends RunOperationParams[P]
+     with RunOperationAsSink[P] {
 
   def render(params: P) = {
     RenderedOperation(
@@ -41,18 +41,18 @@ class StoredInsert[P](
     )
   }
 
-  def debugSql(handler: String => Unit) = {
-    handler(statement)
+  def printSql = {
+    println(statement)
     this
   }
 }
 
 
 class StoredInsertReturning[P, R](
-    statement: String,
-    paramConv: ParamConv[P],
-    rowConv: RowConv[R]
-  ) extends RunQueryParams[P, R] {
+  statement: String,
+  paramConv: ParamConv[P],
+  rowConv: RowConv[R]
+) extends RunQueryParams[P, R] {
 
   def render(params: P) = {
     RenderedQuery(
@@ -62,8 +62,8 @@ class StoredInsertReturning[P, R](
     )
   }
 
-  def debugSql(handler: String => Unit) = {
-    handler(statement)
+  def printSql = {
+    println(statement)
     this
   }
 }

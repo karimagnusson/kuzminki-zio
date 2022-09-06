@@ -29,15 +29,6 @@ package object insert extends ReturningSections {
     val expression = "INSERT INTO %s"
   }
 
-  case class InsertDataSec(parts: Vector[SetValue]) extends Section with FillValues {
-    val expression = "(%s) VALUES (%s)"
-    def render(prefix: Prefix) = expression.format(
-      parts.map(_.col.render(prefix)).mkString(", "),
-      fillByValues(parts.map(_.value))
-    )
-    val args = parts.map(_.value)
-  }
-
   case class InsertColumnsSec(parts: Vector[TypeCol[_]]) extends MultiPartRender {
     val expression = "(%s)"
     val glue = ", "
@@ -54,16 +45,26 @@ package object insert extends ReturningSections {
     def render(prefix: Prefix) = expression.format(fillByCols(cols))
   }
 
+  case class InsertWhereNotExistsSec(values: Vector[Any], table: ModelTable, where: WhereSec) extends Section with FillValues {
+    val expression = "SELECT %s WHERE NOT EXISTS (SELECT 1 FROM %s %s)"
+    def render(prefix: Prefix) = expression.format(
+      fillByValues(values),
+      table.render(prefix),
+      where.render(prefix)
+    )
+    val args = values ++ where.args
+  }
+
   case class InsertBlankWhereNotExistsSec(cols: Vector[TypeCol[_]], table: ModelTable, where: WhereSec) extends Section with FillValues with NoArgs {
     val expression = "SELECT %s WHERE NOT EXISTS (SELECT 1 FROM %s %s)"
-    def render(prefix: Prefix) = {
-      expression.format(
-        fillByCols(cols),
-        table.render(prefix),
-        where.render(prefix)
-      )
-    }
+    def render(prefix: Prefix) = expression.format(
+      fillByCols(cols),
+      table.render(prefix),
+      where.render(prefix)
+    )
   }
+
+  // on conflict
 
   object InsertOnConflictSec extends TextOnlyRender {
     val expression = "ON CONFLICT"

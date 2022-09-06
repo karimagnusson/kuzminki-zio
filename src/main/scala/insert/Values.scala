@@ -16,35 +16,82 @@
 
 package kuzminki.insert
 
+import kuzminki.api.Model
 import kuzminki.column.TypeCol
+import kuzminki.model.ModelTable
 import kuzminki.shape.ParamShape
-import kuzminki.render.SectionCollector
 import kuzminki.section.insert._
+import kuzminki.section.select.WhereSec
+import kuzminki.run.RunOperation
+import kuzminki.render.{
+  SectionCollector,
+  RenderedOperation
+}
 
 
-trait OnConflict[M, P] {
+class Values[M <: Model](
+  parts: ValuesParts[M]
+) extends PickInsertReturning(parts)
+     with RunOperation {
 
-  protected val model: M
-  protected val coll: SectionCollector
-  protected val paramShape: ParamShape[P]
+  val coll = parts.toColl
+
+  def render = {
+    RenderedOperation(
+      coll.render,
+      coll.args
+    )
+  }
+
+  // where not exists
+
+  def whereNotExists(pick: M => Seq[TypeCol[_]]) = {
+    new RenderInsert(
+      parts.toWhereNotExistsColl(pick(parts.model))
+    )
+
+  }
+
+  // on conflict
 
   def onConflictDoNothing = {
     new RenderInsert(
       coll.extend(Vector(
-        InsertBlankValuesSec(paramShape.cols),
         InsertOnConflictSec,
         InsertDoNothingSec
-      )),
-      paramShape.conv
+      ))
     )
   }
 
   def onConflictOnColumn(pick: M => TypeCol[_]) = {
     new DoUpdate(
-      model,
-      coll,
-      paramShape,
-      pick(model)
+      parts,
+      pick(parts.model)
     )
   }
+
+  // print
+
+  def printSql = {
+    println(coll.render)
+    this
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

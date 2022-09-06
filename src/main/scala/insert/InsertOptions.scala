@@ -17,9 +17,14 @@
 package kuzminki.insert
 
 import kuzminki.api.Model
+import kuzminki.column.TypeCol
+import kuzminki.model.ModelTable
 import kuzminki.shape.ParamShape
 import kuzminki.section.insert._
 import kuzminki.run.RunOperationParams
+import kuzminki.select.SelectSubquery
+import kuzminki.section.select.WhereSec
+import kuzminki.filter.types.FilterMatchesNoArg
 import kuzminki.render.{
   SectionCollector,
   RenderedOperation
@@ -27,43 +32,70 @@ import kuzminki.render.{
 
 
 class InsertOptions[M <: Model, P](
-    protected val model: M,
-    protected val coll: SectionCollector,
-    protected val paramShape: ParamShape[P]
-  ) extends PickInsertReturning[M, P]
-       with WhereNotExists[M, P]
-       with OnConflict[M, P]
-       with InsertSubquery[P]
-       with RunOperationParams[P] {
+  parts: InsertParts[M, P]
+) extends PickInsertStoredReturning(parts) {
+
+  lazy val coll = parts.toBlankColl
+
+  // no cache
+
+  def values(params: P) = {
+    new Values(parts.toValuesParts(params))
+  }
+
+  def fromSelect(sub: SelectSubquery[P]) = {
+    new RenderInsert(
+      parts.toColl.add(
+        InsertSubquerySec(sub)
+      )
+    )
+  }
+
+  // cache
 
   def cache = {
     new StoredInsert(
-      coll.add(
-        InsertBlankValuesSec(paramShape.cols)
-      ).render,
-      paramShape.conv
+      parts.toBlankColl.render,
+      parts.paramShape.conv
     )
   }
 
-  def render(params: P) = {
-    val sections = coll.add(
-      InsertValuesSec(
-        paramShape.conv.fromShape(params)
+  def whereNotExists(pick: M => Seq[TypeCol[_]]) = {
+    val uniqueCols = pick(parts.model).toVector
+    new RenderStoredInsert(
+      coll.add(
+        InsertWhereNotExistsSec(
+          parts.paramShape.cols,
+          ModelTable(parts.model),
+          WhereSec(
+            uniqueCols.map(FilterMatchesNoArg(_))
+          )
+        )
+      ),
+      new ParamConvReuse(
+        parts.paramShape.conv,
+        Reuse.fromIndex(parts.paramShape.cols, uniqueCols)
       )
     )
-    RenderedOperation(
-      sections.render,
-      sections.args
+  }
+
+  // on conflict
+
+  def onConflictDoNothing = {
+    new RenderStoredInsert(
+      parts.toBlankColl.extend(Vector(
+        InsertOnConflictSec,
+        InsertDoNothingSec
+      )),
+      parts.paramShape.conv
     )
   }
 
-  def values(params: P) = render(params)
-
-  // run
-
-  def debugSql(handler: String => Unit) = {
-    handler(coll.render)
-    this
+  def onConflictOnColumn(pick: M => TypeCol[_]) = {
+    new DoUpdateStored(
+      parts,
+      pick(parts.model)
+    )
   }
 }
 

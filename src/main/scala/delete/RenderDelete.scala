@@ -16,8 +16,14 @@
 
 package kuzminki.delete
 
-import kuzminki.run.RunOperation
+import kuzminki.shape.RowConv
+import kuzminki.shape.ParamConv
+import kuzminki.run.{
+  RunQuery,
+  RunOperation
+}
 import kuzminki.render.{
+  RenderedQuery,
   RenderedOperation,
   SectionCollector
 }
@@ -30,4 +36,61 @@ class RenderDelete[M](
        with RunOperation {
   
   def render = RenderedOperation(coll.render, coll.args)
+
+  def printSql = {
+    println(render.statement)
+    this
+  }
 }
+
+
+class RenderDeleteReturning[R](
+    coll: SectionCollector,
+    rowConv: RowConv[R]
+  ) extends RunQuery[R] {
+
+  def render = RenderedQuery(coll.render, coll.args, rowConv)
+
+  def printSql = {
+    println(render.statement)
+    this
+  }
+}
+
+
+class RenderStoredDelete[M, P](
+  model: M,
+  coll: SectionCollector,
+  paramConv: ParamConv[P]
+) extends PickStoredDeleteReturning(model, coll, paramConv) {
+
+  def cache = {
+    new StoredDelete(
+      coll.render,
+      paramConv
+    )
+  }
+}
+
+
+class RenderStoredDeleteReturning[P, R](
+  coll: SectionCollector,
+  paramConv: ParamConv[P],
+  rowConv: RowConv[R]
+) {
+
+  def cache = {
+    new StoredDeleteReturning(
+      coll.render,
+      paramConv,
+      rowConv
+    )
+  }
+}
+
+
+
+
+
+
+

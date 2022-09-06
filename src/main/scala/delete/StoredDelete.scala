@@ -16,6 +16,7 @@
 
 package kuzminki.delete
 
+import kuzminki.shape.RowConv
 import kuzminki.shape.ParamConv
 import kuzminki.render.RenderedOperation
 import kuzminki.run.{
@@ -24,9 +25,8 @@ import kuzminki.run.{
 }
 
 
-class StoredDeleteCondition[P](
+class StoredDelete[P](
     statement: String,
-    args: Vector[Any],
     paramConv: ParamConv[P]
   ) extends RunOperationParams[P]
        with RunOperationAsSink[P] {
@@ -34,12 +34,41 @@ class StoredDeleteCondition[P](
   def render(params: P) = {
     RenderedOperation(
       statement,
-      args ++ paramConv.fromShape(params)
+      paramConv.fromShape(params)
     )
   }
 
-  def debugSql(handler: String => Unit) = {
+  def debugsSql(handler: String => Unit) = {
     handler(statement)
     this
   }
 }
+
+
+class StoredDeleteReturning[P, R](
+    statement: String,
+    paramConv: ParamConv[P],
+    rowConv: RowConv[R]
+  ) extends RunOperationParams[P]
+       with RunOperationAsSink[P] {
+
+  def render(params: P) = {
+    RenderedOperation(
+      statement,
+      paramConv.fromShape(params)
+    )
+  }
+
+  def debugsSql(handler: String => Unit) = {
+    handler(statement)
+    this
+  }
+}
+
+
+
+
+
+
+
+
