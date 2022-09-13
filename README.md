@@ -13,7 +13,7 @@ See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
 You can take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
 
-Release 0.9.4-RC2 adds the following featurees:
+Release 0.9.4-RC2 adds the following features:
 - Support for jsonb field
 - Support for uuid field
 - Streaming from and to the database
