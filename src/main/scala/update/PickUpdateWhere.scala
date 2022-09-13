@@ -1,4 +1,4 @@
-package kuzminki.delete
+package kuzminki.update
 
 import kuzminki.api.Model
 import kuzminki.render.SectionCollector
@@ -7,13 +7,18 @@ import kuzminki.filter.types.CacheFilter
 import kuzminki.shape._
 
 
-abstract class PickDeleteWhere[M](model: M, coll: SectionCollector) {
+class PickUpdateWhere[M, A](
+  model: M,
+  coll: SectionCollector,
+  changes: PartShape[A]
+) {
 
-  private def next[A](partShape: PartShape[A]) = {
-    new RenderStoredDelete(
+  private def next[B](filters: PartShape[B]) = {
+    new RenderStoredUpdate(
       model,
-      coll.add(UpdateCacheWhereSec(partShape.parts)),
-      partShape.conv
+      coll.add(UpdateCacheWhereSec(filters.parts)),
+      changes.conv,
+      filters.conv
     )
   }
 

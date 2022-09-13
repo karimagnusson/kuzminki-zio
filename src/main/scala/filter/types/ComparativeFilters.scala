@@ -17,6 +17,8 @@
 package kuzminki.filter.types
 
 import kuzminki.column.TypeCol
+import kuzminki.conv.ValConv
+import kuzminki.render.Renderable
 
 
 case class FilterGt[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
@@ -32,5 +34,23 @@ case class FilterGte[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
 }
 
 case class FilterLte[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
+  val template = "%s <= ?"
+}
+
+// cache
+
+case class CacheGt[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s > ?"
+}
+
+case class CacheLt[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s < ?"
+}
+
+case class CacheGte[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s >= ?"
+}
+
+case class CacheLte[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
   val template = "%s <= ?"
 }

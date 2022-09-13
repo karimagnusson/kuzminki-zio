@@ -30,10 +30,10 @@ trait SeqMethods[T] {
 
   val col: TypeCol[Seq[T]]
 
-  def matches(value: Seq[T]): Filter = FilterSeqMatches(col, value)
+  def matches(value: Seq[T]): Filter = FilterMatches(col, value)
   def ===(value: Seq[T]): Filter = matches(value)
   
-  def not(value: Seq[T]): Filter = FilterSeqNot(col, value)
+  def not(value: Seq[T]): Filter = FilterNot(col, value)
   def !==(value: Seq[T]): Filter = not(value)
 
   def has(value: T): Filter = FilterSeqHas(col, value)
@@ -63,14 +63,24 @@ trait SeqMethods[T] {
 
   // cache
 
-  def cacheEq = CacheSeqEq(col)
-  def cacheNot = CacheSeqNot(col)
+  def oprEq = CacheFilter.matches(col)
+  def oprNot = CacheFilter.not(col)
+  def oprHas = CacheFilter.seqHas(col)
+  def oprhasNot = CacheFilter.seqHasNot(col)
+  def oprOverlap = CacheFilter.seqOverlap(col)
+  def oprOverlapNot = CacheFilter.seqOverlapNot(col)
 
-  // assign
+  // update
 
   def append(value: T) = Append(col, value)
   def prepend(value: T) = Prepend(col, value)
   def remove(value: T) = Remove(col, value)
+
+  // update cache
+
+  def modAppend = CacheMod.append(col)
+  def modPrepend = CacheMod.prepend(col)
+  def modRemove = CacheMod.remove(col)
 }
 
 

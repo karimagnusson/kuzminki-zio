@@ -17,15 +17,10 @@
 package kuzminki.filter.types
 
 import kuzminki.column.TypeCol
+import kuzminki.conv.ValConv
+import kuzminki.conv.ValConv
+import kuzminki.render.Renderable
 
-
-case class FilterSeqMatches[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
-  val template = "%s = ?"
-}
-
-case class FilterSeqNot[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
-  val template = "NOT %s = ?"
-}
 
 case class FilterSeqHas[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
   val template = "? = ANY(%s)"
@@ -43,7 +38,23 @@ case class FilterSeqOverlapNot[T](col: TypeCol[T], arg: Any) extends SingleArgFi
   val template = "NOT %s && ?"
 }
 
+// cache
 
+case class CacheSeqHas[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "? = ANY(%s)"
+}
+
+case class CacheSeqHasNot[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "NOT ? = ANY(%s)"
+}
+
+case class CacheSeqOverlap[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s && ?"
+}
+
+case class CacheSeqOverlapNot[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "NOT %s && ?"
+}
 
 
 

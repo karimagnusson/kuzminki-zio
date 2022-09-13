@@ -28,6 +28,7 @@ import kuzminki.sorting.Sorting
 import kuzminki.assign.Assign
 import kuzminki.update.RenderUpdate
 import kuzminki.delete.RenderDelete
+import kuzminki.insert.{RenderInsert, Values}
 import kuzminki.run.RunStream
 import kuzminki.select.{
   RenderSelect,
@@ -107,6 +108,8 @@ package object api {
   implicit val kzimplRenderAggregation: RenderSelect[_, _] => AggregationSubquery = q => q.asAggregation
   implicit val kzimplRenderUpdate: RenderUpdate[_] => RenderedOperation = q => q.render
   implicit val kzimplRenderDelete: RenderDelete[_] => RenderedOperation = q => q.render
+  implicit val kzimplRenderInsert: RenderInsert => RenderedOperation = q => q.render
+  implicit val kzimplRenderValues: Values[_] => RenderedOperation = q => q.render
 
   // named cols
   
@@ -114,11 +117,11 @@ package object api {
 
   // pick one
 
+  implicit def kzimplTypeColToSeq[T](col: TypeCol[T]): Seq[TypeCol[_]] = Seq(col)
   implicit val kzimplFilterToSeq: Filter => Seq[Filter] = filter => Seq(filter)
   implicit val kzimplFilterOptToSeq: Option[Filter] => Seq[Option[Filter]] = filterOpt => Seq(filterOpt)
   implicit val kzimplSortingToSeq: Sorting => Seq[Sorting] = sorting => Seq(sorting)
   implicit val kzimplAssignToSeq: Assign => Seq[Assign] = assign => Seq(assign)
-  implicit def kzimplTypeColToSeq[T](col: TypeCol[T]): Seq[TypeCol[_]] = Seq(col)
 
   // streaming
 

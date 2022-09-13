@@ -37,8 +37,8 @@ class StoredSelectCondition[P, R](
     )
   }
 
-  def debugSql(handler: String => Unit) = {
-    handler(statement)
+  def printSql = {
+    println(statement)
     this
   }
 }

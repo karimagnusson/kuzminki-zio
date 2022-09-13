@@ -69,6 +69,8 @@ object sql {
   }
 
   def transaction(stms: RenderedOperation*) = new Transaction(stms)
+
+  def transactionList(stms: Seq[RenderedOperation]) = new Transaction(stms)
 }
 
 

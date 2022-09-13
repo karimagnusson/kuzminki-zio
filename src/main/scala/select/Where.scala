@@ -51,18 +51,6 @@ class Where[M, R](
     )
   }
 
-  @deprecated("use where whereOpt", "0.9.4-RC1")
-  def whereOpts(pick: M => Seq[Option[Filter]]) = {
-    toOrderBy(
-      pick(model).flatten.toVector match {
-        case Nil =>
-          WhereBlankSec
-        case filters =>
-          WhereSec(filters.toVector)
-      }
-    )
-  }
-
   def whereOpt(pick: M => Seq[Option[Filter]]) = {
     toOrderBy(
       pick(model).flatten match {

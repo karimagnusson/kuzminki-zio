@@ -16,8 +16,18 @@
 
 package kuzminki.filter.types
 
+import kuzminki.filter.Filter
 import kuzminki.column.TypeCol
+import kuzminki.render.{Renderable, Prefix}
 import kuzminki.render.Renderable
+
+
+trait SubqueryFilter extends Filter {
+  val col: TypeCol[_]
+  val sub: Renderable
+  def render(prefix: Prefix) = template.format(col.render(prefix), sub.render(prefix))
+  val args = col.args ++ sub.args
+}
 
 case class FilterInSubquery[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
   val template = "%s = ANY(%s)"

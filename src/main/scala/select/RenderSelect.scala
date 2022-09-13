@@ -64,8 +64,8 @@ class RenderSelect[M, R](
     new AggregationSubquery(coll)
   }
 
-  def debugSql(handler: String => Unit) = {
-    handler(coll.render)
+  def printSql = {
+    println(render.statement)
     this
   }
 }

@@ -43,18 +43,6 @@ class Having[M, R](
     )
   }
 
-  @deprecated("use where havingOpt", "0.9.4-RC1")
-  def havingOpts(pick: M => Seq[Option[Filter]]) = {
-    toOrderBy(
-      pick(model).flatten match {
-        case Nil =>
-          HavingBlankSec
-        case filters =>
-          HavingSec(filters.toVector)
-      }
-    )
-  }
-
   def havingOpt(pick: M => Seq[Option[Filter]]) = {
     toOrderBy(
       pick(model).flatten match {

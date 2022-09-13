@@ -17,6 +17,7 @@
 package kuzminki.jdbc
 
 import java.util.Properties
+import java.util.UUID
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
@@ -85,6 +86,7 @@ class SingleConnection(conn: Connection) {
       case value: Date        => jdbcStm.setDate(index, value)
       case value: Timestamp   => jdbcStm.setTimestamp(index, value)
       case value: Jsonb       => jdbcStm.setString(index, value.value)
+      case value: UUID        => jdbcStm.setObject(index, value)
       case value: Seq[_]      => jdbcStm.setArray(index, arrayArg(value))
       case _                  => throw KuzminkiError(s"type not supported [$arg]")
     }

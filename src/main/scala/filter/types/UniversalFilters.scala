@@ -17,6 +17,8 @@
 package kuzminki.filter.types
 
 import kuzminki.column.TypeCol
+import kuzminki.conv.ValConv
+import kuzminki.render.Renderable
 
 
 case class FilterMatches[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
@@ -42,3 +44,43 @@ case class FilterIsNull[T](col: TypeCol[T]) extends NoArgFilter {
 case class FilterIsNotNull[T](col: TypeCol[T]) extends NoArgFilter {
   val template = "%s IS NOT NULL"
 }
+
+// cache
+
+
+case class CacheEq[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s = ?"
+}
+
+case class CacheNot[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s != ?"
+}
+
+case class CacheIn[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s = ANY(?)"
+}
+
+case class CacheNotIn[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "NOT %s = ANY(?)"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

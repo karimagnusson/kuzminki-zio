@@ -23,9 +23,9 @@ import kuzminki.filter.Filter
 
 
 class UpdateWhere[M](
-    model: M,
-    coll: SectionCollector
-  ) {
+  model: M,
+  coll: SectionCollector
+) {
 
   def all = new RenderUpdate(model, coll)
 
@@ -37,21 +37,6 @@ class UpdateWhere[M](
         new RenderUpdate(
           model,
           coll.add(WhereSec(conds.toVector))
-        )
-    }
-  }
-
-  @deprecated("use where whereOpt", "0.9.4-RC1")
-  def whereOpts(pick: M => Seq[Option[Filter]]) = {
-    pick(model).flatten match {
-      case Nil =>
-        new RenderUpdate(model, coll)
-      case filters =>
-        new RenderUpdate(
-          model,
-          coll.add(
-            WhereSec(filters.toVector)
-          )
         )
     }
   }

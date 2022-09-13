@@ -17,13 +17,52 @@
 package kuzminki.filter.types
 
 import kuzminki.filter.Filter
-import kuzminki.column.TypeCol
-import kuzminki.render.{Renderable, Prefix}
-
-
-trait SubqueryFilter extends Filter {
-  val col: TypeCol[_]
-  val sub: Renderable
-  def render(prefix: Prefix) = template.format(col.render(prefix), sub.render(prefix))
-  val args = col.args ++ sub.args
+import kuzminki.column.{TypeCol, ModelCol}
+import kuzminki.conv._
+import kuzminki.shape.CachePart
+import kuzminki.api.KuzminkiError
+import kuzminki.render.{
+  Renderable,
+  Prefix,
+  PassArgs
 }
+
+
+trait SingleFilter extends Filter {
+  val col: TypeCol[_]
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+}
+
+trait SingleArgFilter extends SingleFilter {
+  val arg: Any
+  val args = col.args :+ arg
+}
+
+trait NoArgFilter extends SingleFilter with PassArgs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

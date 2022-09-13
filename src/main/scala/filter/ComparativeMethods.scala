@@ -64,17 +64,23 @@ trait ComparativeMethods[T] extends TypeMethods[T] {
 
   // cache
 
-  def cacheGt = CacheGt(col)
-  def cacheLt = CacheLt(col)
-  def cacheGte = CacheGte(col)
-  def cacheLte = CacheLte(col)
+  def oprGt = CacheFilter.gt(col)
+  def oprLt = CacheFilter.lt(col)
+  def oprGte = CacheFilter.gte(col)
+  def oprLte = CacheFilter.lte(col)
 
-  // assign
+  // update
 
-  def +=(value: T) = Increment(col, value)
-  def -=(value: T) = Decrement(col, value)
-  def cacheIncrement = CacheIncrement(col)
-  def cacheDecrement = CacheDecrement(col)
+  def inc(value: T) = Increment(col, value)
+  def +=(value: T) = inc(value)
+  
+  def dec(value: T) = Decrement(col, value)
+  def -=(value: T) = dec(value)
+
+  // update cache
+
+  def modInc = CacheMod.inc(col)
+  def decDec = CacheMod.dec(col)
 }
 
 

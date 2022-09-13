@@ -70,24 +70,42 @@ trait JsonbMethods{
   def pathStr(values: Seq[String]): TypeCol[String] = JsonbPathStrFn(col, values)
   def #>>(values: Seq[String]): TypeCol[String] = pathStr(values)
 
+  // cache
+
+  def oprEq = CacheFilter.jsonbEq(col)
+  def oprNot = CacheFilter.jsonbNot(col)
+  def oprContains = CacheFilter.jsonbContains(col)
+  def oprContainedBy = CacheFilter.jsonbContainedBy(col)
+  def oprExists = CacheFilter.jsonbExists(col)
+  def oprExistsAny = CacheFilter.jsonbExistsAny(col)
+  def oprExistsAll = CacheFilter.jsonbExistsAll(col)
+
   // update
 
-  def ==>(obj: Jsonb) = JsonbSetValue(col, obj.value)
+  def set(obj: Jsonb) = JsonbSetValue(col, obj.value)
+  def ==>(obj: Jsonb) = set(obj)
   def setToNull = SetToNull(col)
+  
   def update(obj: Jsonb) = JsonbUpdate(col, obj.value)
   def +=(obj: Jsonb) = update(obj)
+  
   def del(value: String) = JsonbDel(col, value)
   def -(value: String) = del(value)
+  
   def del(value: Int) = JsonbDel(col, value)
   def -(value: Int) = del(value)
+  
   def delPath(value: Seq[Any]) = JsonbDelPath(col, value)
   def -&(value: Seq[Any]) = delPath(value)
 
-  def cacheAssign = CacheSetJsonb(col)
+  // update cache
+
+  def modSet = CacheMod.jsonbSet(col)
+  def modUpdate = CacheMod.jsonbUpdate(col)
+  def modDelKey = CacheMod.jsonbDelKey(col)
+  def modDelIndex = CacheMod.jsonbDelIndex(col)
+  def modDelPath = CacheMod.jsonbDelPath(col)
 }
-
-
-
 
 
 

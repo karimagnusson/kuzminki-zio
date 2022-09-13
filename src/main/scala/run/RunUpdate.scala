@@ -17,30 +17,69 @@
 package kuzminki.run
 
 import zio._
-import zio.blocking._
 import zio.stream.{ZSink, ZTransducer}
 import kuzminki.api.db
-import kuzminki.render.RenderedOperation
+import kuzminki.render.{
+  RenderedQuery,
+  RenderedOperation
+}
 
 
 trait RunUpdate[P1, P2] {
 
-  def render(args1: P1, args2: P2): RenderedOperation
+  def render(p1: P1, p2: P2): RenderedOperation
 
-  def run(args1: P1, args2: P2) = db.exec(render(args1, args2))
+  def run(p1: P1, p2: P2) =
+    db.exec(render(p1, p2))
 
-  def runNum(args1: P1, args2: P2) = db.execNum(render(args1, args2))
+  def runNum(p1: P1, p2: P2) =
+    db.execNum(render(p1, p2))
 
-  def runList(args: Seq[Tuple2[P1, P2]]) =
-    db.execList(args.map(arg => render(arg._1, arg._2)))
+  def runList(list: Seq[Tuple2[P1, P2]]) =
+    db.execList(list.map(p => render(p._1, p._2)))
 
-  def asSink = ZSink.foreach { (arg: Tuple2[P1, P2]) =>
-    db.exec(render(arg._1, arg._2))
+  def asSink = ZSink.foreach { (p: Tuple2[P1, P2]) =>
+    db.exec(render(p._1, p._2))
   }
 
-  def collect(size: Int) = ZTransducer.collectAllN[Tuple2[P1, P2]](size)
+  def collect(size: Int) =
+    ZTransducer.collectAllN[Tuple2[P1, P2]](size)
 
   def asChunkSink = ZSink.foreach { (chunk: Chunk[Tuple2[P1, P2]]) =>
-    db.execList(chunk.toList.map(arg => render(arg._1, arg._2)))
+    db.execList(chunk.toList.map(p => render(p._1, p._2)))
   }
 }
+
+
+trait RunUpdateReturning[P1, P2, R] {
+
+  def render(p1: P1, p2: P2): RenderedQuery[R]
+
+  def run(p1: P1, p2: P2) =
+    db.query(render(p1, p2))
+
+  def runAs[T](p1: P1, p2: P2)(implicit transform: R => T) =
+    db.queryAs(render(p1, p2), transform)
+
+  def runHead(p1: P1, p2: P2) =
+    db.queryHead(render(p1, p2))
+
+  def runHeadAs[T](p1: P1, p2: P2)(implicit transform: R => T) =
+    db.queryHeadAs(render(p1, p2), transform)
+
+  def runHeadOpt(p1: P1, p2: P2) =
+    db.queryHeadOpt(render(p1, p2))
+
+  def runHeadOptAs[T](p1: P1, p2: P2)(implicit transform: R => T) =
+    db.queryHeadOptAs(render(p1, p2), transform)
+}
+
+
+
+
+
+
+
+
+
+

@@ -61,15 +61,15 @@ trait StringMethods extends TypeMethods[String] {
 
   // cache
 
-  def cacheLike = CacheLike(col)
-  def cacheStartsWith = CacheStartsWith(col)
-  def cacheEndsWith = CacheEndsWith(col)
-  def cacheSimilarTo = CacheSimilarTo(col)
+  def oprLike = CacheFilter.like(col)
+  def oprStartsWith = CacheFilter.startsWith(col)
+  def oprEndsWith = CacheFilter.endsWith(col)
+  def oprSimilarTo = CacheFilter.similarTo(col)
   
-  def cacheReMatch = CacheReMatch(col)
-  def cacheReIMatch = CacheReIMatch(col)
-  def cacheReNotMatch = CacheReNotMatch(col)
-  def cacheReNotIMatch = CacheReNotIMatch(col)
+  def oprReMatch = CacheFilter.reMatch(col)
+  def oprReIMatch = CacheFilter.reIMatch(col)
+  def oprReNotMatch = CacheFilter.reNotMatch(col)
+  def oprReNotIMatch = CacheFilter.reNotIMatch(col)
 }
 
 

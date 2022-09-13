@@ -18,64 +18,37 @@ package kuzminki.insert
 
 import kuzminki.api.Model
 import kuzminki.column.TypeCol
-import kuzminki.model.ModelTable
-import kuzminki.shape.ParamShape
-import kuzminki.section.insert._
-import kuzminki.run.RunOperationParams
 import kuzminki.select.SelectSubquery
-import kuzminki.section.select.WhereSec
-import kuzminki.filter.types.FilterMatchesNoArg
-import kuzminki.render.{
-  SectionCollector,
-  RenderedOperation
-}
 
 
 class InsertOptions[M <: Model, P](
-  parts: InsertParts[M, P]
-) extends PickInsertStoredReturning(parts) {
-
-  lazy val coll = parts.toBlankColl
+  builder: InsertBuilder[M, P]
+) extends PickInsertStoredReturning(builder) {
 
   // no cache
 
-  def values(params: P) = {
-    new Values(parts.toValuesParts(params))
-  }
+  def values(params: P) = new Values(
+    builder.toValuesBuilder(params)
+  )
 
-  def fromSelect(sub: SelectSubquery[P]) = {
-    new RenderInsert(
-      parts.toColl.add(
-        InsertSubquerySec(sub)
-      )
-    )
-  }
+  def fromSelect(sub: SelectSubquery[P]) = new RenderInsert(
+    builder.fromSelect(sub)
+  )
 
   // cache
 
   def cache = {
     new StoredInsert(
-      parts.toBlankColl.render,
-      parts.paramShape.conv
+      builder.collector.render,
+      builder.paramShape.conv
     )
   }
 
   def whereNotExists(pick: M => Seq[TypeCol[_]]) = {
-    val uniqueCols = pick(parts.model).toVector
+    val uniqueCols = pick(builder.model).toVector
     new RenderStoredInsert(
-      coll.add(
-        InsertWhereNotExistsSec(
-          parts.paramShape.cols,
-          ModelTable(parts.model),
-          WhereSec(
-            uniqueCols.map(FilterMatchesNoArg(_))
-          )
-        )
-      ),
-      new ParamConvReuse(
-        parts.paramShape.conv,
-        Reuse.fromIndex(parts.paramShape.cols, uniqueCols)
-      )
+      builder.whereNotExists(uniqueCols),
+      builder.whereNotExistsReuse(uniqueCols)
     )
   }
 
@@ -83,18 +56,15 @@ class InsertOptions[M <: Model, P](
 
   def onConflictDoNothing = {
     new RenderStoredInsert(
-      parts.toBlankColl.extend(Vector(
-        InsertOnConflictSec,
-        InsertDoNothingSec
-      )),
-      parts.paramShape.conv
+      builder.onConflictDoNothing,
+      builder.paramShape.conv
     )
   }
 
   def onConflictOnColumn(pick: M => TypeCol[_]) = {
     new DoUpdateStored(
-      parts,
-      pick(parts.model)
+      builder,
+      pick(builder.model)
     )
   }
 }

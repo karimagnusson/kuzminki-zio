@@ -18,12 +18,12 @@ package kuzminki.render
 
 
 case class RenderedOperation(
-    statement: String,
-    args: Vector[Any]
-  ) {
+  statement: String,
+  args: Vector[Any]
+) {
 
-  def debugSql(handler: String => Unit) = {
-    handler(statement)
+  def printSql = {
+    println(statement)
     this
   }
 }

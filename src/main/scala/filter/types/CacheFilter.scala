@@ -16,91 +16,90 @@
 
 package kuzminki.filter.types
 
-import kuzminki.column.TypeCol
-import kuzminki.conv.ValConv
+import kuzminki.filter.Filter
+import kuzminki.column.{TypeCol, ModelCol}
+import kuzminki.conv._
 import kuzminki.shape.CachePart
-import kuzminki.render.{Renderable, Prefix}
+import kuzminki.api.KuzminkiError
+import kuzminki.render.{
+  Renderable,
+  Prefix,
+  PassArgs,
+  Wrap
+}
 
 
-trait CacheFilter[T] extends CachePart[T] {
-  val col: TypeCol[T]
+object CacheFilter extends Wrap {
+
+  import CachePart.{seqConv, itemConv}
+  
+  private def test[T](col: TypeCol[T]): Renderable = {
+    col.args match {
+      case Nil =>
+      case _ => throw KuzminkiError("cannot cache a function with an argument")
+    }
+    col
+  }
+
+  def matches[T](col: TypeCol[T]) = CacheEq(test(col), col.conv)
+  def not[T](col: TypeCol[T]) = CacheNot(test(col), col.conv)
+  def in[T](col: TypeCol[T]) = CacheEq(test(col), seqConv(col.conv))
+  def notIn[T](col: TypeCol[T]) = CacheEq(test(col), seqConv(col.conv))
+
+  def gt[T](col: TypeCol[T]) = CacheGt(test(col), col.conv)
+  def lt[T](col: TypeCol[T]) = CacheLt(test(col), col.conv)
+  def gte[T](col: TypeCol[T]) = CacheGte(test(col), col.conv)
+  def lte[T](col: TypeCol[T]) = CacheLte(test(col), col.conv)
+
+  def like[T](col: TypeCol[T]) = CacheLike(test(col), col.conv)
+  def startsWith[T](col: TypeCol[T]) = CacheStartsWith(test(col), col.conv)
+  def endsWith[T](col: TypeCol[T]) = CacheEndsWith(test(col), col.conv)
+  def similarTo[T](col: TypeCol[T]) = CacheSimilarTo(test(col), col.conv)
+  
+  def reMatch[T](col: TypeCol[T]) = CacheReMatch(test(col), col.conv)
+  def reIMatch[T](col: TypeCol[T]) = CacheReIMatch(test(col), col.conv)
+  def reNotMatch[T](col: TypeCol[T]) = CacheReNotMatch(test(col), col.conv)
+  def reNotIMatch[T](col: TypeCol[T]) = CacheReNotIMatch(test(col), col.conv)
+
+  def seqHas[T](col: TypeCol[Seq[T]]) = CacheSeqHas(test(col), itemConv(col.conv))
+  def seqHasNot[T](col: TypeCol[Seq[T]]) = CacheSeqHasNot(test(col), itemConv(col.conv))
+  def seqOverlap[T](col: TypeCol[Seq[T]]) = CacheSeqOverlap(test(col), col.conv)
+  def seqOverlapNot[T](col: TypeCol[Seq[T]]) = CacheSeqOverlapNot(test(col), col.conv)
+
+  def jsonbEq[T](col: TypeCol[T]) = CacheJsonbEq(test(col), col.conv)
+  def jsonbNot[T](col: TypeCol[T]) = CacheJsonbNot(test(col), col.conv)
+  def jsonbContains[T](col: TypeCol[T]) = CacheJsonbContains(test(col), col.conv)
+  def jsonbContainedBy[T](col: TypeCol[T]) = CacheJsonbContainedBy(test(col), col.conv)
+  def jsonbExists[T](col: TypeCol[T]) = CacheJsonbExists(test(col), StringConv)
+  def jsonbExistsAny[T](col: TypeCol[T]) = CacheJsonbExistsAny(test(col), StringSeqConv)
+  def jsonbExistsAll[T](col: TypeCol[T]) = CacheJsonbExistsAll(test(col), StringSeqConv)
+}
+
+
+trait CacheFilter[P] extends CachePart[P] {
+  val col: Renderable
+  val conv: ValConv[P]
   val template: String
-  val conv = col.conv
   def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args
+  val args = Vector.empty[Any]
 }
 
-// universal
 
-case class CacheEq[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s = ?"
-}
 
-case class CacheNot[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s != ?"
-}
 
-// comparative
 
-case class CacheGt[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s > ?"
-}
 
-case class CacheLt[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s < ?"
-}
 
-case class CacheGte[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s >= ?"
-}
 
-case class CacheLte[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s <= ?"
-}
 
-// string
 
-case class CacheLike[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s LIKE concat('%%', ?, '%%')"
-}
 
-case class CacheStartsWith[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s LIKE concat(?, '%%')"
-}
 
-case class CacheEndsWith[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s LIKE concat('%%', ?)"
-}
 
-case class CacheSimilarTo[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s SIMILAR TO ?"
-}
 
-case class CacheReMatch[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s ~ ?"
-}
 
-case class CacheReIMatch[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s ~* ?"
-}
 
-case class CacheReNotMatch[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s !~ ?"
-}
 
-case class CacheReNotIMatch[T](col: TypeCol[T]) extends CacheFilter[T] {
-  val template = "%s !~* ?"
-}
-
-// seq
-
-case class CacheSeqEq[T](col: TypeCol[Seq[T]]) extends CacheFilter[Seq[T]] {
-  val template = "? = ANY(%s)"
-}
-
-case class CacheSeqNot[T](col: TypeCol[Seq[T]]) extends CacheFilter[Seq[T]] {
-  val template = "NOT ? = ANY(%s)"
-}
 
 
 

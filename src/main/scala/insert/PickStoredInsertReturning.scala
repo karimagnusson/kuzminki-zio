@@ -7,11 +7,12 @@ import kuzminki.render.SectionCollector
 import kuzminki.shape._
 
 
-abstract class PickInsertReturning[M <: Model](builder: ValuesBuilder[M]) {
+abstract class PickInsertStoredReturning[M <: Model, P](builder: InsertBuilder[M, P]) {
 
   private def next[R](rowShape: RowShape[R]) = {
-    new RenderInsertReturning(
+    new RenderStoredInsertReturning(
       builder.returning(rowShape.cols),
+      builder.paramShape.conv,
       rowShape.conv
     )
   }

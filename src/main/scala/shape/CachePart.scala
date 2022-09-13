@@ -16,11 +16,55 @@
 
 package kuzminki.shape
 
+import kuzminki.api.KuzminkiError
 import kuzminki.render.Renderable
-import kuzminki.conv.ValConv
+import kuzminki.conv._
 
 
 trait CachePart[T] extends Renderable {
   val conv: ValConv[T]
-  val template: String
 }
+
+object CachePart {
+
+  def itemConv[T](conv: ValConv[Seq[T]]): ValConv[T] = conv match {
+    case StringSeqConv => StringConv
+    case BooleanSeqConv => BooleanConv
+    case ShortSeqConv => ShortConv
+    case IntSeqConv => IntConv
+    case LongSeqConv => LongConv
+    case FloatSeqConv => FloatConv
+    case DoubleSeqConv => DoubleConv
+    case BigDecimalSeqConv => BigDecimalConv
+    case TimeSeqConv => TimeConv
+    case DateSeqConv => DateConv
+    case TimestampSeqConv => TimestampConv
+    case _ => throw KuzminkiError("must be an array column")
+  }
+
+  def seqConv[T](conv: ValConv[T]): ValConv[Seq[T]] = conv match {
+    case StringConv => StringSeqConv
+    case BooleanConv => BooleanSeqConv
+    case ShortConv => ShortSeqConv
+    case IntConv => IntSeqConv
+    case LongConv => LongSeqConv
+    case FloatConv => FloatSeqConv
+    case DoubleConv => DoubleSeqConv
+    case BigDecimalConv => BigDecimalSeqConv
+    case TimeConv => TimeSeqConv
+    case DateConv => DateSeqConv
+    case TimestampConv => TimestampSeqConv
+    case _ => throw KuzminkiError("must be an array column")
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

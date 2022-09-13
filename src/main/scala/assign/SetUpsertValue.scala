@@ -22,11 +22,11 @@ import kuzminki.api.KuzminkiError
 
 
 case class SetUpsert(col: TypeCol[_]) extends Renderable with NoArgs {
+  def render(prefix: Prefix) = "%s = ?".format(col.render(prefix))
   col match {
     case col: ModelCol =>
     case _ => throw KuzminkiError("cannot upsert a function") 
   }
-  def render(prefix: Prefix) = "%s = ?".format(col.render(prefix))
 }
 
 

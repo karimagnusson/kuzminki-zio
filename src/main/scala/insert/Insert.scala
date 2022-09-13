@@ -15,7 +15,7 @@ class Insert[M <: Model](model: M) {
   def data(pick: M => Seq[SetValue]) = {
     val pairs = pick(model).toVector
     new Values(
-      ValuesParts(
+      ValuesBuilder(
         model,
         pairs.map(_.col),
         pairs.map(_.value)
@@ -25,7 +25,7 @@ class Insert[M <: Model](model: M) {
 
   private def next[P](paramShape: ParamShape[P]) = {
     new InsertOptions(
-      InsertParts(
+      InsertBuilder(
         model,
         paramShape
       )

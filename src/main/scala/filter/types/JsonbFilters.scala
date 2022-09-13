@@ -18,6 +18,8 @@ package kuzminki.filter.types
 
 import kuzminki.column.TypeCol
 import kuzminki.api.Jsonb
+import kuzminki.conv.ValConv
+import kuzminki.render.Renderable
 
 
 case class FilterJsonbMatches(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
@@ -47,6 +49,45 @@ case class FilterJsonbExistsAny(col: TypeCol[Jsonb], arg: Any) extends SingleArg
 case class FilterJsonbExistsAll(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
   val template = "%s ??& ?"
 }
+
+// cache
+
+case class CacheJsonbEq[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s = ?::jsonb"
+}
+
+case class CacheJsonbNot[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s != ?::jsonb"
+}
+
+case class CacheJsonbContains[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s = ?::jsonb"
+}
+
+case class CacheJsonbContainedBy[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s <@ ?::jsonb"
+}
+
+case class CacheJsonbExists[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s ?? ?"
+}
+
+case class CacheJsonbExistsAny[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s ??| ?"
+}
+
+case class CacheJsonbExistsAll[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s ??& ?"
+}
+
+
+
+
+
+
+
+
+
 
 
 

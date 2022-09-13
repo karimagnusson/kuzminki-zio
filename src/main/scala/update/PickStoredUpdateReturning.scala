@@ -1,43 +1,50 @@
-package kuzminki.insert
+package kuzminki.update
 
-import kuzminki.api.Model
+import kuzminki.shape.ParamConv
+import kuzminki.shape.RowConv
 import kuzminki.column.TypeCol
-import kuzminki.section.insert.{InsertBlankValuesSec, ReturningSec}
 import kuzminki.render.SectionCollector
+import kuzminki.section.operation.ReturningSec
 import kuzminki.shape._
 
 
-abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]) {
+abstract class PickStoredUpdateReturning[M, P1, P2](
+  model: M,
+  coll: SectionCollector,
+  changes: ParamConv[P1],
+  filters: ParamConv[P2]
+) { 
 
   private def next[R](rowShape: RowShape[R]) = {
-    new RenderStoredInsertReturning(
-      parts.toBlankColl.add(ReturningSec(rowShape.cols)),
-      parts.paramShape.conv,
+    new RenderStoredUpdateReturning(
+      coll.add(ReturningSec(rowShape.cols)),
+      changes: ParamConv[P1],
+      filters: ParamConv[P2],
       rowShape.conv
     )
   }
 
   def returningType[R](pick: M => RowReader[R]) = {
     next(
-      pick(parts.model)
+      pick(model)
     )
   }
 
   def returningSeq(pick: M => Seq[TypeCol[_]]) = {
     next(
-      new RowShapeSeq(pick(parts.model))
+      new RowShapeSeq(pick(model))
     )
   }
 
   def returningNamed(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
     next(
-      new RowShapeNamed(pick(parts.model))
+      new RowShapeNamed(pick(model))
     )
   }
 
   def returning1[R](pick: M => TypeCol[R]) = {
     next(
-      new RowShapeSingle(pick(parts.model))
+      new RowShapeSingle(pick(model))
     )
   }
   
@@ -45,7 +52,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple2[TypeCol[R1], TypeCol[R2]]
       ) = {
     next(
-      new RowShape2(pick(parts.model))
+      new RowShape2(pick(model))
     )
   }
 
@@ -53,7 +60,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple3[TypeCol[R1], TypeCol[R2], TypeCol[R3]]
       ) = {
     next(
-      new RowShape3(pick(parts.model))
+      new RowShape3(pick(model))
     )
   }
 
@@ -61,7 +68,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple4[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4]]
       ) = {
     next(
-      new RowShape4(pick(parts.model))
+      new RowShape4(pick(model))
     )
   }
 
@@ -69,7 +76,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple5[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5]]
       ) = {
     next(
-      new RowShape5(pick(parts.model))
+      new RowShape5(pick(model))
     )
   }
 
@@ -77,7 +84,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple6[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6]]
       ) = {
     next(
-      new RowShape6(pick(parts.model))
+      new RowShape6(pick(model))
     )
   }
 
@@ -85,7 +92,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple7[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7]]
       ) = {
     next(
-      new RowShape7(pick(parts.model))
+      new RowShape7(pick(model))
     )
   }
 
@@ -93,7 +100,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple8[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8]]
       ) = {
     next(
-      new RowShape8(pick(parts.model))
+      new RowShape8(pick(model))
     )
   }
 
@@ -101,7 +108,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple9[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9]]
       ) = {
     next(
-      new RowShape9(pick(parts.model))
+      new RowShape9(pick(model))
     )
   }
 
@@ -109,7 +116,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple10[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10]]
       ) = {
     next(
-      new RowShape10(pick(parts.model))
+      new RowShape10(pick(model))
     )
   }
 
@@ -117,7 +124,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple11[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11]]
       ) = {
     next(
-      new RowShape11(pick(parts.model))
+      new RowShape11(pick(model))
     )
   }
 
@@ -125,7 +132,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple12[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12]]
       ) = {
     next(
-      new RowShape12(pick(parts.model))
+      new RowShape12(pick(model))
     )
   }
 
@@ -133,7 +140,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple13[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13]]
       ) = {
     next(
-      new RowShape13(pick(parts.model))
+      new RowShape13(pick(model))
     )
   }
 
@@ -141,7 +148,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple14[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14]]
       ) = {
     next(
-      new RowShape14(pick(parts.model))
+      new RowShape14(pick(model))
     )
   }
 
@@ -149,7 +156,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple15[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14], TypeCol[R15]]
       ) = {
     next(
-      new RowShape15(pick(parts.model))
+      new RowShape15(pick(model))
     )
   }
 
@@ -157,7 +164,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple16[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14], TypeCol[R15], TypeCol[R16]]
       ) = {
     next(
-      new RowShape16(pick(parts.model))
+      new RowShape16(pick(model))
     )
   }
 
@@ -165,7 +172,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple17[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14], TypeCol[R15], TypeCol[R16], TypeCol[R17]]
       ) = {
     next(
-      new RowShape17(pick(parts.model))
+      new RowShape17(pick(model))
     )
   }
 
@@ -173,7 +180,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple18[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14], TypeCol[R15], TypeCol[R16], TypeCol[R17], TypeCol[R18]]
       ) = {
     next(
-      new RowShape18(pick(parts.model))
+      new RowShape18(pick(model))
     )
   }
 
@@ -181,7 +188,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple19[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14], TypeCol[R15], TypeCol[R16], TypeCol[R17], TypeCol[R18], TypeCol[R19]]
       ) = {
     next(
-      new RowShape19(pick(parts.model))
+      new RowShape19(pick(model))
     )
   }
 
@@ -189,7 +196,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple20[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14], TypeCol[R15], TypeCol[R16], TypeCol[R17], TypeCol[R18], TypeCol[R19], TypeCol[R20]]
       ) = {
     next(
-      new RowShape20(pick(parts.model))
+      new RowShape20(pick(model))
     )
   }
 
@@ -197,7 +204,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple21[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14], TypeCol[R15], TypeCol[R16], TypeCol[R17], TypeCol[R18], TypeCol[R19], TypeCol[R20], TypeCol[R21]]
       ) = {
     next(
-      new RowShape21(pick(parts.model))
+      new RowShape21(pick(model))
     )
   }
 
@@ -205,7 +212,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](parts: InsertParts[M, P]
         pick: M => Tuple22[TypeCol[R1], TypeCol[R2], TypeCol[R3], TypeCol[R4], TypeCol[R5], TypeCol[R6], TypeCol[R7], TypeCol[R8], TypeCol[R9], TypeCol[R10], TypeCol[R11], TypeCol[R12], TypeCol[R13], TypeCol[R14], TypeCol[R15], TypeCol[R16], TypeCol[R17], TypeCol[R18], TypeCol[R19], TypeCol[R20], TypeCol[R21], TypeCol[R22]]
       ) = {
     next(
-      new RowShape22(pick(parts.model))
+      new RowShape22(pick(model))
     )
   }
 }

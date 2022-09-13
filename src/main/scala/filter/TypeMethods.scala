@@ -60,14 +60,20 @@ trait TypeMethods[T] {
 
   // cache
 
-  def cacheEq = CacheEq(col)
-  def cacheNot = CacheNot(col)
+  def oprEq = CacheFilter.matches(col)
+  def oprNot = CacheFilter.not(col)
+  def oprIn = CacheFilter.in(col)
+  def oprNotIn = CacheFilter.notIn(col)
 
-  // assign
+  // update
 
-  def ==>(value: T) = SetValue(col, value)
+  def set(value: T) = SetValue(col, value)
+  def ==>(value: T) = set(value)
   def setToNull = SetToNull(col)
-  def cacheAssign = CacheSet(col)
+
+  // update cache
+
+  def modSet = CacheMod.set(col)
 }
 
 

@@ -18,62 +18,37 @@ package kuzminki.insert
 
 import kuzminki.api.Model
 import kuzminki.column.TypeCol
-import kuzminki.model.ModelTable
-import kuzminki.shape.ParamShape
-import kuzminki.section.insert._
-import kuzminki.section.select.WhereSec
 import kuzminki.run.RunOperation
-import kuzminki.render.{
-  SectionCollector,
-  RenderedOperation
-}
+import kuzminki.render.RenderedOperation
 
 
 class Values[M <: Model](
-  parts: ValuesParts[M]
-) extends PickInsertReturning(parts)
+  builder: ValuesBuilder[M]
+) extends PickInsertReturning(builder)
      with RunOperation {
 
-  val coll = parts.toColl
-
   def render = {
-    RenderedOperation(
-      coll.render,
-      coll.args
-    )
+    val coll = builder.collector
+    RenderedOperation(coll.render, coll.args)
   }
 
-  // where not exists
+  def whereNotExists(pick: M => Seq[TypeCol[_]]) = new RenderInsert(
+    builder.whereNotExists(pick(builder.model).toVector)
+  )
 
-  def whereNotExists(pick: M => Seq[TypeCol[_]]) = {
-    new RenderInsert(
-      parts.toWhereNotExistsColl(pick(parts.model))
-    )
+  def onConflictDoNothing = new RenderInsert(
+    builder.onConflictDoNothing
+  )
 
-  }
-
-  // on conflict
-
-  def onConflictDoNothing = {
-    new RenderInsert(
-      coll.extend(Vector(
-        InsertOnConflictSec,
-        InsertDoNothingSec
-      ))
-    )
-  }
-
-  def onConflictOnColumn(pick: M => TypeCol[_]) = {
-    new DoUpdate(
-      parts,
-      pick(parts.model)
-    )
-  }
+  def onConflictOnColumn(pick: M => TypeCol[_]) = new DoUpdate(
+    builder,
+    pick(builder.model)
+  )
 
   // print
 
   def printSql = {
-    println(coll.render)
+    println(render.statement)
     this
   }
 }
