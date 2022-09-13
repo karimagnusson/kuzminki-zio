@@ -49,7 +49,8 @@ object ExampleApp extends zio.App {
     _ <- sql
       .insert(client)
       .cols2(t => (t.username, t.age))
-      .run(("Joe", 35))
+      .values(("Joe", 35))
+      .run
     
     _ <- sql
       .update(client)
