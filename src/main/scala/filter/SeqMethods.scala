@@ -16,19 +16,21 @@
 
 package kuzminki.filter
 
-import java.sql.Time
-import java.sql.Date
-import java.sql.Timestamp
 import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
 import kuzminki.select.SelectSubquery
 import kuzminki.assign.{Append, Prepend, Remove}
+import kuzminki.fn.Fn
 
 
 trait SeqMethods[T] {
 
   val col: TypeCol[Seq[T]]
+
+  def default(value: Seq[T]) = Fn.coalesce(col, value)
+
+  // filters
 
   def matches(value: Seq[T]): Filter = FilterMatches(col, value)
   def ===(value: Seq[T]): Filter = matches(value)
@@ -72,9 +74,22 @@ trait SeqMethods[T] {
 
   // update
 
+  def set(value: Seq[T]) = value match {
+    case Nil => SetEmpty(col)
+    case _ => SetValue(col, value)
+  }
+  def ==>(value: Seq[T]) = set(value)
+  def setToNull = SetToNull(col)
+  def setEmpty = SetEmpty(col)
+
   def append(value: T) = Append(col, value)
+  def +=(value: T) = append(value)
+
   def prepend(value: T) = Prepend(col, value)
+  def :=(value: T) = prepend(value)
+
   def remove(value: T) = Remove(col, value)
+  def -=(value: T) = remove(value)
 
   // update cache
 

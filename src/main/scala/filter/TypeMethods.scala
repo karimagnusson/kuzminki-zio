@@ -21,11 +21,16 @@ import kuzminki.assign._
 import kuzminki.filter.types._
 import kuzminki.conv.ValConv
 import kuzminki.select.SelectSubquery
+import kuzminki.fn.Fn
 
 
 trait TypeMethods[T] {
   
   val col: TypeCol[T]
+
+  def default(value: T) = Fn.coalesce(col, value)
+
+  // filters
 
   def matches(value: T): Filter = FilterMatches(col, value)
   def ===(value: T): Filter = matches(value)

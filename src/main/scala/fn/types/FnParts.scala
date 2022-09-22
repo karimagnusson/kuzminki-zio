@@ -38,7 +38,9 @@ trait FnArgs extends FnRender with FnName {
   val args = col.args ++ fnArgs
 }
 
-trait FnNoArgs extends FnRender with FnName with NoArgs
+trait FnColArgs extends FnRender with FnName {
+  val args = col.args
+}
 
 
 

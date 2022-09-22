@@ -22,14 +22,16 @@ import java.sql.Timestamp
 import java.util.UUID
 import java.sql.ResultSet
 import java.math.{BigDecimal => JBigDecimal}
-import kuzminki.api.Jsonb
+import kuzminki.api.{Jsonb, KuzminkiError}
 
 
 trait ValConv[T] {
   def get(row: ResultSet, index: Int): T
+  def opt: ValConv[Option[T]]
 }
 
 trait ValSeqConv[T] extends ValConv[Seq[T]] {
+  def opt = throw KuzminkiError("cannot use asOpt on Array column, use default")
   def cast(rs: ResultSet, index: Int): Seq[AnyRef] = {
     rs.getArray(index)
       .getArray
@@ -38,62 +40,95 @@ trait ValSeqConv[T] extends ValConv[Seq[T]] {
   }
 }
 
-case class ValOptConv[T](underlying: ValConv[T]) extends ValConv[Option[T]] {
-  def get(rs: ResultSet, index: Int) = Option(underlying.get(rs, index))
+trait ValOptConv[T] extends ValConv[Option[T]] {
+  def opt = throw KuzminkiError("cannot use asOpt on Option column")
+}
+
+case class DefaultOptConv[T](underlying: ValConv[T]) extends ValOptConv[T] {
+  def get(rs: ResultSet, index: Int) =
+    Option(underlying.get(rs, index))
+}
+
+object BigDecimalOptConv extends ValOptConv[BigDecimal] {
+  def get(rs: ResultSet, index: Int) =
+    Option(rs.getBigDecimal(index)).map(BigDecimal(_))
+}
+
+object JsonbOptConv extends ValOptConv[Jsonb] {
+  def get(rs: ResultSet, index: Int) =
+    Option(rs.getString(index)).map(Jsonb(_))
+}
+
+object UUIDOptConv extends ValOptConv[UUID] {
+  def get(rs: ResultSet, index: Int) =
+    Option(rs.getObject(index)).map(_.asInstanceOf[UUID])
 }
 
 // types
 
 object StringConv extends ValConv[String] {
   def get(rs: ResultSet, index: Int) = rs.getString(index)
+  def opt = DefaultOptConv(this)
 }
 
 object BooleanConv extends ValConv[Boolean] {
   def get(rs: ResultSet, index: Int) = rs.getBoolean(index)
+  def opt = DefaultOptConv(this)
 }
 
 object ShortConv extends ValConv[Short] {
   def get(rs: ResultSet, index: Int) = rs.getShort(index)
+  def opt = DefaultOptConv(this)
 }
 
 object IntConv extends ValConv[Int] {
   def get(rs: ResultSet, index: Int) = rs.getInt(index)
+  def opt = DefaultOptConv(this)
 }
 
 object LongConv extends ValConv[Long] {
   def get(rs: ResultSet, index: Int) = rs.getLong(index)
+  def opt = DefaultOptConv(this)
 }
 
 object FloatConv extends ValConv[Float] {
   def get(rs: ResultSet, index: Int) = rs.getFloat(index)
+  def opt = DefaultOptConv(this)
 }
 
 object DoubleConv extends ValConv[Double] {
   def get(rs: ResultSet, index: Int) = rs.getDouble(index)
+  def opt = DefaultOptConv(this)
 }
 
 object BigDecimalConv extends ValConv[BigDecimal] {
   def get(rs: ResultSet, index: Int) = BigDecimal(rs.getBigDecimal(index))
+  def opt = BigDecimalOptConv
 }
 
 object TimeConv extends ValConv[Time] {
   def get(rs: ResultSet, index: Int) = rs.getTime(index)
+  def opt = DefaultOptConv(this)
 }
 
 object DateConv extends ValConv[Date] {
   def get(rs: ResultSet, index: Int) = rs.getDate(index)
+  def opt = DefaultOptConv(this)
 }
 
 object TimestampConv extends ValConv[Timestamp] {
   def get(rs: ResultSet, index: Int) = rs.getTimestamp(index)
+  def opt = DefaultOptConv(this)
 }
 
 object JsonbConv extends ValConv[Jsonb] {
   def get(rs: ResultSet, index: Int) = Jsonb(rs.getString(index))
+  def opt = JsonbOptConv
 }
 
 object UUIDConv extends ValConv[UUID] {
   def get(rs: ResultSet, index: Int) = rs.getObject(index).asInstanceOf[UUID]
+  def opt = UUIDOptConv
 }
 
 // seq

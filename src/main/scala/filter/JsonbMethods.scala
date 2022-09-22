@@ -21,11 +21,14 @@ import kuzminki.assign._
 import kuzminki.filter.types._
 import kuzminki.fn.types._
 import kuzminki.api.Jsonb
+import kuzminki.fn.Fn
 
 
 trait JsonbMethods{
 
   val col: TypeCol[Jsonb]
+
+  def default(value: Jsonb) = Fn.coalesce(col, value)
 
   // filters
 
@@ -70,6 +73,18 @@ trait JsonbMethods{
   def pathStr(values: Seq[String]): TypeCol[String] = JsonbPathStrFn(col, values)
   def #>>(values: Seq[String]): TypeCol[String] = pathStr(values)
 
+  def drop(value: String): TypeCol[Jsonb] = JsonbDropFn(col, value)
+  def -(value: String): TypeCol[Jsonb] = drop(value)
+
+  def drop(value: Int): TypeCol[Jsonb] = JsonbDropFn(col, value)
+  def -(value: Int): TypeCol[Jsonb] = drop(value)
+
+  def drop(value: Seq[String]): TypeCol[Jsonb] = JsonbDropFn(col, value)
+  def -(value: Seq[String]): TypeCol[Jsonb] = drop(value)
+
+  def dropPath(values: Seq[String]): TypeCol[Jsonb] = JsonbDropPathFn(col, values)
+  def #-(values: Seq[String]): TypeCol[Jsonb] = dropPath(values)
+
   // cache
 
   def oprEq = CacheFilter.jsonbEq(col)
@@ -90,13 +105,13 @@ trait JsonbMethods{
   def +=(obj: Jsonb) = update(obj)
   
   def del(value: String) = JsonbDel(col, value)
-  def -(value: String) = del(value)
+  def -=(value: String) = del(value)
   
   def del(value: Int) = JsonbDel(col, value)
-  def -(value: Int) = del(value)
+  def -=(value: Int) = del(value)
   
-  def delPath(value: Seq[Any]) = JsonbDelPath(col, value)
-  def -&(value: Seq[Any]) = delPath(value)
+  def delPath(value: Seq[String]) = JsonbDelPath(col, value)
+  def #-=(value: Seq[String]) = delPath(value)
 
   // update cache
 

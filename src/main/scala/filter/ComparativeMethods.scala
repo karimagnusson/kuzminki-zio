@@ -16,9 +16,6 @@
 
 package kuzminki.filter
 
-import java.sql.Time
-import java.sql.Date
-import java.sql.Timestamp
 import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._

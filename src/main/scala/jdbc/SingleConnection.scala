@@ -93,6 +93,10 @@ class SingleConnection(conn: Connection) {
   }
 
   private def getStatement(sql: String, args: Vector[Any]) = {
+    args.foreach {
+      case Nil => throw KuzminkiError("empty Array is not supported")
+      case _ =>
+    }
     val jdbcStm = conn.prepareStatement(sql)
     if (args.nonEmpty) {
       args.zipWithIndex.foreach {

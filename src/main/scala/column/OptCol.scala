@@ -21,6 +21,6 @@ import kuzminki.render.SubRenderAndArgs
 
 case class OptCol[T](col: TypeCol[T]) extends TypeCol[Option[T]] with SubRenderAndArgs {
   def name = col.name
-  val conv = ValOptConv(col.conv)
+  val conv = col.conv.opt
 }
 

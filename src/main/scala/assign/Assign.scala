@@ -46,6 +46,10 @@ case class SetToNull(col: TypeCol[_]) extends Assign(col, None) {
   val template = s"$name = NULL"
 }
 
+case class SetEmpty(col: TypeCol[_]) extends Assign(col, None) {
+  val template = s"$name = '{}'"
+}
+
 // numeric
 
 case class Increment(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {

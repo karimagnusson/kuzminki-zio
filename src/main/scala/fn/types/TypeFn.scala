@@ -20,7 +20,7 @@ import kuzminki.column.TypeCol
 import kuzminki.render.NoArgs
 
 
-trait TypeFn[T] extends TypeCol[T] with FnNoArgs {
+trait TypeFn[T] extends TypeCol[T] with FnColArgs {
   val col: TypeCol[T]
   val conv = col.conv
 }

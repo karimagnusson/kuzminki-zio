@@ -22,24 +22,51 @@ import kuzminki.api.Jsonb
 
 trait JsonbFilterFn extends FnRender {
   val key: Any
-  def name = "%s_%s".format(col.name, key.toString)
   def fnArgs = Vector(key)
   val args = col.args ++ fnArgs
 
 }
 
 case class JsonbPickFn(col: TypeCol[Jsonb], key: Any) extends JsonbCol with JsonbFilterFn {
+  def name = "%s_%s".format(col.name, key.toString)
   val template = "%s->?"
 }
 
 case class JsonbPickStrFn(col: TypeCol[Jsonb], key: Any) extends StringCol with JsonbFilterFn {
+  def name = "%s_%s".format(col.name, key.toString)
   val template = "%s->>?"
 }
 
-case class JsonbPathFn(col: TypeCol[Jsonb], key: Any) extends JsonbCol with JsonbFilterFn {
+case class JsonbPathFn(col: TypeCol[Jsonb], key: Seq[String]) extends JsonbCol with JsonbFilterFn {
+  def name = "%s_%s".format(col.name, key.mkString("_"))
   val template = "%s#>?"
 }
 
-case class JsonbPathStrFn(col: TypeCol[Jsonb], key: Any) extends StringCol with JsonbFilterFn {
+case class JsonbPathStrFn(col: TypeCol[Jsonb], key: Seq[String]) extends StringCol with JsonbFilterFn {
+  def name = "%s_%s".format(col.name, key.mkString("_"))
   val template = "%s#>>?"
 }
+
+case class JsonbDropFn(col: TypeCol[Jsonb], key: Any) extends JsonbCol with JsonbFilterFn {
+  def name = "%s_drop".format(col.name)
+  val template = "%s - ?"
+}
+
+case class JsonbDropPathFn(col: TypeCol[Jsonb], key: Seq[String]) extends JsonbCol with JsonbFilterFn {
+  def name = "%s_drop".format(col.name)
+  val template = "%s #- ?"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

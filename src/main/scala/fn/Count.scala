@@ -18,7 +18,7 @@ package kuzminki.fn
 
 import kuzminki.column.{TypeCol, LongCol}
 import kuzminki.render.{Prefix, NoArgs}
-import kuzminki.fn.types.{LongFn, FnNoArgs}
+import kuzminki.fn.types.LongFn
 
 
 object Count {

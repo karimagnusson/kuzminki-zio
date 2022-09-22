@@ -65,9 +65,9 @@ package object general {
 
   case class CustomStringFn(col: TypeCol[String], template: String) extends StringFn
 
-  case class Coalesce[T](col: TypeCol[T], default: T) extends TypeFn[T] {
+  case class Coalesce[T](col: TypeCol[T], default: T) extends TypeArgsFn[T] {
     val template = "coalesce(%s, ?)"
-    val params = Vector(default)
+    def fnArgs = Vector(default)
   }
 
   case class Concat(cols: Vector[TypeCol[_]]) extends StringCol {
@@ -113,10 +113,9 @@ package object general {
 
   // round
 
-  trait RoundFn extends FnRender {
+  trait RoundFn extends FnArgs {
     val size: Int
-    def name = col.name
-    val args = col.args ++ Vector(size)
+    def fnArgs = Vector(size)
   }
 
   case class Round(col: TypeCol[BigDecimal], size: Int) extends BigDecimalCol with RoundFn {

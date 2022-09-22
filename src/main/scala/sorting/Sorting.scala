@@ -24,7 +24,7 @@ sealed trait Sorting extends Renderable {
   def col: TypeCol[_]
   def template: String
   def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = Vector.empty[Any]
+  val args = col.args
 }
 
 case class Asc[T](col: TypeCol[T]) extends Sorting {
