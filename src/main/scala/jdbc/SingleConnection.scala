@@ -92,12 +92,31 @@ class SingleConnection(conn: Connection) {
     }
   }
 
-  private def getStatement(sql: String, args: Vector[Any]) = {
-    args.foreach {
-      case Nil => throw KuzminkiError("empty Array is not supported")
-      case _ =>
+  private val isNil: Any => Boolean = {
+    case Nil => true
+    case _ => false
+  }
+
+  private def emptyArrTempl(sql: String, args: Vector[Any]) = {
+    val formattable = sql.replace("?", "%s")
+    val placeholders = args.map {
+      case Nil => "'{}'"
+      case _ => "?"
     }
+    val sqlMod = formattable.format(placeholders: _*)
+    val argsMod = args.filterNot(isNil)
+    (sqlMod, argsMod)
+  }
+
+  private def getStatement(sqlR: String, argsR: Vector[Any]) = {
+    
+    val (sql, args) = argsR.exists(isNil) match {
+      case true =>  emptyArrTempl(sqlR, argsR)
+      case false => (sqlR, argsR)
+    }
+
     val jdbcStm = conn.prepareStatement(sql)
+   
     if (args.nonEmpty) {
       args.zipWithIndex.foreach {
         case (arg, index) =>

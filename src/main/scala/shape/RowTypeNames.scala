@@ -27,43 +27,43 @@ import kuzminki.column._
 
 trait RowTypeNames {
 
-  protected val colTypeName: TypeCol[_] => String = {
-    case col: StringCol       => "String"
-    case col: BooleanCol      => "Boolean"
-    case col: ShortCol        => "Short"
-    case col: IntCol          => "Int"
-    case col: LongCol         => "Long"
-    case col: FloatCol        => "Float"
-    case col: DoubleCol       => "Double"
-    case col: BigDecimalCol   => "BigDecimal"
-    case col: TimeCol         => "Time"
-    case col: DateCol         => "Date"
-    case col: TimestampCol    => "Timestamp"
-    case col: OptCol[_]      => col.col match {
-      case col: StringCol       => "Option[String]"
-      case col: BooleanCol      => "Option[Boolean]"
-      case col: ShortCol        => "Option[Short]"
-      case col: IntCol          => "Option[Int]"
-      case col: LongCol         => "Option[Long]"
-      case col: FloatCol        => "Option[Float]"
-      case col: DoubleCol       => "Option[Double]"
-      case col: BigDecimalCol   => "Option[BigDecimal]"
-      case col: TimeCol         => "Option[Time]"
-      case col: DateCol         => "Option[Date]"
-      case col: TimestampCol    => "Option[Timestamp]"
-      case col => throw KuzminkiError(s"Unsupported column type: [$col]")
-    }
-    case col => throw KuzminkiError(s"Unsupported column type: [$col]")
+   protected val baseColTypeName: TypeCol[_] => String = {
+    case col: StringCol         => "String"
+    case col: BooleanCol        => "Boolean"
+    case col: ShortCol          => "Short"
+    case col: IntCol            => "Int"
+    case col: LongCol           => "Long"
+    case col: FloatCol          => "Float"
+    case col: DoubleCol         => "Double"
+    case col: BigDecimalCol     => "BigDecimal"
+    case col: TimeCol           => "java.sql.Time"
+    case col: DateCol           => "java.sql.Date"
+    case col: TimestampCol      => "java.sql.Timestamp"
+    case col: UUIDCol           => "java.util.UUID"
+    case col: JsonbCol          => "kuzminki.api.Jsonb"
+    case col: StringSeqCol      => "Vector[String]"
+    case col: BooleanSeqCol     => "Vector[Boolean]"
+    case col: IntSeqCol         => "Vector[Int]"
+    case col: ShortSeqCol       => "Vector[Short]"
+    case col: LongSeqCol        => "Vector[Long]"
+    case col: BigDecimalSeqCol  => "Vector[BigDecimal]"
+    case col: DoubleSeqCol      => "Vector[Double]"
+    case col: FloatSeqCol       => "Vector[Float]"
+    case col: TimeSeqCol        => "Vector[java.sql.Time]"
+    case col: DateSeqCol        => "Vector[java.sql.Date]"
+    case col: TimestampSeqCol   => "Vector[java.sql.Timestamp]"
+    case col => throw KuzminkiError(s"Unsupported column: [${col.getClass.getName}]")
   }
 
-  protected val simplifyName: String => String = {
-    case "java.sql.Time"                    => "Time"
-    case "java.sql.Date"                    => "Date"
-    case "java.sql.Timestamp"               => "Timestamp"
-    case "Option[java.sql.Time"             => "Option[Time]"
-    case "Option[java.sql.Date]"            => "Option[Date]"
-    case "Option[java.sql.Timestamp]"       => "Option[Timestamp]"
-    case name                               => name
+  protected val colTypeName: TypeCol[_] => String = {
+    case col: OptCol[_] => Try {
+        baseColTypeName(col.col)
+      } match {
+        case Success(name) => s"Option[$name]"
+        case Failure(ex) =>
+          throw KuzminkiError(s"Unsupported column: [${col.getClass.getName}]")
+      }
+    case col => baseColTypeName(col)
   }
 
   protected def productTypeNames[T](implicit tag: TypeTag[T]) = {
@@ -72,8 +72,7 @@ trait RowTypeNames {
       .sorted
       .collect { case m: MethodSymbol if m.isCaseAccessor => m }
       .map(_.returnType.toString)
-      .toSeq
-      .map(simplifyName)
+      .toVector
   }
 
   protected def validate[T](rti: RowTypeInfo[T]) = {
