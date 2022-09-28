@@ -20,77 +20,79 @@ import kuzminki.column._
 import kuzminki.render.NoArgs
 
 
-trait StringFn extends StringCol with FnColArgs
+trait StringNoArgsFn extends StringCol with FnColArgs
 trait StringArgsFn extends StringCol with FnArgs
 
-trait BooleanFn extends BooleanCol with FnColArgs
+trait BooleanNoArgsFn extends BooleanCol with FnColArgs
 trait BooleanArgsFn extends BooleanCol with FnArgs
 
-trait ShortFn extends ShortCol with FnColArgs
+trait ShortNoArgsFn extends ShortCol with FnColArgs
 trait ShortArgsFn extends ShortCol with FnArgs
 
-trait IntFn extends IntCol with FnColArgs
+trait IntNoArgsFn extends IntCol with FnColArgs
 trait IntArgsFn extends IntCol with FnArgs
 
-trait LongFn extends LongCol with FnColArgs
+trait LongNoArgsFn extends LongCol with FnColArgs
 trait LongArgsFn extends LongCol with FnArgs
 
-trait FloatFn extends FloatCol with FnColArgs
+trait FloatNoArgsFn extends FloatCol with FnColArgs
 trait FloatArgsFn extends FloatCol with FnArgs
 
-trait DoubleFn extends DoubleCol with FnColArgs
+trait DoubleNoArgsFn extends DoubleCol with FnColArgs
 trait DoubleArgsFn extends DoubleCol with FnArgs
 
-trait BigDecimalFn extends BigDecimalCol with FnColArgs
+trait BigDecimalNoArgsFn extends BigDecimalCol with FnColArgs
 trait BigDecimalArgsFn extends BigDecimalCol with FnArgs
 
-trait TimeFn extends TimeCol with FnColArgs
+trait TimeNoArgsFn extends TimeCol with FnColArgs
 trait TimeArgsFn extends TimeCol with FnArgs
 
-trait DateFn extends DateCol with FnColArgs
+trait DateNoArgsFn extends DateCol with FnColArgs
 trait DateArgsFn extends DateCol with FnArgs
 
-trait TimestampFn extends TimestampCol with FnColArgs
+trait TimestampNoArgsFn extends TimestampCol with FnColArgs
 trait TimestampArgsFn extends TimestampCol with FnArgs
 
-trait JsonbFn extends JsonbCol with FnColArgs
+trait JsonbNoArgsFn extends JsonbCol with FnColArgs
 trait JsonbArgsFn extends JsonbCol with FnArgs
 
-trait UUIDFn extends UUIDCol with FnColArgs
+trait UUIDNoArgsFn extends UUIDCol with FnColArgs
 trait UUIDArgsFn extends UUIDCol with FnArgs
 
-trait StringSeqFn extends StringSeqCol with FnColArgs
+trait StringSeqNoArgsFn extends StringSeqCol with FnColArgs
 trait StringSeqArgsFn extends StringSeqCol with FnArgs
 
-trait BooleanSeqFn extends BooleanSeqCol with FnColArgs
+trait BooleanSeqNoArgsFn extends BooleanSeqCol with FnColArgs
 trait BooleanSeqArgsFn extends BooleanSeqCol with FnArgs
 
-trait ShortSeqFn extends ShortSeqCol with FnColArgs
+trait ShortSeqNoArgsFn extends ShortSeqCol with FnColArgs
 trait ShortSeqArgsFn extends ShortSeqCol with FnArgs
 
-trait IntSeqFn extends IntSeqCol with FnColArgs
+trait IntSeqNoArgsFn extends IntSeqCol with FnColArgs
 trait IntSeqArgsFn extends IntSeqCol with FnArgs
 
-trait LongSeqFn extends LongSeqCol with FnColArgs
+trait LongSeqNoArgsFn extends LongSeqCol with FnColArgs
 trait LongSeqArgsFn extends LongSeqCol with FnArgs
 
-trait FloatSeqFn extends FloatSeqCol with FnColArgs
+trait FloatSeqNoArgsFn extends FloatSeqCol with FnColArgs
 trait FloatSeqArgsFn extends FloatSeqCol with FnArgs
 
-trait DoubleSeqFn extends DoubleSeqCol with FnColArgs
+trait DoubleSeqNoArgsFn extends DoubleSeqCol with FnColArgs
 trait DoubleSeqArgsFn extends DoubleSeqCol with FnArgs
 
-trait BigDecimalSeqFn extends BigDecimalSeqCol with FnColArgs
+trait BigDecimalSeqNoArgsFn extends BigDecimalSeqCol with FnColArgs
 trait BigDecimalSeqArgsFn extends BigDecimalSeqCol with FnArgs
 
-trait TimeSeqFn extends TimeSeqCol with FnColArgs
+trait TimeSeqNoArgsFn extends TimeSeqCol with FnColArgs
 trait TimeSeqArgsFn extends TimeSeqCol with FnArgs
 
-trait DateSeqFn extends DateSeqCol with FnColArgs
+trait DateSeqNoArgsFn extends DateSeqCol with FnColArgs
 trait DateSeqArgsFn extends DateSeqCol with FnArgs
 
-trait TimestampSeqFn extends TimestampSeqCol with FnColArgs
+trait TimestampSeqNoArgsFn extends TimestampSeqCol with FnColArgs
 trait TimestampSeqArgsFn extends TimestampSeqCol with FnArgs
+
+
 
 
 

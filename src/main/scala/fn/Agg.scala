@@ -40,10 +40,10 @@ object Agg {
 package object aggFn {
   sealed trait AggFn
   case class AggTypeFn[T](col: TypeCol[T], template: String) extends TypeFn[T] with AggFn
-  case class AggLongFn(col: TypeCol[_], template: String) extends LongFn with AggFn
-  case class AggFloatFn(col: TypeCol[_], template: String) extends FloatFn with AggFn
-  case class AggDoubleFn(col: TypeCol[_], template: String) extends DoubleFn with AggFn
-  case class AggBigDecimalFn(col: TypeCol[_], template: String) extends BigDecimalFn with AggFn
+  case class AggLongFn(col: TypeCol[_], template: String) extends LongNoArgsFn with AggFn
+  case class AggFloatFn(col: TypeCol[_], template: String) extends FloatNoArgsFn with AggFn
+  case class AggDoubleFn(col: TypeCol[_], template: String) extends DoubleNoArgsFn with AggFn
+  case class AggBigDecimalFn(col: TypeCol[_], template: String) extends BigDecimalNoArgsFn with AggFn
 }
 
 

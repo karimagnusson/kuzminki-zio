@@ -73,6 +73,9 @@ trait JsonbMethods{
   def pathStr(values: Seq[String]): TypeCol[String] = JsonbPathStrFn(col, values)
   def #>>(values: Seq[String]): TypeCol[String] = pathStr(values)
 
+  def concat(col2: TypeCol[Jsonb]): TypeCol[Jsonb] = JsonbConcatFn(col, col2)
+  def ||(col2: TypeCol[Jsonb]): TypeCol[Jsonb] = concat(col2)
+
   def drop(value: String): TypeCol[Jsonb] = JsonbDropFn(col, value)
   def -(value: String): TypeCol[Jsonb] = drop(value)
 

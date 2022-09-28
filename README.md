@@ -80,7 +80,90 @@ object ExampleApp extends zio.App {
 }
 ```
 
+#### In the latest push:
 
+#### Timestamp / Date / Time methods
+
+```scala
+
+class Demo extends Model("demo") {
+  val id = column[Int]("id")
+  val eventTime = column[Time]("event_time")
+  val eventDate = column[Date]("event_date")
+  val updatedAt = column[Timestamp]("updated_at")
+}
+
+val demo = Model.get[Demo]
+
+sql
+  .update(demo)
+  .set(t => Seq(
+    t.eventTime += Fn.interval(hours = 3, minutes = 10),
+    t.eventDate += Fn.interval(years = 1, days = 2),
+    t.updatedAt += Fn.interval(months = 4, hours = 5)
+  ))
+  .where(_.id === 25)
+  .run
+
+sql
+  .select(demo)
+  .cols3(t => (
+    t.eventTime.format("MM:HH"),
+    t.eventDate.format("DD Mon YYYY"),
+    t.updatedAt.format("DD Mon YYYY MM:HH")
+  ))
+  .where(_.id === 25)
+  .runHead
+
+sql
+  .select(demo)
+  .cols4(t => (
+    t.id,
+    t.eventDate.month,
+    t.updatedAt.week
+    t.updatedAt + Fn.interval(days = 10)
+  ))
+  .where(t => Seq(
+    t.eventDate.year === 2022,
+    t.eventDate.quarter === 2
+  ))
+  .run
+
+```
+
+See: [https://www.postgresql.org/docs/current/functions-datetime.html](https://www.postgresql.org/docs/current/functions-datetime.html)
+
+| Method        | Types           | Arg
+| ------------- | --------------- | ----------- |
+| +             | All             | PGInterval  |
+| -             | All             | PGInterval  |
+| age           | Timestamp       |             |
+| epochSecs     | Timestamp       |             |
+| epochMillis   | Timestamp       |             |
+| century       | Timestamp Date  |             |
+| decade        | Timestamp Date  |             |
+| year          | Timestamp Date  |             |
+| quarter       | Timestamp Date  |             |
+| month         | Timestamp Date  |             |
+| week          | Timestamp Date  |             |
+| day           | Timestamp Date  |             |
+| dow           | Timestamp Date  |             |
+| doy           | Timestamp Date  |             |
+| isoDow        | Timestamp Date  |             |
+| isoYear       | Timestamp Date  |             |
+| hour          | Timestamp Time  |             |
+| minute        | Timestamp Time  |             |
+| second        | Timestamp Time  |             |
+| microseconds  | Timestamp Time  |             |
+| milliseconds  | Timestamp Time  |             |
+| asDate        | Timestamp       |             |
+| asTime        | Timestamp       |             |
+| asTimestamp   | Date            |             |
+| asString      | All             |             |
+| format        | All             | String      |
+| setNow        | All             |             |
+| +=            | All             | PGInterval  |
+| -=            | All             | PGInterval  |
 
 
 

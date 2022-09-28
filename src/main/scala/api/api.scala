@@ -77,15 +77,15 @@ package object api {
 
   implicit class KzStringImpl(val col: TypeCol[String]) extends StringMethods
   implicit class KzBooleanImpl(val col: TypeCol[Boolean]) extends TypeMethods[Boolean]
-  implicit class KzShortImpl(val col: TypeCol[Short]) extends ComparativeMethods[Short]
-  implicit class KzIntImpl(val col: TypeCol[Int]) extends ComparativeMethods[Int]
-  implicit class KzLongImpl(val col: TypeCol[Long]) extends ComparativeMethods[Long]
-  implicit class KzFloatImpl(val col: TypeCol[Float]) extends ComparativeMethods[Float]
-  implicit class KzDoubleImpl(val col: TypeCol[Double]) extends ComparativeMethods[Double]
-  implicit class KzBigDecimalImpl(val col: TypeCol[BigDecimal]) extends ComparativeMethods[BigDecimal]
-  implicit class KzTimeImpl(val col: TypeCol[Time]) extends ComparativeMethods[Time]
-  implicit class KzDateImpl(val col: TypeCol[Date]) extends ComparativeMethods[Date]
-  implicit class KzTimestampImpl(val col: TypeCol[Timestamp]) extends ComparativeMethods[Timestamp]
+  implicit class KzShortImpl(val col: TypeCol[Short]) extends NumericMethods[Short]
+  implicit class KzIntImpl(val col: TypeCol[Int]) extends NumericMethods[Int]
+  implicit class KzLongImpl(val col: TypeCol[Long]) extends NumericMethods[Long]
+  implicit class KzFloatImpl(val col: TypeCol[Float]) extends NumericMethods[Float]
+  implicit class KzDoubleImpl(val col: TypeCol[Double]) extends NumericMethods[Double]
+  implicit class KzBigDecimalImpl(val col: TypeCol[BigDecimal]) extends NumericMethods[BigDecimal]
+  implicit class KzTimeImpl(val col: TypeCol[Time]) extends TimeMethods
+  implicit class KzDateImpl(val col: TypeCol[Date]) extends DateMethods
+  implicit class KzTimestampImpl(val col: TypeCol[Timestamp]) extends TimestampMethods
   implicit class KzJsonbImpl(val col: TypeCol[Jsonb]) extends JsonbMethods
   implicit class KzUUIDImpl(val col: TypeCol[UUID]) extends TypeMethods[UUID]
 

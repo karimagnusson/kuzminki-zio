@@ -22,7 +22,7 @@ import java.sql.Timestamp
 import java.util.UUID
 import java.sql.ResultSet
 import java.math.{BigDecimal => JBigDecimal}
-import scala.reflect.runtime.universe._
+import org.postgresql.util.PGInterval
 import kuzminki.api.{Jsonb, KuzminkiError}
 
 
@@ -123,6 +123,11 @@ object JsonbConv extends ValConv[Jsonb] {
 object UUIDConv extends ValConv[UUID] {
   def get(rs: ResultSet, index: Int) = rs.getObject(index).asInstanceOf[UUID]
   def opt = UUIDOptConv
+}
+
+object IntervalConv extends ValConv[PGInterval] {
+  def get(rs: ResultSet, index: Int) = rs.getObject(index).asInstanceOf[PGInterval]
+  def opt = IntervalOptConv
 }
 
 // seq
@@ -258,6 +263,11 @@ object JsonbOptConv extends ValOptConv[Jsonb] {
 object UUIDOptConv extends ValOptConv[UUID] {
   def get(rs: ResultSet, index: Int) =
     Option(rs.getObject(index)).map(_.asInstanceOf[UUID])
+}
+
+object IntervalOptConv extends ValOptConv[PGInterval] {
+  def get(rs: ResultSet, index: Int) =
+    Option(rs.getObject(index)).map(_.asInstanceOf[PGInterval])
 }
 
 // seq opt

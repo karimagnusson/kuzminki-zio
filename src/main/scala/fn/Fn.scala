@@ -20,6 +20,8 @@ import kuzminki.column._
 import kuzminki.fn.types._
 import kuzminki.column.TypeCol
 import kuzminki.render.Prefix
+import kuzminki.api.KuzminkiError
+import org.postgresql.util.PGInterval
 
 // coalesce
 
@@ -58,20 +60,29 @@ object Fn {
   def roundAny[T](col: TypeCol[_], size: Int) = RoundAny(col, size)
 
   def roundAnyStr[T](col: TypeCol[BigDecimal], size: Int) = RoundAnyStr(col, size)
+
+  def interval(
+    years: Int = 0,
+    months: Int = 0,
+    days: Int = 0,
+    hours: Int = 0,
+    minutes: Int = 0,
+    seconds: Double = 0.0
+  ) = new PGInterval(years, months, days, hours, minutes, seconds)
 }
 
 
 package object general {
 
-  case class CustomStringFn(col: TypeCol[String], template: String) extends StringFn
+  case class CustomStringFn(col: TypeCol[String], template: String) extends StringNoArgsFn
 
   case class Coalesce[T](col: TypeCol[T], default: T) extends TypeArgsFn[T] {
-    val template = "coalesce(%s, ?)"
+    def template = "coalesce(%s, ?)"
     def fnArgs = Vector(default)
   }
 
   case class Concat(cols: Vector[TypeCol[_]]) extends StringCol {
-    val template = "concat(%s)"
+    def template = "concat(%s)"
     def name = cols.map(_.name).mkString("_")
     def render(prefix: Prefix) = {
       template.format(
@@ -82,7 +93,7 @@ package object general {
   }
 
   case class ConcatWs(glue: String, cols: Vector[TypeCol[_]]) extends StringCol {
-    val template = s"concat_ws('$glue', %s)"
+    def template = s"concat_ws('$glue', %s)"
     def name = cols.map(_.name).mkString("_")
     def render(prefix: Prefix) = {
       template.format(
@@ -96,8 +107,8 @@ package object general {
     col: TypeCol[String],
     start: Int,
     lenOpt: Option[Int]
-  ) extends StringFn {
-    val template = lenOpt match {
+  ) extends StringNoArgsFn {
+    def template = lenOpt match {
       case Some(len) => s"substr(%s, $start, $len)"
       case None => s"substr(%s, $start)"
     }
@@ -107,8 +118,8 @@ package object general {
     col: TypeCol[String],
     from: String,
     to: String
-  ) extends StringFn {
-    val template = s"replace(%s, '$from', '$to')"
+  ) extends StringNoArgsFn {
+    def template = s"replace(%s, '$from', '$to')"
   }
 
   // round
@@ -119,19 +130,19 @@ package object general {
   }
 
   case class Round(col: TypeCol[BigDecimal], size: Int) extends BigDecimalCol with RoundFn {
-    val template = "round(%s, ?)"
+    def template = "round(%s, ?)"
   }
 
   case class RoundStr(col: TypeCol[BigDecimal], size: Int) extends StringCol with RoundFn {
-    val template = "round(%s, ?)::text"
+    def template = "round(%s, ?)::text"
   }
 
   case class RoundAny(col: TypeCol[_], size: Int) extends BigDecimalCol with RoundFn {
-    val template = "round(%s::numeric, ?)"
+    def template = "round(%s::numeric, ?)"
   }
 
   case class RoundAnyStr(col: TypeCol[_], size: Int) extends StringCol with RoundFn {
-    val template = "round(%s::numeric, ?)::text"
+    def template = "round(%s::numeric, ?)::text"
   }
 }
 

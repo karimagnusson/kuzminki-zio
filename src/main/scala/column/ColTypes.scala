@@ -4,6 +4,7 @@ import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.UUID
+import org.postgresql.util.PGInterval
 import kuzminki.conv._
 import kuzminki.filter._
 import kuzminki.api.Jsonb
@@ -59,6 +60,10 @@ trait JsonbCol extends TypeCol[Jsonb] {
 
 trait UUIDCol extends TypeCol[UUID] {
   val conv = UUIDConv
+}
+
+trait IntervalCol extends TypeCol[PGInterval] {
+  val conv = IntervalConv
 }
 
 trait StringSeqCol extends TypeCol[Seq[String]] {

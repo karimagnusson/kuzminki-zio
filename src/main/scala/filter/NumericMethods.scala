@@ -14,48 +14,29 @@
 * limitations under the License.
 */
 
-package kuzminki.fn.types
+package kuzminki.filter
 
 import kuzminki.column.TypeCol
-import kuzminki.render.{Prefix, NoArgs}
+import kuzminki.assign._
+import kuzminki.filter.types._
+import kuzminki.select.AggregationSubquery
 
 
-trait FnBase {
-  val col: TypeCol[_]
-  def template: String
+trait NumericMethods[T] extends ComparativeMethods[T] {
+
+  // update
+
+  def inc(value: T) = Increment(col, value)
+  def +=(value: T) = inc(value)
+  
+  def dec(value: T) = Decrement(col, value)
+  def -=(value: T) = dec(value)
+
+  // update cache
+
+  def modInc = CacheMod.inc(col)
+  def decDec = CacheMod.dec(col)
 }
-
-trait FnRender extends FnBase {
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-}
-
-trait FnName extends FnBase {
-  def name = "%s_%s".format(
-    template.splitAt(template.indexOf('('))._1.toLowerCase,
-    col.name
-  )
-}
-
-trait FnArgs extends FnRender with FnName {
-  def fnArgs: Vector[Any]
-  val args = col.args ++ fnArgs
-}
-
-trait FnColArgs extends FnRender with FnName {
-  val args = col.args
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
