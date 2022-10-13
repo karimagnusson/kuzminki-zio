@@ -17,7 +17,7 @@
 package kuzminki.render
 
 import kuzminki.section.Section
-import kuzminki.section.select.{WhereBlankSec, HavingBlankSec}
+import kuzminki.section.{WhereBlankSec, HavingBlankSec}
 
 
 trait RenderCollector {

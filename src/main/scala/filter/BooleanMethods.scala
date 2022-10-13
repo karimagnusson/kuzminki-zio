@@ -14,11 +14,35 @@
 * limitations under the License.
 */
 
-package kuzminki.filter.types
+package kuzminki.filter
 
 import kuzminki.column.TypeCol
 
 
-case class FilterMatchesNoArg[T](col: TypeCol[T]) extends NoArgFilter {
-  val template = "%s = ?"
+trait BooleanMethods extends TypeMethods[Boolean] {
+  def use = BooleanCache(col)
 }
+
+case class BooleanCache(col: TypeCol[Boolean]) extends TypeCache[Boolean]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

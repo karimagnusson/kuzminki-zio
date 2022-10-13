@@ -19,7 +19,8 @@ package kuzminki.select
 import kuzminki.column.TypeCol
 import kuzminki.filter.Filter
 import kuzminki.section.Section
-import kuzminki.section.select.{
+import kuzminki.section.{
+  Section,
   WhereSec,
   WhereBlankSec,
   SelectSec,

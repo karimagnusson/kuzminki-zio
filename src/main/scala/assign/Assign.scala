@@ -16,101 +16,117 @@
 
 package kuzminki.assign
 
-import java.sql.Time
-import java.sql.Date
-import java.sql.Timestamp
-import kuzminki.column.{TypeCol, ModelCol}
-import kuzminki.render.{Renderable, Prefix, Wrap}
+import kuzminki.column.{ModelCol, TypeCol}
+import kuzminki.render.{Renderable, Prefix}
 import kuzminki.api.KuzminkiError
-import kuzminki.api.Jsonb
 
 
-abstract class Assign(col: TypeCol[_], valueOpt: Option[Any]) extends Renderable with Wrap {
+trait Assign extends Renderable {
   val template: String
-  def name = wrap(col.name)
-  def render(prefix: Prefix) = template
-  val args = valueOpt match {
-    case Some(value) => Vector(value)
-    case None => Vector.empty[Any]
-  }
-  col match {
+  def validateCol(col: Renderable): Unit = col match {
     case col: ModelCol =>
     case _ => throw KuzminkiError("cannot update a function") 
   }
 }
 
+abstract class AssignOne(col: Renderable) extends Assign {
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  validateCol(col)
+}
+
+abstract class AssignTwo(col: Renderable) extends Assign {
+  def render(prefix: Prefix) = template.format(col.render(prefix), col.render(prefix))
+  validateCol(col)
+}
+
 // general
 
-case class SetValue(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = ?"
-}
-
-case class SetToNull(col: TypeCol[_]) extends Assign(col, None) {
-  val template = s"$name = NULL"
-}
-
-case class SetEmpty(col: TypeCol[_]) extends Assign(col, None) {
-  val template = s"$name = '{}'"
+case class SetValue(col: Renderable, arg: Any) extends AssignOne(col) {
+  val template = "%s = ?"
+  val args = Vector(arg)
 }
 
 // numeric
 
-case class Increment(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = $name + ?"
+case class Increment(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = %s + ?"
+  val args = Vector(arg)
 }
 
-case class Decrement(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = $name - ?"
+case class Decrement(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = %s - ?"
+  val args = Vector(arg)
 }
 
 // array
 
-case class Append(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = array_append($name, ?)"
+case class Append(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = %s || ?"
+  val args = Vector(arg)
 }
 
-case class Prepend(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = array_prepend(?, $name)"
+case class Prepend(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = ? || %s"
+  val args = Vector(arg)
 }
 
-case class Remove(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = array_remove($name, ?)"
+case class Remove(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = array_remove(%s, ?)"
+  val args = Vector(arg)
+}
+
+case class Add(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = ARRAY(SELECT DISTINCT e FROM unnest(%s || ?) AS a(e))"
+  val args = Vector(arg)
+}
+
+case class AddAsc(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = ARRAY(SELECT DISTINCT e FROM unnest(%s || ?) AS a(e) ORDER BY e ASC)"
+  val args = Vector(arg)
+}
+
+case class AddDesc(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = ARRAY(SELECT DISTINCT e FROM unnest(%s || ?) AS a(e) ORDER BY e DESC)"
+  val args = Vector(arg)
 }
 
 // jsonb
 
-case class JsonbSetValue(col: TypeCol[Jsonb], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = ?::jsonb"
+case class JsonbUpdate(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = %s || ?"
+  val args = Vector(arg)
 }
 
-case class JsonbUpdate(col: TypeCol[Jsonb], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = $name || ?::jsonb"
+case class JsonbDel(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = %s - ?"
+  val args = Vector(arg)
 }
 
-case class JsonbDel(col: TypeCol[Jsonb], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = $name - ?"
-}
-
-case class JsonbDelPath(col: TypeCol[Jsonb], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = $name #- ?"
+case class JsonbDelPath(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = %s #- ?"
+  val args = Vector(arg)
 }
 
 // timestamp / date / time
 
-case class TimestampNow(col: TypeCol[_]) extends Assign(col, None) {
-  val template = s"$name = now()"
+case class TimestampNow(col: Renderable) extends AssignOne(col) {
+  val template = "%s = now()"
+  val args = Vector.empty[Any]
 }
 
-case class TimeNow(col: TypeCol[Time]) extends Assign(col, None) {
-  val template = s"$name = timeofday()"
+case class TimeNow(col: Renderable) extends AssignOne(col) {
+  val template = "%s = timeofday()"
+  val args = Vector.empty[Any]
 }
 
-case class DateTimeInc(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = $name + ?"
+case class DateTimeInc(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = %s + ?"
+  val args = Vector(arg)
 }
 
-case class DateTimeDec(col: TypeCol[_], value: Any) extends Assign(col, Some(value)) {
-  val template = s"$name = $name - ?"
+case class DateTimeDec(col: Renderable, arg: Any) extends AssignTwo(col) {
+  val template = "%s = %s - ?"
+  val args = Vector(arg)
 }
 
 

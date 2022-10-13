@@ -6,7 +6,7 @@ import kuzminki.column.TypeCol
 import kuzminki.assign.SetValue
 import kuzminki.render.SectionCollector
 import kuzminki.section.Section
-import kuzminki.section.insert._
+import kuzminki.section._
 import kuzminki.shape._
 
 
@@ -18,7 +18,7 @@ class Insert[M <: Model](model: M) {
       ValuesBuilder(
         model,
         pairs.map(_.col),
-        pairs.map(_.value)
+        pairs.map(_.arg)
       )
     )
   }

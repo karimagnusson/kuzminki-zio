@@ -29,7 +29,15 @@ import kuzminki.assign.Assign
 import kuzminki.update.RenderUpdate
 import kuzminki.delete.RenderDelete
 import kuzminki.insert.{RenderInsert, Values}
-import kuzminki.run.RunStream
+import kuzminki.run.{
+  RunQuery,
+  RunQueryParams,
+  RunOperation,
+  RunOperationParams,
+  RunUpdate,
+  RunUpdateReturning,
+  RunStream
+}
 import kuzminki.select.{
   RenderSelect,
   SelectSubquery,
@@ -76,7 +84,7 @@ package object api {
   // filters
 
   implicit class KzStringImpl(val col: TypeCol[String]) extends StringMethods
-  implicit class KzBooleanImpl(val col: TypeCol[Boolean]) extends TypeMethods[Boolean]
+  implicit class KzBooleanImpl(val col: TypeCol[Boolean]) extends BooleanMethods
   implicit class KzShortImpl(val col: TypeCol[Short]) extends NumericMethods[Short]
   implicit class KzIntImpl(val col: TypeCol[Int]) extends NumericMethods[Int]
   implicit class KzLongImpl(val col: TypeCol[Long]) extends NumericMethods[Long]
@@ -126,6 +134,98 @@ package object api {
   // streaming
 
   implicit class KzStreamSelect[M, R](val query: Offset[M, R]) extends RunStream[M, R]
+
+  // debug
+
+  implicit class DebugRunQuery[R](query: RunQuery[R]) {
+    def printSql = {
+      query.render.printStatement
+      query
+    }
+    def printSqlAndArgs = {
+      query.render.printStatementAndArgs
+      query
+    }
+    def printSqlWithArgs = {
+      query.render.printStatementWithArgs
+      query
+    }
+  }
+
+  implicit class DebugRunQueryParams[P, R](query: RunQueryParams[P, R]) {
+    def printSql = {
+      println(query.statement)
+      query
+    }
+    def printSqlAndArgs(params: P) = {
+      query.render(params).printStatementAndArgs
+      query
+    }
+    def printSqlWithArgs(params: P) = {
+      query.render(params).printStatementWithArgs
+      query
+    }
+  }
+
+  implicit class DebugRunOperation(query: RunOperation) {
+    def printSql = {
+      query.render.printStatement
+      query
+    }
+    def printSqlAndArgs = {
+      query.render.printStatementAndArgs
+      query
+    }
+    def printSqlWithArgs = {
+      query.render.printStatementWithArgs
+      query
+    }
+  }
+
+  implicit class DebugRunOperationParams[P](query: RunOperationParams[P]) {
+    def printSql = {
+      println(query.statement)
+      query
+    }
+    def printSqlAndArgs(params: P) = {
+      query.render(params).printStatementAndArgs
+      query
+    }
+    def printSqlWithArgs(params: P) = {
+      query.render(params).printStatementWithArgs
+      query
+    }
+  }
+
+  implicit class DebugRunUpdate[P1, P2](query: RunUpdate[P1, P2]) {
+    def printSql = {
+      println(query.statement)
+      query
+    }
+    def printSqlAndArgs(p1: P1, p2: P2) = {
+      query.render(p1, p2).printStatementAndArgs
+      query
+    }
+    def printSqlWithArgs(p1: P1, p2: P2) = {
+      query.render(p1, p2).printStatementWithArgs
+      query
+    }
+  }
+
+  implicit class DebugRunUpdateParams[P1, P2, R](query: RunUpdateReturning[P1, P2, R]) {
+    def printSql = {
+      println(query.statement)
+      query
+    }
+    def printSqlAndArgs(p1: P1, p2: P2) = {
+      query.render(p1, p2).printStatementAndArgs
+      query
+    }
+    def printSqlWithArgs(p1: P1, p2: P2) = {
+      query.render(p1, p2).printStatementWithArgs
+      query
+    }
+  }
 
   // raw SQL
 

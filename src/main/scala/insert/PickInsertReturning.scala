@@ -2,7 +2,6 @@ package kuzminki.insert
 
 import kuzminki.api.Model
 import kuzminki.column.TypeCol
-import kuzminki.section.insert.{InsertBlankValuesSec, ReturningSec}
 import kuzminki.render.SectionCollector
 import kuzminki.shape._
 

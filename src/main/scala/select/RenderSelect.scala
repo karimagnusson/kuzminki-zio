@@ -21,8 +21,11 @@ import kuzminki.render.Prefix
 import kuzminki.column.TypeCol
 import kuzminki.fn.aggFn.AggFn
 import kuzminki.run.RunQuery
-import kuzminki.render.RenderedQuery
-import kuzminki.section.select._
+import kuzminki.section._
+import kuzminki.render.{
+  RenderedOperation,
+  RenderedQuery
+}
 
 
 class RenderSelect[M, R](
@@ -31,7 +34,11 @@ class RenderSelect[M, R](
   ) extends SelectCacheMethods(model, coll)
        with RunQuery[R] {
 
-  def render = RenderedQuery(coll.render, coll.args, coll.rowShape.conv)
+  def render = RenderedQuery(
+    coll.render,
+    coll.args,
+    coll.rowShape.conv
+  )
 
   // subquery
 
@@ -62,11 +69,6 @@ class RenderSelect[M, R](
     }
 
     new AggregationSubquery(coll)
-  }
-
-  def printSql = {
-    println(render.statement)
-    this
   }
 }
 

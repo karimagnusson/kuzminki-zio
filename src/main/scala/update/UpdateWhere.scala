@@ -17,7 +17,7 @@
 package kuzminki.update
 
 import kuzminki.api.KuzminkiError
-import kuzminki.section.operation.WhereSec
+import kuzminki.section.WhereSec
 import kuzminki.render.SectionCollector
 import kuzminki.filter.Filter
 

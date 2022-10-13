@@ -28,12 +28,19 @@ import java.sql.Date
 import java.sql.Timestamp
 import scala.collection.mutable.ListBuffer
 import org.postgresql.util.PGInterval
+import org.postgresql.util.PGobject
 
 import zio._
 import zio.blocking._
 
-import kuzminki.api.{DbConfig, KuzminkiError, Jsonb}
 import kuzminki.shape.RowConv
+import kuzminki.conv.{TypeNull, TypeArray}
+import kuzminki.api.{
+  DbConfig,
+  KuzminkiError,
+  Jsonb,
+  NoArg
+}
 import kuzminki.render.{
   RenderedQuery,
   RenderedOperation
@@ -51,76 +58,50 @@ object SingleConnection {
 
 class SingleConnection(conn: Connection) {
 
-  private val pgTypeName: Any => String = {
-    case v: String      => "text"
-    case v: Boolean     => "bool"
-    case v: Short       => "int2"
-    case v: Int         => "int4"
-    case v: Long        => "int8"
-    case v: Float       => "float4"
-    case v: Double      => "float8"
-    case v: BigDecimal  => "decimal"
-    case v: Time        => "time"
-    case v: Date        => "date"
-    case v: Timestamp   => "timestamp"
-    case v: Any         => throw KuzminkiError(s"type not supported [$v]")
+  private val notNoArg: Any => Boolean = {
+    case NoArg => false
+    case _ => true
   }
 
-  private def arrayArg(arg: Seq[Any]) = {
-    conn.createArrayOf(
-      pgTypeName(arg.head),
-      arg.toArray.map(_.asInstanceOf[Object])
-    )
+  private def arrayArg(value: TypeArray) = {
+    conn.createArrayOf(value.typeName, value.vec.toArray)
+  }
+
+  private def jsonbArg(value: Jsonb) = {
+    val obj = new PGobject()
+    obj.setType("jsonb")
+    obj.setValue(value.value)
+    obj
   }
 
   private def setArg(jdbcStm: PreparedStatement, arg: Any, index: Int): Unit = {
     arg match {
-      case value: String      => jdbcStm.setString(index, value)
-      case value: Boolean     => jdbcStm.setBoolean(index, value)
-      case value: Short       => jdbcStm.setShort(index, value)
-      case value: Int         => jdbcStm.setInt(index, value)
-      case value: Long        => jdbcStm.setLong(index, value)
-      case value: Float       => jdbcStm.setFloat(index, value)
-      case value: Double      => jdbcStm.setDouble(index, value)
-      case value: BigDecimal  => jdbcStm.setBigDecimal(index, value.bigDecimal)
-      case value: Time        => jdbcStm.setTime(index, value)
-      case value: Date        => jdbcStm.setDate(index, value)
-      case value: Timestamp   => jdbcStm.setTimestamp(index, value)
-      case value: Jsonb       => jdbcStm.setString(index, value.value)
-      case value: UUID        => jdbcStm.setObject(index, value)
-      case value: PGInterval  => jdbcStm.setObject(index, value)
-      case value: Seq[_]      => jdbcStm.setArray(index, arrayArg(value))
-      case _                  => throw KuzminkiError(s"type not supported [$arg]")
+      case value: String        => jdbcStm.setString(index, value)
+      case value: Boolean       => jdbcStm.setBoolean(index, value)
+      case value: Short         => jdbcStm.setShort(index, value)
+      case value: Int           => jdbcStm.setInt(index, value)
+      case value: Long          => jdbcStm.setLong(index, value)
+      case value: Float         => jdbcStm.setFloat(index, value)
+      case value: Double        => jdbcStm.setDouble(index, value)
+      case value: BigDecimal    => jdbcStm.setBigDecimal(index, value.bigDecimal)
+      case value: Time          => jdbcStm.setTime(index, value)
+      case value: Date          => jdbcStm.setDate(index, value)
+      case value: Timestamp     => jdbcStm.setTimestamp(index, value)
+      case value: Jsonb         => jdbcStm.setObject(index, jsonbArg(value))
+      case value: UUID          => jdbcStm.setObject(index, value)
+      case value: PGInterval    => jdbcStm.setObject(index, value)
+      case value: TypeNull      => jdbcStm.setNull(index, value.typeId)
+      case value: TypeArray     => jdbcStm.setArray(index, arrayArg(value))
+      case _ => throw KuzminkiError(s"type not supported [$arg]")
     }
   }
 
-  private val isNil: Any => Boolean = {
-    case Nil => true
-    case _ => false
-  }
-
-  private def emptyArrTempl(sql: String, args: Vector[Any]) = {
-    val formattable = sql.replace("?", "%s")
-    val placeholders = args.map {
-      case Nil => "'{}'"
-      case _ => "?"
-    }
-    val sqlMod = formattable.format(placeholders: _*)
-    val argsMod = args.filterNot(isNil)
-    (sqlMod, argsMod)
-  }
-
-  private def getStatement(sqlR: String, argsR: Vector[Any]) = {
-    
-    val (sql, args) = argsR.exists(isNil) match {
-      case true =>  emptyArrTempl(sqlR, argsR)
-      case false => (sqlR, argsR)
-    }
+  private def getStatement(sql: String, args: Vector[Any]) = {
 
     val jdbcStm = conn.prepareStatement(sql)
    
     if (args.nonEmpty) {
-      args.zipWithIndex.foreach {
+      args.filter(notNoArg).zipWithIndex.foreach {
         case (arg, index) =>
           setArg(jdbcStm, arg, index + 1)
       }

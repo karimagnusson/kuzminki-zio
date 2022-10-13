@@ -16,7 +16,7 @@
 
 package kuzminki.select
 
-import kuzminki.section.select.LimitSec
+import kuzminki.section.LimitSec
 
 
 class Limit[M, R](

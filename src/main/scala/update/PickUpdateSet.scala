@@ -3,7 +3,7 @@ package kuzminki.update
 import kuzminki.api.Model
 import kuzminki.model.ModelTable
 import kuzminki.render.SectionCollector
-import kuzminki.section.operation.{UpdateSec, UpdateCacheSetSec}
+import kuzminki.section.{UpdateSec, UpdateCacheSetSec}
 import kuzminki.assign.CacheMod
 import kuzminki.shape._
 

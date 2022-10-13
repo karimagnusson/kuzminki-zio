@@ -16,117 +16,88 @@
 
 package kuzminki.filter
 
-import kuzminki.column._
+import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
+import kuzminki.conv._
 import kuzminki.fn.types._
-import kuzminki.api.Jsonb
-import kuzminki.fn.Fn
+import kuzminki.api.{Jsonb, Arg, ArgInt}
 
 
-trait JsonbMethods{
+trait JsonbMethods extends TypeMethods[Jsonb] {
 
   val col: TypeCol[Jsonb]
 
-  def default(value: Jsonb) = Fn.coalesce(col, value)
+  // fn
+
+  def ->(value: String): TypeCol[Jsonb] = JsonbPickFn(col, value)
+  def ->(value: Int): TypeCol[Jsonb] = JsonbPickFn(col, value)
+  def ->>(value: String): TypeCol[String] = JsonbPickStrFn(col, value)
+  def ->>(value: Int): TypeCol[String] = JsonbPickStrFn(col, value)
+  def #>(value: Seq[String]): TypeCol[Jsonb] = JsonbPathFn(col, StringSeqConv.put(value))
+  def #>>(value: Seq[String]): TypeCol[String] = JsonbPathStrFn(col, StringSeqConv.put(value))
+  def ||(col2: TypeCol[Jsonb]): TypeCol[Jsonb] = JsonbConcatFn(col, col2)
+  def -(value: String): TypeCol[Jsonb] = JsonbDropFn(col, value)
+  def -(value: Int): TypeCol[Jsonb] = JsonbDropFn(col, value)
+  def -(value: Seq[String]): TypeCol[Jsonb] = JsonbDropManyFn(col, StringSeqConv.put(value))
+  def #-(value: Seq[String]): TypeCol[Jsonb] = JsonbDropPathFn(col, StringSeqConv.put(value))
 
   // filters
 
-  def matches(obj: Jsonb): Filter = FilterJsonbMatches(col, obj.value)
-  def ===(obj: Jsonb): Filter = matches(obj)
+  def ?(value: String): Filter = FilterJsonbExists(col, value)
+  def !?(value: String): Filter = FilterJsonbExists(col, value)
+  def ?|(value: Seq[String]): Filter = FilterJsonbExistsAny(col, StringSeqConv.put(value))
+  def ?&(value: Seq[String]): Filter = FilterJsonbExistsAll(col, StringSeqConv.put(value))
 
-  def not(obj: Jsonb): Filter = FilterJsonbNot(col, obj.value)
-  def !==(obj: Jsonb): Filter = not(obj)
+  def @>(value: Jsonb): Filter = FilterContains(col, value)
+  def !@>(value: Jsonb): Filter = FilterNotContains(col, value)
+  def <@(value: Jsonb): Filter = FilterContainedBy(col, value)
+  def !<@(value: Jsonb): Filter = FilterNotContainedBy(col, value)
 
-  def contains(obj: Jsonb): Filter = FilterJsonbContains(col, obj.value)
-  def @>(obj: Jsonb): Filter = contains(obj)
+  // optional
 
-  def containedBy(obj: Jsonb): Filter = FilterJsonbContainedBy(col, obj.value)
-  def <@(obj: Jsonb): Filter = contains(obj)
+  def ?(opt: Option[String]): Option[Filter] = opt.map(?)
+  def !?(opt: Option[String]): Option[Filter] = opt.map(!?)
+  def ?|(opt: Option[Seq[String]]): Option[Filter] = opt.map(?|)
+  def ?&(opt: Option[Seq[String]]): Option[Filter] = opt.map(?&)
 
-  def exists(value: String): Filter = FilterJsonbExists(col, value)
-  def ?(value: String): Filter = exists(value)
-
-  def existsAny(values: Seq[String]): Filter = FilterJsonbExistsAny(col, values)
-  def ?|(values: Seq[String]): Filter = existsAny(values)
-
-  def existsAll(values: Seq[String]): Filter = FilterJsonbExistsAll(col, values)
-  def ?&(values: Seq[String]): Filter = existsAll(values)
-
-  // modifiers
-
-  def pick(value: String): TypeCol[Jsonb] = JsonbPickFn(col, value)
-  def ->(value: String): TypeCol[Jsonb] = pick(value)
-
-  def pick(value: Int): TypeCol[Jsonb] = JsonbPickFn(col, value)
-  def ->(value: Int): TypeCol[Jsonb] = pick(value)
-
-  def pickStr(value: String): TypeCol[String] = JsonbPickStrFn(col, value)
-  def ->>(value: String): TypeCol[String] = pickStr(value)
-
-  def pickStr(value: Int): TypeCol[String] = JsonbPickStrFn(col, value)
-  def ->>(value: Int): TypeCol[String] = pickStr(value)
-
-  def path(values: Seq[String]): TypeCol[Jsonb] = JsonbPathFn(col, values)
-  def #>(values: Seq[String]): TypeCol[Jsonb] = path(values)
-
-  def pathStr(values: Seq[String]): TypeCol[String] = JsonbPathStrFn(col, values)
-  def #>>(values: Seq[String]): TypeCol[String] = pathStr(values)
-
-  def concat(col2: TypeCol[Jsonb]): TypeCol[Jsonb] = JsonbConcatFn(col, col2)
-  def ||(col2: TypeCol[Jsonb]): TypeCol[Jsonb] = concat(col2)
-
-  def drop(value: String): TypeCol[Jsonb] = JsonbDropFn(col, value)
-  def -(value: String): TypeCol[Jsonb] = drop(value)
-
-  def drop(value: Int): TypeCol[Jsonb] = JsonbDropFn(col, value)
-  def -(value: Int): TypeCol[Jsonb] = drop(value)
-
-  def drop(value: Seq[String]): TypeCol[Jsonb] = JsonbDropFn(col, value)
-  def -(value: Seq[String]): TypeCol[Jsonb] = drop(value)
-
-  def dropPath(values: Seq[String]): TypeCol[Jsonb] = JsonbDropPathFn(col, values)
-  def #-(values: Seq[String]): TypeCol[Jsonb] = dropPath(values)
-
-  // cache
-
-  def oprEq = CacheFilter.jsonbEq(col)
-  def oprNot = CacheFilter.jsonbNot(col)
-  def oprContains = CacheFilter.jsonbContains(col)
-  def oprContainedBy = CacheFilter.jsonbContainedBy(col)
-  def oprExists = CacheFilter.jsonbExists(col)
-  def oprExistsAny = CacheFilter.jsonbExistsAny(col)
-  def oprExistsAll = CacheFilter.jsonbExistsAll(col)
+  def @>(opt: Option[Jsonb]): Option[Filter] = opt.map(@>)
+  def !@>(opt: Option[Jsonb]): Option[Filter] = opt.map(!@>)
+  def <@(opt: Option[Jsonb]): Option[Filter] = opt.map(<@)
+  def !<@(opt: Option[Jsonb]): Option[Filter] = opt.map(!<@)
 
   // update
 
-  def set(obj: Jsonb) = JsonbSetValue(col, obj.value)
-  def ==>(obj: Jsonb) = set(obj)
-  def setToNull = SetToNull(col)
-  
-  def update(obj: Jsonb) = JsonbUpdate(col, obj.value)
-  def +=(obj: Jsonb) = update(obj)
-  
-  def del(value: String) = JsonbDel(col, value)
-  def -=(value: String) = del(value)
-  
-  def del(value: Int) = JsonbDel(col, value)
-  def -=(value: Int) = del(value)
-  
-  def delPath(value: Seq[String]) = JsonbDelPath(col, value)
-  def #-=(value: Seq[String]) = delPath(value)
+  def +=(value: Jsonb) = JsonbUpdate(col, value)
+  def -=(value: String) = JsonbDel(col, value)
+  def -=(value: Int) = JsonbDel(col, value)
+  def #-=(value: Seq[String]) = JsonbDelPath(col, StringSeqConv.put(value))
 
-  // update cache
+  // cache
 
-  def modSet = CacheMod.jsonbSet(col)
-  def modUpdate = CacheMod.jsonbUpdate(col)
-  def modDelKey = CacheMod.jsonbDelKey(col)
-  def modDelIndex = CacheMod.jsonbDelIndex(col)
-  def modDelPath = CacheMod.jsonbDelPath(col)
+  def use = JsonbCache(col)
 }
 
 
+case class JsonbCache(col: TypeCol[Jsonb]) extends TypeCache[Jsonb] {
+  
+  def ?(arg: Arg) = CacheJsonbExists(col, StringConv)
+  def !?(arg: Arg) = CacheJsonbExists(col, StringConv)
+  def ?|(arg: Arg) = CacheJsonbExistsAny(col, StringSeqConv)
+  def ?&(arg: Arg) = CacheJsonbExistsAll(col, StringSeqConv)
 
+  def @>(arg: Arg) = CacheContains(col, col.conv)
+  def !@>(arg: Arg) = CacheNotContains(col, col.conv)
+  def <@(arg: Arg) = CacheContainedBy(col, col.conv)
+  def !<@(arg: Arg) = CacheContainedBy(col, col.conv)
+
+  // update
+
+  def +=(arg: Arg) = CacheJsonbUpdate(col, col.conv)
+  def -=(arg: Arg) = CacheJsonbDelKey(col, StringConv)
+  def -=(arg: ArgInt) = CacheJsonbDelIndex(col, IntConv)
+  def #-=(arg: Arg) = CacheJsonbDelPath(col, StringSeqConv)
+}
 
 
 

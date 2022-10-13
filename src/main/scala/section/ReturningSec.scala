@@ -14,34 +14,23 @@
 * limitations under the License.
 */
 
-package kuzminki.select
+package kuzminki.section
 
-import kuzminki.run.RunQueryParams
-import kuzminki.render.RenderedQuery
-import kuzminki.shape.ParamConv
-import kuzminki.shape.RowConv
+import kuzminki.render.Renderable
 
 
-class StoredSelectCondition[P, R](
-    statement: String,
-    cacheArgs: Tuple2[Vector[Any], Vector[Any]],
-    paramConv: ParamConv[P],
-    rowConv: RowConv[R]
-  ) extends RunQueryParams[P, R] {
-
-  def render(params: P) = {
-    RenderedQuery(
-      statement,
-      cacheArgs._1 ++ paramConv.fromShape(params) ++ cacheArgs._2,
-      rowConv
-    )
-  }
-
-  def printSql = {
-    println(statement)
-    this
-  }
+case class ReturningSec(parts: Vector[Renderable]) extends MultiPartRender {
+  val expression = "RETURNING %s"
+  val glue = ", "
 }
+
+
+
+
+
+
+
+
 
 
 

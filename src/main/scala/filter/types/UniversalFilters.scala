@@ -16,33 +16,44 @@
 
 package kuzminki.filter.types
 
+import kuzminki.filter.Filter
 import kuzminki.column.TypeCol
 import kuzminki.conv.ValConv
-import kuzminki.render.Renderable
+import kuzminki.render.{Renderable, Prefix}
 
 
-case class FilterMatches[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
+case class FilterMatches(col: Renderable, arg: Any) extends ArgFilter {
   val template = "%s = ?"
 }
 
-case class FilterNot[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
+case class FilterNot(col: Renderable, arg: Any) extends ArgFilter {
   val template = "%s != ?"
 }
 
-case class FilterIn[T](col: TypeCol[T], arg: Any) extends SingleArgFilter {
+case class FilterIn(col: Renderable, arg: Any) extends ArgFilter {
   val template = "%s = ANY(?)"
 }
 
-case class FilterNotIn[T](col: TypeCol[T], arg: Seq[Any]) extends SingleArgFilter {
+case class FilterNotIn(col: Renderable, arg: Any) extends ArgFilter {
   val template = "NOT %s = ANY(?)"
 }
 
-case class FilterIsNull[T](col: TypeCol[T]) extends NoArgFilter {
+case class FilterIsNull(col: Renderable) extends NoArgFilter {
   val template = "%s IS NULL"
 }
 
-case class FilterIsNotNull[T](col: TypeCol[T]) extends NoArgFilter {
+case class FilterIsNotNull(col: Renderable) extends NoArgFilter {
   val template = "%s IS NOT NULL"
+}
+
+// col filters
+
+case class FilterColMatches(col: Renderable, col2: Renderable) extends ColFilter {
+  val template = "%s = ?"
+}
+
+case class FilterColNot(col: Renderable, col2: Renderable) extends ColFilter {
+  val template = "%s != ?"
 }
 
 // cache
@@ -64,7 +75,13 @@ case class CacheNotIn[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[
   val template = "NOT %s = ANY(?)"
 }
 
+case class CacheIsNull[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s IS NULL"
+}
 
+case class CacheIsNotNull[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+  val template = "%s IS NOT NULL"
+}
 
 
 

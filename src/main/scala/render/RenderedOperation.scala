@@ -20,10 +20,4 @@ package kuzminki.render
 case class RenderedOperation(
   statement: String,
   args: Vector[Any]
-) {
-
-  def printSql = {
-    println(statement)
-    this
-  }
-}
+) extends DebugRendered

@@ -2,7 +2,7 @@ package kuzminki.delete
 
 import kuzminki.api.Model
 import kuzminki.render.SectionCollector
-import kuzminki.section.operation.UpdateCacheWhereSec
+import kuzminki.section.UpdateCacheWhereSec
 import kuzminki.filter.types.CacheFilter
 import kuzminki.shape._
 

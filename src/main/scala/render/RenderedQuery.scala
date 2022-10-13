@@ -23,10 +23,4 @@ case class RenderedQuery[R](
   statement: String,
   args: Vector[Any],
   rowConv: RowConv[R]
-) {
-
-  def printSql = {
-    println(statement)
-    this
-  }
-}
+) extends DebugRendered

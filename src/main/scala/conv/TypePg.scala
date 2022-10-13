@@ -14,11 +14,10 @@
 * limitations under the License.
 */
 
-package kuzminki.shape
-
-import kuzminki.conv.ValConv
+package kuzminki.conv
 
 
-class ParamConvSingle[P](conv: ValConv[P]) extends ParamConv[P] {
-  def fromShape(param: P) = Vector(conv.put(param)) 
-}
+sealed trait TypePg
+case class TypeNull(typeId: Int) extends TypePg
+case class TypeArray(typeName: String, vec: Seq[Object]) extends TypePg
+

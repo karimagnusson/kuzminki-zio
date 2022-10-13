@@ -19,7 +19,7 @@ package kuzminki.select
 import kuzminki.api.{Model, Join}
 import kuzminki.model.ModelTable
 import kuzminki.column.TypeCol
-import kuzminki.section.join._
+import kuzminki.section._
 
 
 class JoinOn[A <: Model, B <: Model, R](join: Join[A, B], coll: SelectCollector[R]) {

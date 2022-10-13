@@ -17,8 +17,7 @@
 package kuzminki.select
 
 import kuzminki.filter.Filter
-import kuzminki.section.Section
-import kuzminki.section.select.{HavingSec, HavingBlankSec}
+import kuzminki.section.{Section, HavingSec, HavingBlankSec}
 
 
 class Having[M, R](

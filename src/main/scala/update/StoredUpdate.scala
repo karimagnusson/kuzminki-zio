@@ -16,57 +16,44 @@
 
 package kuzminki.update
 
-import kuzminki.shape.ParamConv
-import kuzminki.shape.RowConv
-import kuzminki.run.{
-  RunUpdate,
-  RunUpdateReturning
-}
+import kuzminki.shape.{ParamConv, RowConv}
 import kuzminki.render.{
   RenderedOperation,
   RenderedQuery
 }
+import kuzminki.run.{
+  RunUpdate,
+  RunUpdateReturning
+}
 
 
 class StoredUpdate[P1, P2](
-  statement: String,
+  val statement: String,
+  args: Vector[Any],
   changes: ParamConv[P1],
   filters: ParamConv[P2]
 ) extends RunUpdate[P1, P2] {
 
-  def render(p1: P1, p2: P2) = {
-    RenderedOperation(
-      statement,
-      changes.fromShape(p1) ++ filters.fromShape(p2)
-    )
-  }
-
-  def printSql = {
-    println(statement)
-    this
-  }
+  def render(p1: P1, p2: P2) = RenderedOperation(
+    statement,
+    joinArgs(args, changes.fromShape(p1) ++ filters.fromShape(p2))
+  )
 }
 
 
 class StoredUpdateReturning[P1, P2, R](
-  statement: String,
+  val statement: String,
+  args: Vector[Any],
   changes: ParamConv[P1],
   filters: ParamConv[P2],
   rowConv: RowConv[R]
 ) extends RunUpdateReturning[P1, P2, R] {
 
-  def render(p1: P1, p2: P2) = {
-    RenderedQuery(
-      statement,
-      changes.fromShape(p1) ++ filters.fromShape(p2),
-      rowConv
-    )
-  }
-
-  def printSql = {
-    println(statement)
-    this
-  }
+  def render(p1: P1, p2: P2) = RenderedQuery(
+    statement,
+    joinArgs(args, changes.fromShape(p1) ++ filters.fromShape(p2)),
+    rowConv
+  )
 }
 
 

@@ -19,124 +19,81 @@ package kuzminki.select
 import kuzminki.api.KuzminkiError
 import kuzminki.render.{RenderCollector, RenderedQuery, Prefix}
 import kuzminki.section._
-import kuzminki.section.select._
 import kuzminki.shape._
 
 
 case class SelectCollector[R](
-    prefix: Prefix,
-    rowShape: RowShape[R],
-    sections: Vector[Section]
-  ) extends RenderCollector {
+  prefix: Prefix,
+  rowShape: RowShape[R],
+  sections: Vector[Section]
+) extends RenderCollector {
 
   def add(section: Section) = this.copy(sections = sections :+ section)
 
   def extend(added: Vector[Section]) = this.copy(sections = sections ++ added)
 
-  private def validataWhere(): Unit = {
-    
-    sections.foreach {
-    
-      case HavingSec(_) =>
-        throw KuzminkiError("HAVING is defined in query")
-    
-      case HavingBlankSec =>
-        throw KuzminkiError("HAVING is defined in query")
-    
-      case _ =>
-    }
-  }
+  private def replaceWhereSec[P](sections: Vector[Section], partShape: PartShape[P]) = {
 
-  private def validataHaving(): Unit = {
-   
-    sections.foreach {
-   
-      case WhereSec(_) =>
-        throw KuzminkiError("WHERE is defined in query")
-   
-      case WhereBlankSec =>
-        throw KuzminkiError("WHERE is defined in query")
-   
-      case _ =>
-    }
-  }
-
-  private def replaceWhereSec[P](modifiedSections: Vector[Section], partShape: PartShape[P]) = {
-
-    modifiedSections.map {
+    sections.map {
       
       case WhereBlankSec =>
         WhereCacheSec(partShape.parts)
       
       case WhereSec(conds) =>
         WhereMixedSec(conds, partShape.parts)
+
+      case HavingSec(_) =>
+        throw KuzminkiError("HAVING is defined in query")
+    
+      case HavingBlankSec =>
+        throw KuzminkiError("HAVING is defined in query")
       
       case section: Section =>
         section
     }
   }
 
-  private def replaceHavingSec[P](modifiedSections: Vector[Section], partShape: PartShape[P]) = {
+  def cacheWhere[P](partShape: PartShape[P]) = {
 
-    modifiedSections.map {
+    val modifiedSections = replaceWhereSec(sections, partShape)
+
+    val template = modifiedSections.map(_.render(prefix)).mkString(" ")
+    
+    val args = modifiedSections.map(_.args).flatten
+
+    new StoredSelect(template, args, partShape.conv, rowShape.conv)
+  }
+
+  private def replaceHavingSec[P](sections: Vector[Section], partShape: PartShape[P]) = {
+
+    sections.map {
       
       case HavingBlankSec =>
         HavingCacheSec(partShape.parts)
       
       case HavingSec(conds) =>
         HavingMixedSec(conds, partShape.parts)
+
+      case WhereSec(_) =>
+        throw KuzminkiError("WHERE is defined in query")
+   
+      case WhereBlankSec =>
+        throw KuzminkiError("WHERE is defined in query")
       
       case section: Section =>
         section
     }
   }
 
-  private def argSplit(args: Vector[Any], splitter: CacheArgs) = {
-
-    val index = args.indexOf(splitter)
-    val count = args.count(_ == splitter)
-
-    if (count != 1) {
-      throw KuzminkiError("Invalid query")
-    }
-
-    args.splitAt(index) match {
-      case (args1, args2) =>
-        (args1, args2.tail)
-    }
-  }
-
-  private def renderForCache[P](modifiedSections: Vector[Section]) = {
-    
-    val template = modifiedSections.map(_.render(prefix)).mkString(" ")
-    
-    val args = modifiedSections.map(_.args).flatten.toVector
-
-    val argParts = argSplit(args, CacheCondArgs)
-    
-    (template, argParts)
-  }
-
-  def cacheWhere[P](partShape: PartShape[P]) = {
-
-    validataWhere()
-
-    val sectionsWithWhere = replaceWhereSec(sections, partShape)
-
-    val (template, args) = renderForCache(sectionsWithWhere)
-
-    new StoredSelectCondition(template, args, partShape.conv, rowShape.conv)
-  }
-
   def cacheHaving[P](partShape: PartShape[P]) = {
 
-    validataHaving()
+    val modifiedSections = replaceHavingSec(sections, partShape)
 
-    val sectionsWithHaving = replaceHavingSec(sections, partShape)
+    val template = modifiedSections.map(_.render(prefix)).mkString(" ")
+    
+    val args = modifiedSections.map(_.args).flatten
 
-    val (template, args) = renderForCache(sectionsWithHaving)
-
-    new StoredSelectCondition(template, args, partShape.conv, rowShape.conv)
+    new StoredSelect(template, args, partShape.conv, rowShape.conv)
   }
 }
 

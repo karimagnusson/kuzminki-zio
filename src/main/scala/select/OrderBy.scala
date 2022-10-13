@@ -16,7 +16,7 @@
 
 package kuzminki.select
 
-import kuzminki.section.select.OrderBySec
+import kuzminki.section.OrderBySec
 import kuzminki.sorting.Sorting
 
 

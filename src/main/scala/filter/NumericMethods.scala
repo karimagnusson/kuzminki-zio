@@ -19,27 +19,33 @@ package kuzminki.filter
 import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
+import kuzminki.fn.types._
 import kuzminki.select.AggregationSubquery
+import kuzminki.api.Arg
 
 
-trait NumericMethods[T] extends ComparativeMethods[T] {
+trait NumericMethods[T] extends ComparativeMethods[T] with InMethods[T] {
+
+  // fn
+
+  def round(size: Int) = RoundFn(col, size)
+  def roundStr(size: Int) = RoundStrFn(col, size)
 
   // update
 
-  def inc(value: T) = Increment(col, value)
-  def +=(value: T) = inc(value)
-  
-  def dec(value: T) = Decrement(col, value)
-  def -=(value: T) = dec(value)
+  def +=(value: T) = Increment(col, value)
+  def -=(value: T) = Decrement(col, value)
 
-  // update cache
+  // cache
 
-  def modInc = CacheMod.inc(col)
-  def decDec = CacheMod.dec(col)
+  def use = NumericCache(col)
 }
 
 
-
+case class NumericCache[T](col: TypeCol[T]) extends ComparativeCache[T] with InCache[T] {
+  def +=(arg: Arg) = CacheIncrement(col, col.conv)
+  def -=(arg: Arg) = CacheDecrement(col, col.conv)
+}
 
 
 

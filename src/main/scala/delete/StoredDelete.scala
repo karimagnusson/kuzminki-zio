@@ -16,57 +16,42 @@
 
 package kuzminki.delete
 
-import kuzminki.shape.RowConv
-import kuzminki.shape.ParamConv
+import kuzminki.shape.{RowConv, ParamConv}
 import kuzminki.render.{
-  RenderedQuery,
-  RenderedOperation
+  RenderedOperation,
+  RenderedQuery
 }
 import kuzminki.run.{
   RunQueryParams,
-  RunOperationParams,
-  RunOperationAsSink,
+  RunOperationParams
 }
 
 
 class StoredDelete[P](
-    statement: String,
-    paramConv: ParamConv[P]
-  ) extends RunOperationParams[P]
-       with RunOperationAsSink[P] {
+  val statement: String,
+  args: Vector[Any],
+  paramConv: ParamConv[P]
+) extends RunOperationParams[P] {
 
-  def render(params: P) = {
-    RenderedOperation(
-      statement,
-      paramConv.fromShape(params)
-    )
-  }
-
-  def printSql = {
-    println(statement)
-    this
-  }
+  def render(params: P) = RenderedOperation(
+    statement,
+    joinArgs(args, paramConv.fromShape(params))
+  )
 }
 
 
 class StoredDeleteReturning[P, R](
-    statement: String,
-    paramConv: ParamConv[P],
-    rowConv: RowConv[R]
-  ) extends RunQueryParams[P, R] {
+  val statement: String,
+  args: Vector[Any],
+  paramConv: ParamConv[P],
+  rowConv: RowConv[R]
+) extends RunQueryParams[P, R] {
 
-  def render(params: P) = {
-    RenderedQuery(
-      statement,
-      paramConv.fromShape(params),
-      rowConv
-    )
-  }
-
-  def printSql = {
-    println(statement)
-    this
-  }
+  def render(params: P) = RenderedQuery(
+    statement,
+    joinArgs(args, paramConv.fromShape(params)),
+    rowConv
+  )
 }
 
 

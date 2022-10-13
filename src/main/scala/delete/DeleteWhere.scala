@@ -18,7 +18,7 @@ package kuzminki.delete
 
 import kuzminki.api.KuzminkiError
 import kuzminki.render.SectionCollector
-import kuzminki.section.operation.WhereSec
+import kuzminki.section.WhereSec
 import kuzminki.filter.Filter
 
 

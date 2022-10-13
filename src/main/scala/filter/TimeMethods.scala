@@ -17,15 +17,17 @@
 package kuzminki.filter
 
 import java.sql.Time
+import org.postgresql.util.PGInterval
 import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
+import kuzminki.conv._
 import kuzminki.fn.types._
 import kuzminki.fn.Cast
-import org.postgresql.util.PGInterval
+import kuzminki.api.{Arg, NoArg}
 
 
-trait TimeMethods extends ComparativeMethods[Time] {
+trait TimeMethods extends ComparativeMethods[Time] with InMethods[Time] {
 
   // filters
 
@@ -47,10 +49,20 @@ trait TimeMethods extends ComparativeMethods[Time] {
   def setNow = TimeNow(col)
   def +=(value: PGInterval) = DateTimeInc(col, value)
   def -=(value: PGInterval) = DateTimeDec(col, value)
+
+  // cache
+
+  def use = TimeCache(col)
 }
 
 
+case class TimeCache(col: TypeCol[Time]) extends TypeCache[Time]
+                                            with InCache[Time] {
 
+  def setNow(arg: NoArg) = CacheSetTimeNow(col, NoArgConv)
+  def +=(arg: Arg) = CacheDateTimeInc(col, IntervalConv)
+  def -=(arg: Arg) = CacheDateTimeDec(col, IntervalConv)
+}
 
 
 

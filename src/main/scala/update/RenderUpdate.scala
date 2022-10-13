@@ -18,13 +18,10 @@ package kuzminki.update
 
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
-import kuzminki.run.{
-  RunQuery,
-  RunOperation
-}
+import kuzminki.run.{RunQuery, RunOperation}
 import kuzminki.render.{
-  RenderedQuery,
   RenderedOperation,
+  RenderedQuery,
   SectionCollector
 }
 
@@ -35,12 +32,10 @@ class RenderUpdate[M](
 ) extends PickUpdateReturning(model, coll)
      with RunOperation {
   
-  def render = RenderedOperation(coll.render, coll.args)
-
-  def printSql = {
-    println(coll.render)
-    this
-  }
+  def render = RenderedOperation(
+    coll.render,
+    coll.args
+  )
 }
 
 
@@ -49,12 +44,11 @@ class RenderUpdateReturning[R](
     rowConv: RowConv[R]
   ) extends RunQuery[R] {
   
-  def render = RenderedQuery(coll.render, coll.args, rowConv)
-
-  def printSql = {
-    println(coll.render)
-    this
-  }
+  def render = RenderedQuery(
+    coll.render,
+    coll.args,
+    rowConv
+  )
 }
 
 
@@ -68,14 +62,10 @@ class RenderStoredUpdate[M, P1, P2](
   def cache = {
     new StoredUpdate(
       coll.render,
+      coll.args,
       changes,
       filters
     )
-  }
-
-  def printSql = {
-    println(coll.render)
-    this
   }
 }
 
@@ -90,15 +80,11 @@ class RenderStoredUpdateReturning[P1, P2, R](
   def cache = {
     new StoredUpdateReturning(
       coll.render,
+      coll.args,
       changes,
       filters,
       rowConv
     )
-  }
-
-  def printSql = {
-    println(coll.render)
-    this
   }
 }
 

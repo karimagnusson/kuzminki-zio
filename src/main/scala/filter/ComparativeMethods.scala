@@ -20,35 +20,29 @@ import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
 import kuzminki.select.AggregationSubquery
+import kuzminki.api.Arg
 
 
 trait ComparativeMethods[T] extends TypeMethods[T] {
 
-  def gt(value: T): Filter = FilterGt(col, value)
-  def >(value: T): Filter = gt(value)
-
-  def gte(value: T): Filter = FilterGte(col, value)
-  def >=(value: T): Filter = gte(value)
-
-  def lt(value: T): Filter = FilterLt(col, value)
-  def <(value: T): Filter = lt(value)
-
-  def lte(value: T): Filter = FilterLte(col, value)
-  def <=(value: T): Filter = lte(value)
+  def >(value: T): Filter = FilterGt(col, value)
+  def >=(value: T): Filter = FilterGte(col, value)
+  def <(value: T): Filter = FilterLt(col, value)
+  def <=(value: T): Filter = FilterLte(col, value)
 
   // optional
 
-  def gt(opt: Option[T]): Option[Filter] = opt.map(gt)
-  def >(opt: Option[T]): Option[Filter] = opt.map(gt)
+  def >(opt: Option[T]): Option[Filter] = opt.map(>)
+  def >=(opt: Option[T]): Option[Filter] = opt.map(>=)
+  def <(opt: Option[T]): Option[Filter] = opt.map(<)
+  def <=(opt: Option[T]): Option[Filter] = opt.map(<=)
 
-  def gte(opt: Option[T]): Option[Filter] = opt.map(gte)
-  def >=(opt: Option[T]): Option[Filter] = opt.map(gte)
+  // compare to col
 
-  def lt(opt: Option[T]): Option[Filter] = opt.map(lt)
-  def <(opt: Option[T]): Option[Filter] = opt.map(lt)
-
-  def lte(opt: Option[T]): Option[Filter] = opt.map(lte)
-  def <=(opt: Option[T]): Option[Filter] = opt.map(lte)
+  def >(col2: TypeCol[T]): Filter = FilterColGt(col, col2)
+  def >=(col2: TypeCol[T]): Filter = FilterColGte(col, col2)
+  def <(col2: TypeCol[T]): Filter = FilterColLt(col, col2)
+  def <=(col2: TypeCol[T]): Filter = FilterColLte(col, col2)
 
   // subquery
 
@@ -58,17 +52,18 @@ trait ComparativeMethods[T] extends TypeMethods[T] {
   def gte(sub: AggregationSubquery): Filter = FilterAggGte(col, sub)
   def lt(sub: AggregationSubquery): Filter = FilterAggLt(col, sub)
   def lte(sub: AggregationSubquery): Filter = FilterAggLte(col, sub)
-
-  // cache
-
-  def oprGt = CacheFilter.gt(col)
-  def oprLt = CacheFilter.lt(col)
-  def oprGte = CacheFilter.gte(col)
-  def oprLte = CacheFilter.lte(col)
 }
 
 
+trait ComparativeCache[T] extends TypeCache[T] {
 
+  val col: TypeCol[T]
+
+  def >(arg: Arg) = CacheGt(col, col.conv)
+  def <(arg: Arg) = CacheLt(col, col.conv)
+  def >=(arg: Arg) = CacheGte(col, col.conv)
+  def <=(arg: Arg) = CacheLte(col, col.conv)
+}
 
 
 

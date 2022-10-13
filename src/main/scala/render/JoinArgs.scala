@@ -14,11 +14,25 @@
 * limitations under the License.
 */
 
-package kuzminki.shape
+package kuzminki.render
 
-import kuzminki.conv.ValConv
+import kuzminki.api.CacheArg
 
 
-class ParamConvSingle[P](conv: ValConv[P]) extends ParamConv[P] {
-  def fromShape(param: P) = Vector(conv.put(param)) 
+trait JoinArgs {
+
+  def joinArgs(args: Vector[Any], cacheArgs: Vector[Any]) = {
+    
+    var index = 0
+
+    val cacheReplace: Any => Any = {
+      case CacheArg =>
+        val arg = cacheArgs(index)
+        index = index + 1
+        arg
+      case arg => arg
+    }
+
+    args.map(cacheReplace)
+  }
 }

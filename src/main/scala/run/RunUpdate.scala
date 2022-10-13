@@ -21,11 +21,14 @@ import zio.stream.{ZSink, ZTransducer}
 import kuzminki.api.db
 import kuzminki.render.{
   RenderedQuery,
-  RenderedOperation
+  RenderedOperation,
+  JoinArgs
 }
 
 
-trait RunUpdate[P1, P2] {
+trait RunUpdate[P1, P2] extends JoinArgs {
+
+  val statement: String
 
   def render(p1: P1, p2: P2): RenderedOperation
 
@@ -51,7 +54,9 @@ trait RunUpdate[P1, P2] {
 }
 
 
-trait RunUpdateReturning[P1, P2, R] {
+trait RunUpdateReturning[P1, P2, R] extends JoinArgs {
+
+  val statement: String
 
   def render(p1: P1, p2: P2): RenderedQuery[R]
 

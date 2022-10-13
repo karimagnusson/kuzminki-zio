@@ -82,6 +82,74 @@ object ExampleApp extends zio.App {
 
 #### In the latest push:
 
+#### Print the query
+
+```scala
+
+sql
+  .select(client)
+  .cols3(_.all)
+  .where(_.age > 25)
+  .limit(5)
+  .printSqlWithArgs
+  .run
+// SELECT "id", "username", "age" FROM "client" WHERE "age" > 25 LIMIT 5
+
+sql
+  .update(client)
+  .set(_.age ==> 24)
+  .where(_.id === 4)
+  .printSql
+  .run
+// UPDATE "client" SET "age" = ? WHERE id = ?
+
+```
+
+#### INSERT / UPDATE null values
+
+```scala
+
+sql
+  .insert(client)
+  .cols2(t => (t.username, t.age.asOpt))
+  .values(("Joe", None))
+  .run
+    
+sql
+  .update(client)
+  .set(_.age.asOpt ==> None)
+  .where(_.id === 4)
+  .run
+
+```
+
+#### Cached queries have a new syntax
+
+```scala
+
+sql
+  .insert(client)
+  .cols2(t => (t.username, t.age))
+  .cache
+    
+sql
+  .update(client)
+  .pickSet1(_.age.use ==> Arg)
+  .pickWhere1(_.id.use === Arg)
+  .cache
+    
+sql.delete(client).pickWhere1(_.id.use === Arg).cache
+    
+sql
+  .select(client)
+  .cols3(_.all)
+  .all
+  .limit(5)
+  .pickWhere1(_.age.use > Arg)
+  .cache
+
+```
+
 #### Timestamp / Date / Time methods
 
 ```scala

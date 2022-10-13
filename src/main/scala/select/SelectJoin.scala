@@ -4,7 +4,7 @@ import kuzminki.api.{Model, Join}
 import kuzminki.model.ModelTable
 import kuzminki.column.TypeCol
 import kuzminki.render.Prefix
-import kuzminki.section.select._
+import kuzminki.section._
 import kuzminki.shape._
 
 

@@ -29,7 +29,10 @@ class Values[M <: Model](
 
   def render = {
     val coll = builder.collector
-    RenderedOperation(coll.render, coll.args)
+    RenderedOperation(
+      coll.render,
+      coll.args
+    )
   }
 
   def whereNotExists(pick: M => Seq[TypeCol[_]]) = new RenderInsert(
@@ -44,13 +47,6 @@ class Values[M <: Model](
     builder,
     pick(builder.model)
   )
-
-  // print
-
-  def printSql = {
-    println(render.statement)
-    this
-  }
 }
 
 

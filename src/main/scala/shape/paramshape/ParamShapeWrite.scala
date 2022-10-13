@@ -22,5 +22,5 @@ import kuzminki.column.TypeCol
 
 class ParamShapeWrite[P](val cols: Vector[TypeCol[_]], tag: ClassTag[P]) extends ParamShape[P] {
   val size = cols.size
-  val conv = new ParamConvWrite(tag) 
+  val conv = new ParamConvWrite(tag, cols.map(_.conv)) 
 }

@@ -2,7 +2,7 @@ package kuzminki.delete
 
 import kuzminki.column.TypeCol
 import kuzminki.render.SectionCollector
-import kuzminki.section.operation.ReturningSec
+import kuzminki.section.ReturningSec
 import kuzminki.shape._
 
 

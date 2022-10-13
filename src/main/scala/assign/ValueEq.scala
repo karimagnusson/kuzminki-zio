@@ -14,11 +14,12 @@
 * limitations under the License.
 */
 
-package kuzminki.shape
+package kuzminki.assign
 
-import kuzminki.conv.ValConv
+import kuzminki.render.{Renderable, Prefix}
 
 
-class ParamConvSingle[P](conv: ValConv[P]) extends ParamConv[P] {
-  def fromShape(param: P) = Vector(conv.put(param)) 
+case class ValueEq(col: Renderable, value: Any) extends Renderable {
+  def render(prefix: Prefix) = "%s = ?".format(col.render(prefix))
+  val args = Vector(value)
 }

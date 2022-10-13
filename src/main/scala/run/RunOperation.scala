@@ -20,7 +20,7 @@ import zio._
 import zio.stream.{ZSink, ZTransducer}
 import kuzminki.api.db
 import kuzminki.shape.ParamConv
-import kuzminki.render.RenderedOperation
+import kuzminki.render.{RenderedOperation, JoinArgs}
 
 
 trait RunOperation {
@@ -33,19 +33,15 @@ trait RunOperation {
 }
 
 
-trait RunOperationParams[P] {
+trait RunOperationParams[P] extends JoinArgs {
+
+  val statement: String
 
   def render(params: P): RenderedOperation
 
   def run(params: P) = db.exec(render(params))
 
   def runNum(params: P) = db.execNum(render(params))
-}
-
-
-trait RunOperationAsSink[P] {
-
-  def render(params: P): RenderedOperation
 
   def runList(paramList: Seq[P]) = db.execList(paramList.map(render(_)))
 
@@ -57,6 +53,8 @@ trait RunOperationAsSink[P] {
     db.execList(chunk.toList.map(p => render(p)))
   }
 }
+
+
 
 
 

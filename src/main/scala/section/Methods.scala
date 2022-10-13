@@ -16,6 +16,7 @@
 
 package kuzminki.section
 
+import kuzminki.api.KuzminkiError
 import kuzminki.render.{Renderable, Prefix, NoArgs}
 
 
@@ -52,17 +53,34 @@ trait CacheCondition extends Section {
       cacheConds.map(_.render(prefix)).mkString(" AND ")
     )
   }
-  val args = Vector(CacheCondArgs)
+  val args = cacheConds.map(_.args).flatten
 }
 
 trait MixedCondition extends Section {
   val conds: Vector[Renderable]
   val cacheConds: Vector[Renderable]
   def render(prefix: Prefix) = {
-    val both = conds ++ cacheConds
     expression.format(
-      both.map(_.render(prefix)).mkString(" AND ")
+      (conds ++ cacheConds).map(_.render(prefix)).mkString(" AND ")
     )
   }
-  val args = conds.map(_.args).flatten ++ Vector(CacheCondArgs)
+  val args = (conds ++ cacheConds).map(_.args).flatten
 }
+
+trait NotEmpty {
+  def error: String
+  def notEmpty(args: Vector[_]): Unit = {
+    if (args.isEmpty) {
+      throw KuzminkiError(error)
+    }
+  } 
+}
+
+
+
+
+
+
+
+
+

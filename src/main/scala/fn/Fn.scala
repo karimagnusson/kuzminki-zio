@@ -27,21 +27,19 @@ import org.postgresql.util.PGInterval
 
 object Fn {
 
-  import general._
-
   // string
 
-  def coalesce[T](col: TypeCol[T], default: T) = Coalesce(col, default)
+  def coalesce[T](col: TypeCol[T], default: T) = CoalesceFn(col, default)
 
-  def concat(cols: TypeCol[_]*) = Concat(cols.toVector)
+  def concat(cols: TypeCol[_]*) = ConcatFn(cols.toVector)
 
-  def concatWs(glue: String, cols: TypeCol[_]*) = ConcatWs(glue, cols.toVector)
+  def concatWs(glue: String, cols: TypeCol[_]*) = ConcatWsFn(glue, cols.toVector)
 
-  def substr(col: TypeCol[String], start: Int) = Substr(col, start, None)
+  def substr(col: TypeCol[String], start: Int) = SubstrFn(col, start, None)
 
-  def substr(col: TypeCol[String], start: Int, len: Int) = Substr(col, start, Some(len))
+  def substr(col: TypeCol[String], start: Int, len: Int) = SubstrFn(col, start, Some(len))
 
-  def replace(col: TypeCol[String], from: String, to: String) = Replace(col, from, to)
+  def replace(col: TypeCol[String], from: String, to: String) = ReplaceFn(col, from, to)
 
   def trim(col: TypeCol[String]) = CustomStringFn(col, "trim(%s)")
 
@@ -53,13 +51,9 @@ object Fn {
 
   // numeric
 
-  def round[T](col: TypeCol[BigDecimal], size: Int) = Round(col, size)
+  def round[T](col: TypeCol[BigDecimal], size: Int) = RoundFn(col, size)
 
-  def roundStr[T](col: TypeCol[BigDecimal], size: Int) = RoundStr(col, size)
-
-  def roundAny[T](col: TypeCol[_], size: Int) = RoundAny(col, size)
-
-  def roundAnyStr[T](col: TypeCol[BigDecimal], size: Int) = RoundAnyStr(col, size)
+  def roundStr[T](col: TypeCol[BigDecimal], size: Int) = RoundStrFn(col, size)
 
   def interval(
     years: Int = 0,
@@ -72,79 +66,7 @@ object Fn {
 }
 
 
-package object general {
 
-  case class CustomStringFn(col: TypeCol[String], template: String) extends StringNoArgsFn
-
-  case class Coalesce[T](col: TypeCol[T], default: T) extends TypeArgsFn[T] {
-    def template = "coalesce(%s, ?)"
-    def fnArgs = Vector(default)
-  }
-
-  case class Concat(cols: Vector[TypeCol[_]]) extends StringCol {
-    def template = "concat(%s)"
-    def name = cols.map(_.name).mkString("_")
-    def render(prefix: Prefix) = {
-      template.format(
-        cols.map(_.render(prefix)).mkString(", ")
-      )
-    }
-    val args = cols.map(_.args).flatten
-  }
-
-  case class ConcatWs(glue: String, cols: Vector[TypeCol[_]]) extends StringCol {
-    def template = s"concat_ws('$glue', %s)"
-    def name = cols.map(_.name).mkString("_")
-    def render(prefix: Prefix) = {
-      template.format(
-        cols.map(_.render(prefix)).mkString(", ")
-      )
-    }
-    val args = cols.map(_.args).flatten
-  }
-
-  case class Substr(
-    col: TypeCol[String],
-    start: Int,
-    lenOpt: Option[Int]
-  ) extends StringNoArgsFn {
-    def template = lenOpt match {
-      case Some(len) => s"substr(%s, $start, $len)"
-      case None => s"substr(%s, $start)"
-    }
-  }
-
-  case class Replace(
-    col: TypeCol[String],
-    from: String,
-    to: String
-  ) extends StringNoArgsFn {
-    def template = s"replace(%s, '$from', '$to')"
-  }
-
-  // round
-
-  trait RoundFn extends FnArgs {
-    val size: Int
-    def fnArgs = Vector(size)
-  }
-
-  case class Round(col: TypeCol[BigDecimal], size: Int) extends BigDecimalCol with RoundFn {
-    def template = "round(%s, ?)"
-  }
-
-  case class RoundStr(col: TypeCol[BigDecimal], size: Int) extends StringCol with RoundFn {
-    def template = "round(%s, ?)::text"
-  }
-
-  case class RoundAny(col: TypeCol[_], size: Int) extends BigDecimalCol with RoundFn {
-    def template = "round(%s::numeric, ?)"
-  }
-
-  case class RoundAnyStr(col: TypeCol[_], size: Int) extends StringCol with RoundFn {
-    def template = "round(%s::numeric, ?)::text"
-  }
-}
 
 
 

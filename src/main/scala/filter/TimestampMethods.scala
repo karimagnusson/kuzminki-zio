@@ -17,17 +17,19 @@
 package kuzminki.filter
 
 import java.sql.Timestamp
+import org.postgresql.util.PGInterval
 import kuzminki.column.TypeCol
 import kuzminki.assign._
+import kuzminki.conv._
 import kuzminki.filter.types._
 import kuzminki.fn.types._
 import kuzminki.fn.Cast
-import org.postgresql.util.PGInterval
+import kuzminki.api.{Arg, NoArg}
 
 
-trait TimestampMethods extends ComparativeMethods[Timestamp] {
+trait TimestampMethods extends ComparativeMethods[Timestamp] with InMethods[Timestamp] {
 
-  // filters
+  // fn
 
   def +(value: PGInterval) = DateTimeIncFn(col, value)
   def -(value: PGInterval) = DateTimeDecFn(col, value)
@@ -65,12 +67,20 @@ trait TimestampMethods extends ComparativeMethods[Timestamp] {
   def setNow = TimestampNow(col)
   def +=(value: PGInterval) = DateTimeInc(col, value)
   def -=(value: PGInterval) = DateTimeDec(col, value)
+
+  // update cache
+
+  def use = TimestampCache(col)
 }
 
 
+case class TimestampCache(col: TypeCol[Timestamp]) extends TypeCache[Timestamp]
+                                                      with InCache[Timestamp] {
 
-
-
+  def setNow(arg: NoArg) = CacheSetNow(col, NoArgConv)
+  def +=(arg: Arg) = CacheDateTimeInc(col, IntervalConv)
+  def -=(arg: Arg) = CacheDateTimeDec(col, IntervalConv)
+}
 
 
 

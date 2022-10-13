@@ -19,26 +19,35 @@ package kuzminki.filter
 import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
+import kuzminki.fn.types._
+import kuzminki.api.Arg
 
 
-trait StringMethods extends TypeMethods[String] {
+trait StringMethods extends TypeMethods[String] with InMethods[String] {
+
+  // fn
+
+  def concat(cols: TypeCol[_]*) = ConcatFn((Seq(col) ++ cols).toVector)
+  def concatWs(glue: String, cols: TypeCol[_]*) = ConcatWsFn(glue, (Seq(col) ++ cols).toVector)
+  def substr(start: Int) = SubstrFn(col, start, None)
+  def substr(start: Int, len: Int) = SubstrFn(col, start, Some(len))
+  def replace(from: String, to: String) = ReplaceFn(col, from, to)
+  def trim = CustomStringFn(col, "trim(%s)")
+  def upper = CustomStringFn(col, "upper(%s)")
+  def lower = CustomStringFn(col, "lower(%s)")
+  def initcap = CustomStringFn(col, "initcap(%s)")
+
+  // filters
 
   def like(value: String): Filter = FilterLike(col, value)
   def startsWith(value: String): Filter = FilterStartsWith(col, value)
   def endsWith(value: String): Filter = FilterEndsWith(col, value)
   def similarTo(value: String): Filter = FilterSimilarTo(col, value)
 
-  def reMatch(value: String): Filter = FilterReIMatch(col, value)
-  def ~(value: String): Filter = reMatch(value)
-
-  def reIMatch(value: String): Filter = FilterReIMatch(col, value)
-  def ~*(value: String): Filter = reIMatch(value)
-
-  def reNotMatch(value: String): Filter = FilterReNotMatch(col, value)
-  def !~(value: String): Filter = reNotMatch(value)
-
-  def reNotIMatch(value: String): Filter = FilterReNotIMatch(col, value)
-  def !~*(value: String): Filter = reNotIMatch(value)
+  def ~(value: String): Filter = FilterReMatch(col, value)
+  def ~*(value: String): Filter = FilterReIMatch(col, value)
+  def !~(value: String): Filter = FilterReNotMatch(col, value)
+  def !~*(value: String): Filter = FilterReNotIMatch(col, value)
 
   // optional
 
@@ -47,33 +56,30 @@ trait StringMethods extends TypeMethods[String] {
   def endsWith(opt: Option[String]): Option[Filter] = opt.map(endsWith)
   def similarTo(opt: Option[String]): Option[Filter] = opt.map(similarTo)
 
-  def reMatch(opt: Option[String]): Option[Filter] = opt.map(reMatch)
-  def ~(opt: Option[String]): Option[Filter] = opt.map(reMatch)
-
-  def reIMatch(opt: Option[String]): Option[Filter] = opt.map(reIMatch)
-  def ~*(opt: Option[String]): Option[Filter] = opt.map(reMatch)
-
-  def reNotMatch(opt: Option[String]): Option[Filter] = opt.map(reNotMatch)
-  def !~(opt: Option[String]): Option[Filter] = opt.map(reMatch)
-
-  def reNotIMatch(opt: Option[String]): Option[Filter] = opt.map(reNotIMatch)
-  def !~*(opt: Option[String]): Option[Filter] = opt.map(reMatch)
+  def ~(opt: Option[String]): Option[Filter] = opt.map(~)
+  def ~*(opt: Option[String]): Option[Filter] = opt.map(~*)
+  def !~(opt: Option[String]): Option[Filter] = opt.map(!~)
+  def !~*(opt: Option[String]): Option[Filter] = opt.map(!~*)
 
   // cache
 
-  def oprLike = CacheFilter.like(col)
-  def oprStartsWith = CacheFilter.startsWith(col)
-  def oprEndsWith = CacheFilter.endsWith(col)
-  def oprSimilarTo = CacheFilter.similarTo(col)
-  
-  def oprReMatch = CacheFilter.reMatch(col)
-  def oprReIMatch = CacheFilter.reIMatch(col)
-  def oprReNotMatch = CacheFilter.reNotMatch(col)
-  def oprReNotIMatch = CacheFilter.reNotIMatch(col)
+  def use = StringCache(col)
 }
 
 
-
+case class StringCache(col: TypeCol[String]) extends TypeCache[String]
+                                                with InCache[String] {
+  
+  def like(arg: Arg) = CacheLike(col, col.conv)
+  def startsWith(arg: Arg) = CacheStartsWith(col, col.conv)
+  def endsWith(arg: Arg) = CacheEndsWith(col, col.conv)
+  def similarTo(arg: Arg) = CacheSimilarTo(col, col.conv)
+  
+  def ~(arg: Arg) = CacheReMatch(col, col.conv)
+  def ~*(arg: Arg) = CacheReIMatch(col, col.conv)
+  def !~(arg: Arg) = CacheReNotMatch(col, col.conv)
+  def !~*(arg: Arg) = CacheReNotIMatch(col, col.conv)
+}
 
 
 

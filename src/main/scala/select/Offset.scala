@@ -16,7 +16,7 @@
 
 package kuzminki.select
 
-import kuzminki.section.select.OffsetSec
+import kuzminki.section.OffsetSec
 
 
 class Offset[M, R](model: M, coll: SelectCollector[R]) extends Limit(model, coll) {

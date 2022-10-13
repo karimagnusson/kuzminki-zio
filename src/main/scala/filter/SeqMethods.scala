@@ -19,83 +19,92 @@ package kuzminki.filter
 import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
+import kuzminki.shape.CachePart.itemConv
 import kuzminki.select.SelectSubquery
-import kuzminki.assign.{Append, Prepend, Remove}
-import kuzminki.fn.Fn
+import kuzminki.fn.types._
+import kuzminki.api.{Arg, ArgSeq}
 
 
-trait SeqMethods[T] {
+trait SeqMethods[T] extends TypeMethods[Seq[T]] {
 
-  val col: TypeCol[Seq[T]]
+  // fn
 
-  def default(value: Seq[T]) = Fn.coalesce(col, value)
+  def unnest = SeqUnnestFn(col)
+  def length = SeqLengthFn(col)
+  def trim(size: Int) = SeqTrimFn(col, size)
+  def pos(value: T) = SeqPosFn(col, value)
+  def first = SeqFirstFn(col)
+  def last = SeqLastFn(col)
+  def ++(col2: TypeCol[Seq[T]]) = SeqExtendFn(col, col2)
 
   // filters
 
-  def matches(value: Seq[T]): Filter = FilterMatches(col, value)
-  def ===(value: Seq[T]): Filter = matches(value)
-  
-  def not(value: Seq[T]): Filter = FilterNot(col, value)
-  def !==(value: Seq[T]): Filter = not(value)
-
-  def has(value: T): Filter = FilterSeqHas(col, value)
-  def hasNot(value: T): Filter = FilterSeqHasNot(col, value)
-
-  def overlap(value: Seq[T]): Filter = FilterSeqOverlap(col, value)
-  def overlapNot(value: Seq[T]): Filter = FilterSeqOverlapNot(col, value)
+  def ?(value: T): Filter = FilterSeqHas(col, value)
+  def !?(value: T): Filter = FilterSeqHasNot(col, value)
+  def @>(value: Seq[T]): Filter = FilterContains(col, col.conv.put(value))
+  def !@>(value: Seq[T]): Filter = FilterNotContains(col, col.conv.put(value))
+  def <@(value: Seq[T]): Filter = FilterContainedBy(col, col.conv.put(value))
+  def !<@(value: Seq[T]): Filter = FilterNotContainedBy(col, col.conv.put(value))
+  def &&(value: Seq[T]): Filter = FilterSeqOverlap(col, col.conv.put(value))
+  def !&&(value: Seq[T]): Filter = FilterSeqOverlapNot(col, col.conv.put(value))
   
   // optional
 
-  def matches(opt: Option[Seq[T]]): Option[Filter] = opt.map(matches)
-  def ===(opt: Option[Seq[T]]): Option[Filter] = opt.map(matches)
-  
-  def not(opt: Option[Seq[T]]): Option[Filter] = opt.map(not)
-  def !==(opt: Option[Seq[T]]): Option[Filter] = opt.map(not)
-
-  def has(opt: Option[T]): Option[Filter] = opt.map(has)
-  def hasNot(opt: Option[T]): Option[Filter] = opt.map(hasNot)
-
-  def overlap(opt: Option[Seq[T]]): Option[Filter] = opt.map(overlap)
-  def overlapNot(opt: Option[Seq[T]]): Option[Filter] = opt.map(overlapNot)
-
-  // null
-
-  def isNull: Filter = FilterIsNull(col)
-  def isNotNull: Filter = FilterIsNotNull(col)
-
-  // cache
-
-  def oprEq = CacheFilter.matches(col)
-  def oprNot = CacheFilter.not(col)
-  def oprHas = CacheFilter.seqHas(col)
-  def oprhasNot = CacheFilter.seqHasNot(col)
-  def oprOverlap = CacheFilter.seqOverlap(col)
-  def oprOverlapNot = CacheFilter.seqOverlapNot(col)
+  def ?(opt: Option[T]): Option[Filter] = opt.map(?)
+  def !?(opt: Option[T]): Option[Filter] = opt.map(!?)
+  def @>(opt: Option[Seq[T]]): Option[Filter] = opt.map(@>)
+  def !@>(opt: Option[Seq[T]]): Option[Filter] = opt.map(!@>)
+  def <@(opt: Option[Seq[T]]): Option[Filter] = opt.map(<@)
+  def !<@(opt: Option[Seq[T]]): Option[Filter] = opt.map(!<@)
+  def &&(opt: Option[Seq[T]]): Option[Filter] = opt.map(&&)
+  def !&&(opt: Option[Seq[T]]): Option[Filter] = opt.map(!&&)
 
   // update
 
-  def set(value: Seq[T]) = value match {
-    case Nil => SetEmpty(col)
-    case _ => SetValue(col, value)
-  }
-  def ==>(value: Seq[T]) = set(value)
-  def setToNull = SetToNull(col)
-  def setEmpty = SetEmpty(col)
+  def +=(value: T) = Append(col, value)
+  def +=(value: Seq[T]) = Append(col, col.conv.put(value))
+  def :=(value: T) = Prepend(col, value)
+  def :=(value: Seq[T]) = Prepend(col, col.conv.put(value))
+  def -=(value: T) = Remove(col, value)
 
-  def append(value: T) = Append(col, value)
-  def +=(value: T) = append(value)
+  def add(value: T) = Add(col, value)
+  def add(value: Seq[T]) = Add(col, col.conv.put(value))
+  def addAsc(value: T) = AddAsc(col, value)
+  def addAsc(value: Seq[T]) = AddAsc(col, col.conv.put(value))
+  def addDesc(value: T) = AddDesc(col, value)
+  def addDesc(value: Seq[T]) = AddDesc(col, col.conv.put(value))
 
-  def prepend(value: T) = Prepend(col, value)
-  def :=(value: T) = prepend(value)
+  // cache
 
-  def remove(value: T) = Remove(col, value)
-  def -=(value: T) = remove(value)
+  def use = SeqCache(col) 
+}
 
-  // update cache
 
-  def modAppend = CacheMod.append(col)
-  def modPrepend = CacheMod.prepend(col)
-  def modRemove = CacheMod.remove(col)
+case class SeqCache[T](col: TypeCol[Seq[T]]) extends TypeCache[Seq[T]] {
+
+  def ?(arg: Arg) = CacheSeqHas(col, itemConv(col.conv))
+  def !?(arg: Arg) = CacheSeqHasNot(col, itemConv(col.conv))
+  def @>(arg: Arg) = CacheContains(col, col.conv)
+  def !@>(arg: Arg) = CacheContains(col, col.conv)
+  def <@(arg: Arg) = CacheContainedBy(col, col.conv)
+  def !<@(arg: Arg) = CacheContainedBy(col, col.conv)
+  def &&(arg: Arg) = CacheSeqOverlap(col, col.conv)
+  def !&&(arg: Arg) = CacheSeqOverlapNot(col, col.conv)
+
+  // update
+
+  def +=(arg: Arg) = CacheAppend(col, itemConv(col.conv))
+  def +=(arg: ArgSeq) = CacheAppend(col, col.conv)
+  def :=(arg: Arg) = CachePrepend(col, itemConv(col.conv))
+  def :=(arg: ArgSeq) = CachePrepend(col, col.conv)
+  def -=(arg: Arg) = CacheRemove(col, itemConv(col.conv))
+  
+  def add(arg: Arg) = CacheSeqAdd(col, itemConv(col.conv))
+  def add(arg: ArgSeq) = CacheSeqAdd(col, col.conv)
+  def addAsc(arg: Arg) = CacheSeqAddAsc(col, itemConv(col.conv))
+  def addAsc(arg: ArgSeq) = CacheSeqAddAsc(col, col.conv)
+  def addDesc(arg: Arg) = CacheSeqAddDesc(col, itemConv(col.conv))
+  def addDesc(arg: ArgSeq) = CacheSeqAddDesc(col, col.conv)
 }
 
 

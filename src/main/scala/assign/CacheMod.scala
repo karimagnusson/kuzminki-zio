@@ -16,100 +16,112 @@
 
 package kuzminki.assign
 
-import kuzminki.column.{TypeCol, ModelCol}
+import kuzminki.column.ModelCol
 import kuzminki.shape.CachePart
-import kuzminki.render.{Renderable, Prefix, Wrap}
-import kuzminki.api.{KuzminkiError, Jsonb}
-import kuzminki.conv._
+import kuzminki.render.{Renderable, Prefix}
+import kuzminki.api.{KuzminkiError, CacheArg}
+import kuzminki.conv.ValConv
 
 
-object CacheMod extends Wrap {
-
-  import CachePart.itemConv
-  
-  private def name[T](col: TypeCol[T]): String = {
-    col match {
-      case col: ModelCol =>
-      case _ => throw KuzminkiError("cannot cache a function")
-    }
-    wrap(col.name)
-  }
-
-  def set[T](col: TypeCol[T]) = CacheSet(name(col), col.conv)
-
-  def inc[T](col: TypeCol[T]) = CacheIncrement(name(col), col.conv)
-  def dec[T](col: TypeCol[T]) = CacheDecrement(name(col), col.conv)
-
-  def append[T](col: TypeCol[Seq[T]]) = CacheAppend(name(col), itemConv(col.conv))
-  def prepend[T](col: TypeCol[Seq[T]]) = CachePrepend(name(col), itemConv(col.conv))
-  def remove[T](col: TypeCol[Seq[T]]) = CacheRemove(name(col), itemConv(col.conv))
-
-  def jsonbSet[T](col: TypeCol[T]) = CacheJsonbSet(name(col), col.conv)
-  def jsonbUpdate[T](col: TypeCol[T]) = CacheJsonbUpdate(name(col), col.conv)
-  def jsonbDelKey[T, P](col: TypeCol[T]) = CacheJsonbDelKey(name(col), StringConv)
-  def jsonbDelIndex[T, P](col: TypeCol[T]) = CacheJsonbDelIndex(name(col), IntConv)
-  def jsonbDelPath[T, P](col: TypeCol[T]) = CacheJsonbDelPath(name(col), StringSeqConv)
-}
-
-trait CacheMod[P] extends CachePart[P] with Wrap {
+trait CacheMod[P] extends CachePart[P] {
   val conv: ValConv[P]
-  val name: String
   val template: String
-  def render(prefix: Prefix) = template
-  val args = Vector.empty[Any]
+  val args = Vector(CacheArg)
+  def validateCol(col: Renderable): Unit = col match {
+    case col: ModelCol =>
+    case _ => throw KuzminkiError("cannot update a function") 
+  }
 }
 
-case class CacheSet[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = ?"
+abstract class CacheModOne[P](col: Renderable) extends CacheMod[P] {
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  validateCol(col)
+}
+
+abstract class CacheModTwo[P](col: Renderable) extends CacheMod[P] {
+  def render(prefix: Prefix) = template.format(col.render(prefix), col.render(prefix))
+  validateCol(col)
+}
+
+case class CacheSet[P](col: Renderable, conv: ValConv[P]) extends CacheModOne[P](col) {
+  val template = s"%s = ?"
 }
 
 // numeric
 
-case class CacheIncrement[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = $name + ?"
+case class CacheIncrement[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = %s + ?"
 }
 
-case class CacheDecrement[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = $name - ?"
+case class CacheDecrement[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = %s - ?"
 }
 
 // array
 
-case class CacheAppend[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = array_append($name, ?)"
+case class CacheAppend[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = ? || %s"
 }
 
-case class CachePrepend[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = array_prepend(?, $name)"
+case class CachePrepend[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = ? || %s"
 }
 
-case class CacheRemove[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = array_remove($name, ?)"
+case class CacheRemove[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = array_remove(%s, ?)"
+}
+
+case class CacheSeqAdd[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = "%s = ARRAY(SELECT DISTINCT e FROM unnest(%s || ?) AS a(e))"
+}
+
+case class CacheSeqAddAsc[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = "%s = ARRAY(SELECT DISTINCT e FROM unnest(%s || ?) AS a(e) ORDER BY e ASC)"
+}
+
+case class CacheSeqAddDesc[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = "%s = ARRAY(SELECT DISTINCT e FROM unnest(%s || ?) AS a(e) ORDER BY e DESC)"
 }
 
 // jsonb
 
-case class CacheJsonbSet[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = ?::jsonb"
+case class CacheJsonbSet[P](col: Renderable, conv: ValConv[P]) extends CacheModOne[P](col) {
+  val template = s"%s = ?"
 }
 
-case class CacheJsonbUpdate[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = $name || ?::jsonb"
+case class CacheJsonbUpdate[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = %s || ?"
 }
 
-case class CacheJsonbDelKey[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = $name - ?"
+case class CacheJsonbDelKey[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = %s - ?"
 }
 
-case class CacheJsonbDelIndex[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = $name - ?"
+case class CacheJsonbDelIndex[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = %s - ?"
 }
 
-case class CacheJsonbDelPath[P](name: String, conv: ValConv[P]) extends CacheMod[P] {
-  val template = s"$name = $name #- ?"
+case class CacheJsonbDelPath[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = %s #- ?"
 }
 
+// timestamp / date / time
 
+case class CacheSetNow[P](col: Renderable, conv: ValConv[P]) extends CacheModOne[P](col) {
+  val template = s"%s = now()"
+}
+
+case class CacheSetTimeNow[P](col: Renderable, conv: ValConv[P]) extends CacheModOne[P](col) {
+  val template = s"%s = timeofday()"
+}
+
+case class CacheDateTimeInc[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = %s + ?"
+}
+
+case class CacheDateTimeDec[P](col: Renderable, conv: ValConv[P]) extends CacheModTwo[P](col) {
+  val template = s"%s = %s - ?"
+}
 
 
 

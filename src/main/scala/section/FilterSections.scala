@@ -19,27 +19,26 @@ package kuzminki.section
 import kuzminki.render.{Renderable, Prefix, NoArgs}
 
 
-trait FilterSections {
+case class WhereSec(parts: Vector[Renderable]) extends MultiPartRender with NotEmpty {
+  val expression = "WHERE %s"
+  val glue = " AND "
+  def error = "WHERE cannot be empty"
+  notEmpty(parts)
+}
 
-  case class WhereSec(parts: Vector[Renderable]) extends NotEmpty(parts) with MultiPartRender {
-    def error = "WHERE cannot be empty"
-    val expression = "WHERE %s"
-    val glue = " AND "
-  }
+object WhereBlankSec extends Section with NoRender with NoArgs {
+  val expression = ""
+}
 
-  object WhereBlankSec extends Section with NoRender with NoArgs {
-    val expression = ""
-  }
+case class HavingSec(parts: Vector[Renderable]) extends MultiPartRender with NotEmpty {
+  val expression = "HAVING %s"
+  val glue = " AND "
+  def error = "HAVING cannot be empty"
+  notEmpty(parts)
+}
 
-  case class HavingSec(parts: Vector[Renderable]) extends NotEmpty(parts) with MultiPartRender {
-    def error = "HAVING cannot be empty"
-    val expression = "HAVING %s"
-    val glue = " AND "
-  }
-
-  object HavingBlankSec extends Section with NoRender with NoArgs {
-    val expression = ""
-  }
+object HavingBlankSec extends Section with NoRender with NoArgs {
+  val expression = ""
 }
 
 

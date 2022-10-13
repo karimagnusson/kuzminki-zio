@@ -20,7 +20,7 @@ import kuzminki.api.Model
 import kuzminki.model.ModelTable
 import kuzminki.assign.Assign
 import kuzminki.render.SectionCollector
-import kuzminki.section.operation.{UpdateSec, UpdateSetSec}
+import kuzminki.section.{UpdateSec, UpdateSetSec}
 
 
 class Update[M <: Model](

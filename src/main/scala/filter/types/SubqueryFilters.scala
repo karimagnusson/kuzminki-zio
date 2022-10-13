@@ -23,16 +23,16 @@ import kuzminki.render.Renderable
 
 
 trait SubqueryFilter extends Filter {
-  val col: TypeCol[_]
+  val col: Renderable
   val sub: Renderable
   def render(prefix: Prefix) = template.format(col.render(prefix), sub.render(prefix))
   val args = col.args ++ sub.args
 }
 
-case class FilterInSubquery[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
+case class FilterInSubquery(col: Renderable, sub: Renderable) extends SubqueryFilter {
   val template = "%s = ANY(%s)"
 }
 
-case class FilterNotInSubquery[T](col: TypeCol[T], sub: Renderable) extends SubqueryFilter {
+case class FilterNotInSubquery(col: Renderable, sub: Renderable) extends SubqueryFilter {
   val template = "%s != ANY(%s)"
 }

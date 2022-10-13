@@ -14,9 +14,20 @@
 * limitations under the License.
 */
 
-package kuzminki.section
+package kuzminki.api
 
 
-sealed trait CacheArgs
-object CacheCondArgs extends CacheArgs
-object CacheOffsetArgs extends CacheArgs
+sealed trait Arg
+case object Arg extends Arg
+
+sealed trait ArgSeq
+case object ArgSeq extends ArgSeq
+
+sealed trait ArgInt
+case object ArgInt extends ArgInt
+
+sealed trait NoArg
+case object NoArg extends NoArg
+
+sealed trait CacheArg
+case object CacheArg extends Arg

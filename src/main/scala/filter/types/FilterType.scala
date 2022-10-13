@@ -19,7 +19,7 @@ package kuzminki.filter.types
 import kuzminki.filter.Filter
 import kuzminki.column.{TypeCol, ModelCol}
 import kuzminki.conv._
-import kuzminki.shape.CachePart
+import kuzminki.shape.CachePart.seqConv
 import kuzminki.api.KuzminkiError
 import kuzminki.render.{
   Renderable,
@@ -28,17 +28,25 @@ import kuzminki.render.{
 }
 
 
-trait SingleFilter extends Filter {
-  val col: TypeCol[_]
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-}
-
-trait SingleArgFilter extends SingleFilter {
+trait ArgFilter extends Filter {
+  val col: Renderable
   val arg: Any
-  val args = col.args :+ arg
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  val args = col.args ++ Vector(arg)
 }
 
-trait NoArgFilter extends SingleFilter with PassArgs
+trait ColFilter extends Filter {
+  val col: Renderable
+  val col2: Renderable
+  def render(prefix: Prefix) = template.format(col.render(prefix), col2.render(prefix))
+  val args = col.args ++ col2.args
+}
+
+trait NoArgFilter extends Filter {
+  val col: Renderable
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  val args = col.args
+}
 
 
 

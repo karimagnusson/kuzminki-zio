@@ -16,56 +16,37 @@
 
 package kuzminki.filter.types
 
+import kuzminki.filter.Filter
 import kuzminki.column.TypeCol
 import kuzminki.api.Jsonb
-import kuzminki.conv.ValConv
-import kuzminki.render.Renderable
+import kuzminki.conv._
+import kuzminki.render.{Renderable, Prefix}
 
 
-case class FilterJsonbMatches(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
-  val template = "%s = ?::jsonb"
-}
-
-case class FilterJsonbNot(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
-  val template = "%s != ?::jsonb"
-}
-
-case class FilterJsonbContains(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
-  val template = "%s @> ?::jsonb"
-}
-
-case class FilterJsonbContainedBy(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
-  val template = "%s <@ ?::jsonb"
-}
-
-case class FilterJsonbExists(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
+case class FilterJsonbExists(col: Renderable, arg: Any) extends ArgFilter {
   val template = "%s ?? ?"
 }
 
-case class FilterJsonbExistsAny(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
+case class FilterJsonbNotExists(col: Renderable, arg: Any) extends ArgFilter {
+  val template = "NOT %s ?? ?"
+}
+
+case class FilterJsonbExistsAny(col: Renderable, arg: Any) extends ArgFilter {
   val template = "%s ??| ?"
 }
 
-case class FilterJsonbExistsAll(col: TypeCol[Jsonb], arg: Any) extends SingleArgFilter {
+case class FilterJsonbExistsAll(col: Renderable, arg: Any) extends ArgFilter {
   val template = "%s ??& ?"
 }
 
 // cache
 
-case class CacheJsonbEq[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
-  val template = "%s = ?::jsonb"
-}
-
-case class CacheJsonbNot[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
-  val template = "%s != ?::jsonb"
-}
-
 case class CacheJsonbContains[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
-  val template = "%s = ?::jsonb"
+  val template = "%s = ?"
 }
 
 case class CacheJsonbContainedBy[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
-  val template = "%s <@ ?::jsonb"
+  val template = "%s <@ ?"
 }
 
 case class CacheJsonbExists[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {

@@ -17,7 +17,7 @@
 package kuzminki.run
 
 import kuzminki.api.db
-import kuzminki.render.RenderedQuery
+import kuzminki.render.{RenderedQuery, JoinArgs}
 
 
 trait RunQuery[R] {
@@ -44,7 +44,9 @@ trait RunQuery[R] {
 }
 
 
-trait RunQueryParams[P, R] {
+trait RunQueryParams[P, R] extends JoinArgs {
+
+  val statement: String
 
   def render(params: P): RenderedQuery[R]
 

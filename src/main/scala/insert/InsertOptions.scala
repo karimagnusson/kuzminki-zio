@@ -38,8 +38,10 @@ class InsertOptions[M <: Model, P](
   // cache
 
   def cache = {
+    val coll = builder.collector
     new StoredInsert(
-      builder.collector.render,
+      coll.render,
+      coll.args,
       builder.paramShape.conv
     )
   }
