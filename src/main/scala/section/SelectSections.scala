@@ -75,23 +75,6 @@ case class LimitSec(arg: Int) extends SingleArgRender {
   val expression = "LIMIT ?"
 }
 
-// cache
-
-case class WhereCacheSec(cacheConds: Vector[Renderable]) extends CacheCondition {
-  val expression = "WHERE %s"
-}
-
-case class WhereMixedSec(conds: Vector[Renderable], cacheConds: Vector[Renderable]) extends MixedCondition {
-  val expression = "WHERE %s"
-}
-
-case class HavingCacheSec(cacheConds: Vector[Renderable]) extends CacheCondition {
-  val expression = "HAVING %s"
-}
-
-case class HavingMixedSec(conds: Vector[Renderable], cacheConds: Vector[Renderable]) extends MixedCondition {
-  val expression = "HAVING %s"
-}
 
 
 

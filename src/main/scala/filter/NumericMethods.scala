@@ -31,6 +31,13 @@ trait NumericMethods[T] extends ComparativeMethods[T] with InMethods[T] {
   def round(size: Int) = RoundFn(col, size)
   def roundStr(size: Int) = RoundStrFn(col, size)
 
+  def asShort = CastShort(col)
+  def asInt = CastInt(col)
+  def asLong = CastLong(col)
+  def asFloat = CastFloat(col)
+  def asDouble = CastDouble(col)
+  def asBigDecimal = CastBigDecimal(col)
+
   // update
 
   def +=(value: T) = Increment(col, value)

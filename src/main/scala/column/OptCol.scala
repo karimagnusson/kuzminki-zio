@@ -21,9 +21,8 @@ import kuzminki.assign.SetValue
 import kuzminki.render.SubRenderAndArgs
 
 case class OptCol[T](col: TypeCol[T]) extends TypeCol[Option[T]] with SubRenderAndArgs {
-  def name = col.name
   val conv = col.conv.opt
-  def set(value: Option[T]) = SetValue(col, conv.put(value))
-  def ==>(value: Option[T]) = set(value)
+  def name = col.name
+  def ==>(value: Option[T]) = SetValue(col, conv.put(value))
 }
 

@@ -21,11 +21,11 @@ import kuzminki.column.{ModelCol, TypeCol}
 import kuzminki.assign.ValueEq
 import kuzminki.api.KuzminkiError
 import kuzminki.section.WhereSec
-import kuzminki.select.SelectSubquery
+import kuzminki.select._
 import kuzminki.model.ModelTable
 import kuzminki.shape.ParamShape
 import kuzminki.section._
-import kuzminki.render.{Renderable, SectionCollector}
+import kuzminki.render.{Prefix, Renderable, SectionCollector}
 
 
 case class InsertBuilder[M <: Model, P](
@@ -67,9 +67,10 @@ trait BuilderMethods[M <: Model] {
   val model: M
   val cols: Vector[Renderable]
   def values: Vector[Any]
+  val prefix = Prefix.forModel(model)
 
   def collector = {
-    SectionCollector(Vector(
+    SectionCollector(prefix, Vector(
       InsertIntoSec(ModelTable(model)),
       InsertColumnsSec(cols),
       InsertValuesSec(values),
@@ -77,7 +78,7 @@ trait BuilderMethods[M <: Model] {
   }
 
   def returning(returningCols: Vector[TypeCol[_]]) = {
-    SectionCollector(Vector(
+    SectionCollector(prefix, Vector(
       InsertIntoSec(ModelTable(model)),
       InsertColumnsSec(cols),
       InsertValuesSec(values),
@@ -85,8 +86,8 @@ trait BuilderMethods[M <: Model] {
     ))
   }
 
-  def fromSelect[P](sub: SelectSubquery[P]) = {
-    SectionCollector(Vector(
+  def fromSelect(sub: Renderable) = {
+    SectionCollector(prefix, Vector(
       InsertIntoSec(ModelTable(model)),
       InsertColumnsSec(cols),
       InsertSubquerySec(sub)
@@ -94,7 +95,7 @@ trait BuilderMethods[M <: Model] {
   }
 
   def cacheBlank = {
-    SectionCollector(Vector(
+    SectionCollector(prefix, Vector(
       InsertIntoSec(ModelTable(model)),
       InsertColumnsSec(cols),
       InsertValuesSec(values)
@@ -102,7 +103,7 @@ trait BuilderMethods[M <: Model] {
   }
 
   def whereNotExists(uniqueCols: Vector[TypeCol[_]]) = {
-    SectionCollector(Vector(
+    SectionCollector(prefix, Vector(
       InsertIntoSec(ModelTable(model)),
       InsertColumnsSec(cols),
       InsertWhereNotExistsSec(
@@ -114,7 +115,7 @@ trait BuilderMethods[M <: Model] {
   }
 
   def onConflictDoNothing = {
-    SectionCollector(Vector(
+    SectionCollector(prefix, Vector(
       InsertIntoSec(ModelTable(model)),
       InsertColumnsSec(cols),
       InsertValuesSec(values),
@@ -124,7 +125,7 @@ trait BuilderMethods[M <: Model] {
   }
 
   def onConflictColDoNothing(conflictCol: TypeCol[_]) = {
-    SectionCollector(Vector(
+    SectionCollector(prefix, Vector(
       InsertIntoSec(ModelTable(model)),
       InsertColumnsSec(cols),
       InsertValuesSec(values),
@@ -134,7 +135,7 @@ trait BuilderMethods[M <: Model] {
   }
 
   def onConflictColDoUpdate(conflictCol: TypeCol[_], updateCols: Vector[TypeCol[_]]) = {
-    SectionCollector(Vector(
+    SectionCollector(prefix, Vector(
       InsertIntoSec(ModelTable(model)),
       InsertColumnsSec(cols),
       InsertValuesSec(values),
@@ -164,7 +165,7 @@ trait BuilderMethods[M <: Model] {
       colValue.get(col) match {
         case Some(value) => ValueEq(col, value)
         case None => throw KuzminkiError(
-          s"column [${col.name}] must be an insert column to do upsert"
+          s"column must be an insert column to do upsert"
         )
       }
     }
@@ -187,7 +188,7 @@ trait BuilderMethods[M <: Model] {
       colValue.get(col) match {
         case Some(value) => ValueEq(col, value)
         case None => throw KuzminkiError(
-          s"column [${col.name}] must be an insert column to do upsert"
+          s"column must be an insert column to do upsert"
         )
       }
     }

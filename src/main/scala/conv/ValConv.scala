@@ -24,6 +24,7 @@ import java.sql.ResultSet
 import java.sql.Types
 import java.math.{BigDecimal => JBigDecimal}
 import org.postgresql.util.PGInterval
+import org.postgresql.util.PGobject
 import kuzminki.api.{Jsonb, KuzminkiError, NoArg}
 
 
@@ -315,6 +316,30 @@ object TimestampSeqConv extends ValSeqConv[Timestamp] {
   def opt = TimestampSeqOptConv
 }
 
+object JsonbSeqConv extends ValConv[Seq[Jsonb]] {
+  
+  val typeName = "jsonb"
+  
+  def asObject(jsonb: Jsonb): Object = {
+    val obj = new PGobject()
+    obj.setType("jsonb")
+    obj.setValue(jsonb.value)
+    obj.asInstanceOf[Object]
+  }
+  
+  def put(vec: Seq[Jsonb]) = TypeArray(typeName, vec.map(asObject(_)))
+  
+  def get(rs: ResultSet, index: Int): Seq[Jsonb] = {
+    rs.getArray(index)
+      .getArray
+      .asInstanceOf[Array[AnyRef]]
+      .toVector
+      .map(o => Jsonb(o.asInstanceOf[String]))
+  }
+  
+  def opt = JsonbSeqOptConv
+}
+
 // seq opt
 
 object StringSeqOptConv extends ValSeqOptConv[String] {
@@ -383,8 +408,34 @@ object TimestampSeqOptConv extends ValSeqOptConv[Timestamp] {
     getVectorOpt(rs, index, o => o.asInstanceOf[Timestamp])
 }
 
+object JsonbSeqOptConv extends ValConv[Option[Seq[Jsonb]]] {
+  
+  val typeName = "jsonb"
+  
+  def asObject(jsonb: Jsonb): Object = {
+    val obj = new PGobject()
+    obj.setType("jsonb")
+    obj.setValue(jsonb.value)
+    obj.asInstanceOf[Object]
+  }
+  
+  def put(vecOpt: Option[Seq[Jsonb]]) = vecOpt match {
+    case Some(vec) => TypeArray(typeName, vec.map(asObject(_)))
+    case None => TypeNull(Types.ARRAY)
+  } 
 
+  def get(rs: ResultSet, index: Int): Option[Seq[Jsonb]] = {
+    Option(rs.getArray(index)).map { arr =>
+      arr
+        .getArray
+        .asInstanceOf[Array[AnyRef]]
+        .toVector
+        .map(o => Jsonb(o.asInstanceOf[String]))
+    }
+  }
 
+  def opt = throw KuzminkiError("cannot use asOpt on Option column")
+}
 
 
 

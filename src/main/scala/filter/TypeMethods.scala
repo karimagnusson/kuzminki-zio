@@ -20,7 +20,6 @@ import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
 import kuzminki.conv.NoArgConv
-import kuzminki.select.SelectSubquery
 import kuzminki.fn.types._
 import kuzminki.api.{Arg, NoArg}
 
@@ -49,6 +48,7 @@ trait TypeMethods[T] {
 
   def ===(col2: TypeCol[T]): Filter = FilterColMatches(col, col2)
   def !==(col2: TypeCol[T]): Filter = FilterNot(col, col2)
+  def <=>(parCol: TypeCol[T]): Filter = FilterParentEqCol(col, parCol)
 
   // update
 

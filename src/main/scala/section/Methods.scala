@@ -40,32 +40,15 @@ trait SinglePartRender extends Section {
 trait MultiPartRender extends Section {
   val parts: Vector[Renderable]
   val glue: String
-  def render(prefix: Prefix) = expression.format(parts.map(_.render(prefix)).mkString(glue))
+  def render(prefix: Prefix) = {
+    expression
+      .format(parts.map(_.render(prefix))
+      .mkString(glue))
+  }
   val args = parts.map(_.args).flatten
 }
 
 // cache
-
-trait CacheCondition extends Section {
-  val cacheConds: Vector[Renderable]
-  def render(prefix: Prefix) = {
-    expression.format(
-      cacheConds.map(_.render(prefix)).mkString(" AND ")
-    )
-  }
-  val args = cacheConds.map(_.args).flatten
-}
-
-trait MixedCondition extends Section {
-  val conds: Vector[Renderable]
-  val cacheConds: Vector[Renderable]
-  def render(prefix: Prefix) = {
-    expression.format(
-      (conds ++ cacheConds).map(_.render(prefix)).mkString(" AND ")
-    )
-  }
-  val args = (conds ++ cacheConds).map(_.args).flatten
-}
 
 trait NotEmpty {
   def error: String

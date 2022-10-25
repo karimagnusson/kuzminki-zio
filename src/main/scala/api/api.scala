@@ -29,26 +29,9 @@ import kuzminki.assign.Assign
 import kuzminki.update.RenderUpdate
 import kuzminki.delete.RenderDelete
 import kuzminki.insert.{RenderInsert, Values}
-import kuzminki.run.{
-  RunQuery,
-  RunQueryParams,
-  RunOperation,
-  RunOperationParams,
-  RunUpdate,
-  RunUpdateReturning,
-  RunStream
-}
-import kuzminki.select.{
-  RenderSelect,
-  SelectSubquery,
-  AggregationSubquery,
-  Offset
-}
-import kuzminki.render.{
-  RawSQLStatement,
-  RenderedQuery,
-  RenderedOperation
-}
+import kuzminki.run._
+import kuzminki.select._
+import kuzminki.render._
 
 
 package object api {
@@ -80,6 +63,7 @@ package object api {
   implicit val kzTimeSeqCol: ColInfo => TypeCol[Seq[Time]] = info => TimeSeqModelCol(info)
   implicit val kzDateSeqCol: ColInfo => TypeCol[Seq[Date]] = info => DateSeqModelCol(info)
   implicit val kzTimestampSeqCol: ColInfo => TypeCol[Seq[Timestamp]] = info => TimestampSeqModelCol(info)
+  implicit val kzJsonbSeqCol: ColInfo => TypeCol[Seq[Jsonb]] = info => JsonbSeqModelCol(info)
 
   // filters
 
@@ -108,11 +92,14 @@ package object api {
   implicit class KzTimeSeqImpl(val col: TypeCol[Seq[Time]]) extends SeqMethods[Time]
   implicit class KzDateSeqImpl(val col: TypeCol[Seq[Date]]) extends SeqMethods[Date]
   implicit class KzTimestampSeqImpl(val col: TypeCol[Seq[Timestamp]]) extends SeqMethods[Timestamp]
+  implicit class KzJsonbSeqImpl(val col: TypeCol[Seq[Jsonb]]) extends JsonbSeqMethods
 
   // render
 
   implicit def kzRenderSelect[R](q: RenderSelect[_, R]): RenderedQuery[R] = q.render
-  implicit def kzRenderSubquery[R](q: RenderSelect[_, R]): SelectSubquery[R] = q.asSubquery
+  implicit def kzRenderSubquery[R](q: RenderSelect[_, R]): Subquery[R] = q.asSubquery
+  implicit def kzRenderSubqueryInsert[P, R](q: SelectCache[P, R]): SubqueryInsertFc[P, R] = q.asSubqueryInsertFc
+  implicit def kzRenderSubqueryIn[P, R](q: SelectCacheSingle[P, R]): SubqueryInFc[P, R] = q.asSubqueryInFc
   implicit val kzRenderAggregation: RenderSelect[_, _] => AggregationSubquery = q => q.asAggregation
   implicit val kzRenderUpdate: RenderUpdate[_] => RenderedOperation = q => q.render
   implicit val kzRenderDelete: RenderDelete[_] => RenderedOperation = q => q.render
@@ -121,7 +108,7 @@ package object api {
 
   // named cols
   
-  implicit val kzAddColName: TypeCol[_] => Tuple2[String, TypeCol[_]] = col => (col.name, col)
+  implicit def kzAddColName[T](col: TypeCol[T]): Tuple2[String, TypeCol[T]] = (col.name, col)
 
   // pick one
 

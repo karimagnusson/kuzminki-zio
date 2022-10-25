@@ -19,7 +19,7 @@ package kuzminki.update
 import kuzminki.api.Model
 import kuzminki.model.ModelTable
 import kuzminki.assign.Assign
-import kuzminki.render.SectionCollector
+import kuzminki.render.{Prefix, SectionCollector}
 import kuzminki.section.{UpdateSec, UpdateSetSec}
 
 
@@ -31,6 +31,7 @@ class Update[M <: Model](
     new UpdateWhere(
       model,
       SectionCollector(
+        Prefix.forModel(model),
         Vector(
           UpdateSec(ModelTable(model)),
           UpdateSetSec(pick(model).toVector)

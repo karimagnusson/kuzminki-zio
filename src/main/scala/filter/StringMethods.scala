@@ -37,6 +37,13 @@ trait StringMethods extends TypeMethods[String] with InMethods[String] {
   def lower = CustomStringFn(col, "lower(%s)")
   def initcap = CustomStringFn(col, "initcap(%s)")
 
+  def asShort = CastShort(col)
+  def asInt = CastInt(col)
+  def asLong = CastLong(col)
+  def asFloat = CastFloat(col)
+  def asDouble = CastDouble(col)
+  def asBigDecimal = CastBigDecimal(col)
+
   // filters
 
   def like(value: String): Filter = FilterLike(col, value)

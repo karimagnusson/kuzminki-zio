@@ -20,6 +20,6 @@ import java.sql.ResultSet
 import kuzminki.conv.ValConv
 
 
-class RowConvSingle[R](col: ValConv[R]) extends RowConv[R] {
+class RowConvSingle[R](val col: ValConv[R]) extends RowConv[R] {
   def fromRow(rs: ResultSet) = col.get(rs, 1)
 }

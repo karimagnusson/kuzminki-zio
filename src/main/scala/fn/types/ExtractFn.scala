@@ -24,13 +24,10 @@ import kuzminki.render.Prefix
 import kuzminki.api.Jsonb
 
 
-trait ExtractFn extends IntCol {
+trait ExtractFn extends IntCol with FnColArgs {
   val field: String
   val col: TypeCol[_]
-  def name = "extract_%s".format(field.toLowerCase)
   def template = s"EXTRACT($field FROM %s)::int"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args
 }
 
 case class ExtractCenturyFn(col: TypeCol[_]) extends ExtractFn {
@@ -97,15 +94,15 @@ case class ExtractYearFn(col: TypeCol[_]) extends ExtractFn {
   val field = "YEAR"
 }
 
-case class ExtractEpochSecsFn(col: TypeCol[_]) extends LongCol {
-  def name = "extract_%s".format(col.name)
+case class ExtractEpochSecsFn(col: TypeCol[_]) extends LongCol with FnCol {
+  def name = col.name
   val template = "EXTRACT(EPOCH FROM %s)::bigint"
   def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args
 }
 
-case class ExtractEpochMillisFn(col: TypeCol[_]) extends LongCol {
-  def name = "extract_%s".format(col.name)
+case class ExtractEpochMillisFn(col: TypeCol[_]) extends LongCol with FnCol {
+  def name = col.name
   val template = "(EXTRACT(EPOCH FROM %s) * 1000)::bigint"
   def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args

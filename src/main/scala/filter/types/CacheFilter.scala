@@ -33,11 +33,18 @@ trait CacheFilter[P] extends CachePart[P] {
   val col: Renderable
   val conv: ValConv[P]
   val template: String
+}
+
+trait CacheFilterCol[P] extends CacheFilter[P] {
   def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args ++ Vector(CacheArg)
 }
 
-
+trait CacheFilterSub[P] extends CacheFilter[P] {
+  val sub: Renderable
+  def render(prefix: Prefix) = template.format(col.render(prefix), sub.render(prefix))
+  val args = col.args ++ sub.args
+}
 
 
 

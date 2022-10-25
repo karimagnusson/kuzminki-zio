@@ -49,37 +49,37 @@ case class FilterIsNotNull(col: Renderable) extends NoArgFilter {
 // col filters
 
 case class FilterColMatches(col: Renderable, col2: Renderable) extends ColFilter {
-  val template = "%s = ?"
+  val template = "%s = %s"
 }
 
 case class FilterColNot(col: Renderable, col2: Renderable) extends ColFilter {
-  val template = "%s != ?"
+  val template = "%s != %s"
 }
 
 // cache
 
 
-case class CacheEq[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheEq[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s = ?"
 }
 
-case class CacheNot[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheNot[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s != ?"
 }
 
-case class CacheIn[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheIn[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s = ANY(?)"
 }
 
-case class CacheNotIn[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheNotIn[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "NOT %s = ANY(?)"
 }
 
-case class CacheIsNull[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheIsNull[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s IS NULL"
 }
 
-case class CacheIsNotNull[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheIsNotNull[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s IS NOT NULL"
 }
 

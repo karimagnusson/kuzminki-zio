@@ -6,6 +6,7 @@ import kuzminki.column.TypeCol
 import kuzminki.render.SectionCollector
 import kuzminki.section.ReturningSec
 import kuzminki.shape._
+import kuzminki.fn.Fn
 
 
 abstract class PickStoredUpdateReturning[M, P1, P2](
@@ -39,6 +40,14 @@ abstract class PickStoredUpdateReturning[M, P1, P2](
   def returningNamed(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
     next(
       new RowShapeNamed(pick(model))
+    )
+  }
+
+  def returningJson(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
+    next(
+      new RowShapeSingle(
+        Fn.json(pick(model))
+      )
     )
   }
 

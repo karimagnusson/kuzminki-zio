@@ -19,11 +19,7 @@ package kuzminki.update
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
 import kuzminki.run.{RunQuery, RunOperation}
-import kuzminki.render.{
-  RenderedOperation,
-  RenderedQuery,
-  SectionCollector
-}
+import kuzminki.render._
 
 
 class RenderUpdate[M](
@@ -36,6 +32,11 @@ class RenderUpdate[M](
     coll.render,
     coll.args
   )
+
+  def cache = new StoredOperation(
+    coll.render,
+    coll.args
+  )
 }
 
 
@@ -45,6 +46,12 @@ class RenderUpdateReturning[R](
   ) extends RunQuery[R] {
   
   def render = RenderedQuery(
+    coll.render,
+    coll.args,
+    rowConv
+  )
+
+  def cache = new StoredQuery(
     coll.render,
     coll.args,
     rowConv

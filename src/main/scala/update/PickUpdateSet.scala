@@ -2,7 +2,7 @@ package kuzminki.update
 
 import kuzminki.api.Model
 import kuzminki.model.ModelTable
-import kuzminki.render.SectionCollector
+import kuzminki.render.{Prefix, SectionCollector}
 import kuzminki.section.{UpdateSec, UpdateCacheSetSec}
 import kuzminki.assign.CacheMod
 import kuzminki.shape._
@@ -14,6 +14,7 @@ abstract class PickUpdateSet[M <: Model](model: M) {
     new PickUpdateWhere(
       model,
       SectionCollector(
+        Prefix.forModel(model),
         Vector(
           UpdateSec(ModelTable(model)),
           UpdateCacheSetSec(changes.parts)

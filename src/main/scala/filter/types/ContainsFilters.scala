@@ -38,19 +38,19 @@ case class FilterNotContainedBy(col: Renderable, arg: Any) extends ArgFilter {
 
 // cache
 
-case class CacheContains[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheContains[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s = ?"
 }
 
-case class CacheNotContains[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheNotContains[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "NOT %s = ?"
 }
 
-case class CacheContainedBy[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheContainedBy[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s <@ ?"
 }
 
-case class CacheNotContainedBy[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheNotContainedBy[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "NOT %s <@ ?"
 }
 

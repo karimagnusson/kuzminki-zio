@@ -18,15 +18,8 @@ package kuzminki.insert
 
 import kuzminki.shape.ParamConv
 import kuzminki.shape.RowConv
-import kuzminki.run.{
-  RunOperation,
-  RunQuery
-}
-import kuzminki.render.{
-  RenderedOperation,
-  RenderedQuery,
-  SectionCollector
-}
+import kuzminki.run.{RunOperation, RunQuery}
+import kuzminki.render._
 
 
 class RenderInsert(
@@ -34,6 +27,11 @@ class RenderInsert(
   ) extends RunOperation {
 
   def render = RenderedOperation(
+    coll.render,
+    coll.args
+  )
+
+  def cache = new StoredOperation(
     coll.render,
     coll.args
   )
@@ -46,6 +44,12 @@ class RenderInsertReturning[R](
 ) extends RunQuery[R] {
 
   def render = RenderedQuery(
+    coll.render,
+    coll.args,
+    rowConv
+  )
+
+  def cache = new StoredQuery(
     coll.render,
     coll.args,
     rowConv

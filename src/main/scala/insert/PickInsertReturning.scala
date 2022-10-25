@@ -4,6 +4,7 @@ import kuzminki.api.Model
 import kuzminki.column.TypeCol
 import kuzminki.render.SectionCollector
 import kuzminki.shape._
+import kuzminki.fn.Fn
 
 
 abstract class PickInsertReturning[M <: Model](builder: ValuesBuilder[M]) {
@@ -30,6 +31,14 @@ abstract class PickInsertReturning[M <: Model](builder: ValuesBuilder[M]) {
   def returningNamed(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
     next(
       new RowShapeNamed(pick(builder.model))
+    )
+  }
+
+  def returningJson(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
+    next(
+      new RowShapeSingle(
+        Fn.json(pick(builder.model))
+      )
     )
   }
 

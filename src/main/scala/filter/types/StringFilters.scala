@@ -58,35 +58,35 @@ case class FilterReNotIMatch(col: Renderable, arg: String) extends ArgFilter {
 
 // cache
 
-case class CacheLike[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheLike[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s LIKE concat('%%', ?, '%%')"
 }
 
-case class CacheStartsWith[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheStartsWith[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s LIKE concat(?, '%%')"
 }
 
-case class CacheEndsWith[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheEndsWith[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s LIKE concat('%%', ?)"
 }
 
-case class CacheSimilarTo[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheSimilarTo[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s SIMILAR TO ?"
 }
 
-case class CacheReMatch[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheReMatch[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s ~ ?"
 }
 
-case class CacheReIMatch[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheReIMatch[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s ~* ?"
 }
 
-case class CacheReNotMatch[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheReNotMatch[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s !~ ?"
 }
 
-case class CacheReNotIMatch[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheReNotIMatch[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s !~* ?"
 }
 

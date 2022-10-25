@@ -8,7 +8,7 @@ import kuzminki.filter._
 import kuzminki.render.{Prefix, NoArgs}
 
 
-trait ModelCol extends NoArgs {          
+sealed trait ModelCol extends NoArgs {          
   val info: ColInfo
   def name = info.name
   def render(prefix: Prefix) = prefix.pick(info)
@@ -61,4 +61,17 @@ case class TimeSeqModelCol(info: ColInfo) extends TimeSeqCol with ModelCol
 case class DateSeqModelCol(info: ColInfo) extends DateSeqCol with ModelCol
 
 case class TimestampSeqModelCol(info: ColInfo) extends TimestampSeqCol with ModelCol
+
+case class JsonbSeqModelCol(info: ColInfo) extends JsonbSeqCol with ModelCol
+
+
+
+
+
+
+
+
+
+
+
 

@@ -22,8 +22,9 @@ import kuzminki.sorting.{Asc, Desc}
 
 
 trait TypeCol[T] extends Renderable {
-  def name: String
   val conv: ValConv[T]
+  def name: String
+  def as(name: String) = (name, this)
   def asOpt = OptCol(this)
   def asc = Asc(this)
   def desc = Desc(this)

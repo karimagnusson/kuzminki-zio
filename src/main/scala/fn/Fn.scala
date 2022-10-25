@@ -55,6 +55,10 @@ object Fn {
 
   def roundStr[T](col: TypeCol[BigDecimal], size: Int) = RoundStrFn(col, size)
 
+  // json
+
+  def json(cols: Seq[Tuple2[String, TypeCol[_]]]) = JsonbResFn(cols)
+
   def interval(
     years: Int = 0,
     months: Int = 0,

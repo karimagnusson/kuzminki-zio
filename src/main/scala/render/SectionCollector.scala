@@ -19,9 +19,7 @@ package kuzminki.render
 import kuzminki.section.Section
 
 
-case class SectionCollector(sections: Vector[Section]) {
-
-  val prefix = Prefix.forModel
+case class SectionCollector(prefix: Prefix, sections: Vector[Section]) {
 
   def add(section: Section) = this.copy(sections = sections :+ section)
 

@@ -24,16 +24,16 @@ import kuzminki.api.KuzminkiError
 import org.postgresql.util.PGInterval
 
 
-case class CustomStringFn(col: TypeCol[String], template: String) extends StringNoArgsFn
+case class CustomStringFn(col: TypeCol[String], template: String) extends StringNoArgsFn with FnCol
 
 case class CoalesceFn[T](col: TypeCol[T], arg: Any) extends TypeArgsFn[T] {
   def template = "coalesce(%s, ?)"
   def fnArgs = Vector(arg)
 }
 
-case class ConcatFn(cols: Vector[TypeCol[_]]) extends StringCol {
+case class ConcatFn(cols: Vector[TypeCol[_]]) extends StringCol with FnCol {
+  def name = "concat"
   def template = "concat(%s)"
-  def name = cols.map(_.name).mkString("_")
   def render(prefix: Prefix) = {
     template.format(
       cols.map(_.render(prefix)).mkString(", ")
@@ -42,9 +42,9 @@ case class ConcatFn(cols: Vector[TypeCol[_]]) extends StringCol {
   val args = cols.map(_.args).flatten
 }
 
-case class ConcatWsFn(glue: String, cols: Vector[TypeCol[_]]) extends StringCol {
+case class ConcatWsFn(glue: String, cols: Vector[TypeCol[_]]) extends StringCol with FnCol {
+  def name = "concat"
   def template = s"concat_ws('$glue', %s)"
-  def name = cols.map(_.name).mkString("_")
   def render(prefix: Prefix) = {
     template.format(
       cols.map(_.render(prefix)).mkString(", ")

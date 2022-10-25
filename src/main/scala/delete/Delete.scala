@@ -18,7 +18,7 @@ package kuzminki.delete
 
 import kuzminki.api.Model
 import kuzminki.model.ModelTable
-import kuzminki.render.SectionCollector
+import kuzminki.render.{Prefix, SectionCollector}
 import kuzminki.section.DeleteFromSec
 
 
@@ -28,6 +28,7 @@ object Delete {
     new DeleteWhere(
       model,
       SectionCollector(
+        Prefix.forModel(model),
         Vector(
           DeleteFromSec(ModelTable(model))
         )

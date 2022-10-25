@@ -25,7 +25,6 @@ import org.postgresql.util.PGInterval
 
 
 case class RoundFn(col: TypeCol[_], arg: Any) extends BigDecimalCol with FnRender {
-  def name = "round_%s".format(col.name)
   def template = col match {
     case col: BigDecimalCol => "round(%s, ?)"
     case _ => "round(%s::numeric, ?)"
@@ -34,7 +33,6 @@ case class RoundFn(col: TypeCol[_], arg: Any) extends BigDecimalCol with FnRende
 }
 
 case class RoundStrFn(col: TypeCol[_], arg: Any) extends StringCol with FnRender {
-  def name = "round_%s".format(col.name)
   def template = col match {
     case col: BigDecimalCol => "round(%s, ?)::text"
     case _ => "round(%s::numeric, ?)::text"

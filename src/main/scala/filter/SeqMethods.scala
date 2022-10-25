@@ -20,7 +20,6 @@ import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
 import kuzminki.shape.CachePart.itemConv
-import kuzminki.select.SelectSubquery
 import kuzminki.fn.types._
 import kuzminki.api.{Arg, ArgSeq}
 
@@ -32,10 +31,12 @@ trait SeqMethods[T] extends TypeMethods[Seq[T]] {
   def unnest = SeqUnnestFn(col)
   def length = SeqLengthFn(col)
   def trim(size: Int) = SeqTrimFn(col, size)
+  def get(pos: Int) = SeqGetFn(col, pos)
   def pos(value: T) = SeqPosFn(col, value)
   def first = SeqFirstFn(col)
   def last = SeqLastFn(col)
-  def ++(col2: TypeCol[Seq[T]]) = SeqExtendFn(col, col2)
+  def join(glue: String) = SeqJoinFn(col, glue)
+  def ||(col2: TypeCol[Seq[T]]) = SeqExtendFn(col, col2)
 
   // filters
 

@@ -20,7 +20,7 @@ import kuzminki.column.TypeCol
 import kuzminki.assign._
 import kuzminki.filter.types._
 import kuzminki.conv.ValConv
-import kuzminki.select.SelectSubquery
+import kuzminki.select.{Subquery, SubqueryInFc}
 import kuzminki.fn.Fn
 import kuzminki.shape.CachePart.seqConv
 import kuzminki.api.Arg
@@ -42,8 +42,8 @@ trait InMethods[T] {
 
   // subquery
 
-  def in(sub: SelectSubquery[T]): Filter = FilterInSubquery(col, sub)
-  def notIn(sub: SelectSubquery[T]): Filter = FilterNotInSubquery(col, sub)
+  def in(sub: Subquery[T]): Filter = FilterInSubquery(col, sub)
+  def notIn(sub: Subquery[T]): Filter = FilterNotInSubquery(col, sub)
 }
 
 
@@ -53,6 +53,9 @@ trait InCache[T] {
 
   def in(arg: Arg) = CacheIn(col, seqConv(col.conv))
   def notIn(arg: Arg) = CacheNotIn(col, seqConv(col.conv))
+
+  def in[P](sub: SubqueryInFc[P, T]) = CacheInSubquery(col, sub, sub.valConv)
+  def notIn[P](sub: SubqueryInFc[P, T]) = CacheNotInSubquery(col, sub, sub.valConv)
 }
 
 

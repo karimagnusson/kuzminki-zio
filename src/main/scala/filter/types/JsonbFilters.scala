@@ -41,23 +41,23 @@ case class FilterJsonbExistsAll(col: Renderable, arg: Any) extends ArgFilter {
 
 // cache
 
-case class CacheJsonbContains[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheJsonbContains[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s = ?"
 }
 
-case class CacheJsonbContainedBy[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheJsonbContainedBy[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s <@ ?"
 }
 
-case class CacheJsonbExists[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheJsonbExists[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s ?? ?"
 }
 
-case class CacheJsonbExistsAny[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheJsonbExistsAny[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s ??| ?"
 }
 
-case class CacheJsonbExistsAll[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheJsonbExistsAll[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s ??& ?"
 }
 

@@ -6,6 +6,7 @@ import kuzminki.column.TypeCol
 import kuzminki.render.Prefix
 import kuzminki.section._
 import kuzminki.shape._
+import kuzminki.fn.Fn
 
 
 class Select[M <: Model](val model: M) {
@@ -14,7 +15,7 @@ class Select[M <: Model](val model: M) {
     new Where(
       model,
       SelectCollector(
-        Prefix.forModel,
+        Prefix.forModel(model),
         rowShape,
         Vector(
           SelectSec(rowShape.cols),
@@ -39,6 +40,14 @@ class Select[M <: Model](val model: M) {
   def colsNamed(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
     next(
       new RowShapeNamed(pick(model))
+    )
+  }
+
+  def colsJson(pick: M => Seq[Tuple2[String, TypeCol[_]]]) = {
+    next(
+      new RowShapeSingle(
+        Fn.json(pick(model))
+      )
     )
   }
 

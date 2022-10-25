@@ -23,53 +23,78 @@ import kuzminki.render.Prefix
 import kuzminki.shape.CachePart.itemConv
 
 
-case class SeqUnnestFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] {
-  def name = "unnest_%s".format(col.name)
+case class SeqUnnestFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] with FnCol {
   val conv = itemConv(col.conv)
-  def render(prefix: Prefix) = "unnest(%s)".format(col.render(prefix))
+  def name = col.name
+  def template = "unnest(%s)"
+  def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args
 }
 
-case class SeqLengthFn[T](col: TypeCol[Seq[T]]) extends IntCol {
-  def name = "length_%s".format(col.name)
-  def render(prefix: Prefix) = "array_length(%s, 1)".format(col.render(prefix))
+case class SeqLengthFn[T](col: TypeCol[Seq[T]]) extends IntCol with FnCol {
+  def name = col.name
+  def template = "array_length(%s, 1)"
+  def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args
 }
 
-case class SeqTrimFn[T](col: TypeCol[Seq[T]], arg: Any) extends TypeCol[Seq[T]] {
-  def name = "trim_%s".format(col.name)
+case class SeqTrimFn[T](col: TypeCol[Seq[T]], arg: Any) extends TypeCol[Seq[T]] with FnCol {
   val conv = col.conv
-  def render(prefix: Prefix) = "trim_array(%s, ?)".format(col.render(prefix))
+  def name = col.name
+  def template = "trim_array(%s, ?)"
+  def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args ++ Vector(arg)
 }
 
-case class SeqPosFn[T](col: TypeCol[Seq[T]], arg: Any) extends IntCol {
-  def name = "pos_%s".format(col.name)
-  def render(prefix: Prefix) = "array_position(%s, ?)".format(col.render(prefix))
+case class SeqPosFn[T](col: TypeCol[Seq[T]], arg: Any) extends IntCol with FnCol {
+  def name = col.name
+  def template = "array_position(%s, ?)"
+  def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args ++ Vector(arg)
 }
 
-case class SeqFirstFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] {
-  def name = "pos_%s".format(col.name)
+case class SeqGetFn[T](col: TypeCol[Seq[T]], arg: Any) extends TypeCol[T] with FnCol {
   val conv = itemConv(col.conv)
-  def render(prefix: Prefix) = "%s[1]".format(col.render(prefix))
+  def name = col.name
+  def template = "(%s)[?]"
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  val args = col.args ++ Vector(arg)
+}
+
+case class SeqFirstFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] with FnCol {
+  val conv = itemConv(col.conv)
+  def name = col.name
+  def template = "(%s)[1]"
+  def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args
 }
 
-case class SeqLastFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] {
-  def name = "pos_%s".format(col.name)
+case class SeqLastFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] with FnCol {
   val conv = itemConv(col.conv)
+  def name = col.name
+  def template = "(%s)[array_length(%s, 1)]"
   def render(prefix: Prefix) = {
-    "%s[array_length(%s, 1)]".format(col.render(prefix), col.render(prefix))
+    template.format(col.render(prefix), col.render(prefix))
   }
   val args = col.args
 }
 
-case class SeqExtendFn[T](col: TypeCol[Seq[T]], col2: TypeCol[Seq[T]]) extends TypeCol[T] {
-  def name = "extend_%s".format(col.name)
+case class SeqJoinFn[T](col: TypeCol[Seq[T]], arg: Any) extends TypeCol[T] with FnCol {
   val conv = itemConv(col.conv)
+  def name = col.name
+  def template = "array_to_string(%s, ?)"
   def render(prefix: Prefix) = {
-    "%s || %s".format(col.render(prefix), col2.render(prefix))
+    template.format(col.render(prefix), col.render(prefix))
+  }
+  val args = col.args ++ Vector(arg)
+}
+
+case class SeqExtendFn[T](col: TypeCol[Seq[T]], col2: TypeCol[Seq[T]]) extends TypeCol[T] with FnCol {
+  val conv = itemConv(col.conv)
+  def name = col.name
+  def template = "%s || %s"
+  def render(prefix: Prefix) = {
+    template.format(col.render(prefix), col2.render(prefix))
   }
   val args = col.args
 }

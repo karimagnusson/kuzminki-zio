@@ -16,7 +16,7 @@
 
 package kuzminki.select
 
-import kuzminki.run.RunQueryParams
+import kuzminki.run.{RunQuery, RunQueryParams}
 import kuzminki.render.{
   RenderedOperation,
   RenderedQuery

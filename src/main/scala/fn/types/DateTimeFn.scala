@@ -27,33 +27,33 @@ import kuzminki.api.Jsonb
 
 // common
 
-case class DateTimeIncFn[T](col: TypeCol[T], value: PGInterval) extends TypeCol[T] {
-  def name = "inc_%s".format(col.name)
-  def template = "%s + ?"
+case class DateTimeIncFn[T](col: TypeCol[T], value: PGInterval) extends TypeCol[T] with FnCol {
   val conv = col.conv
+  def name = col.name
+  def template = "%s + ?"
   def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args ++ Vector(value)
 }
 
-case class DateTimeDecFn[T](col: TypeCol[T], value: PGInterval) extends TypeCol[T] {
-  def name = "dec_%s".format(col.name)
-  def template = "%s - ?"
+case class DateTimeDecFn[T](col: TypeCol[T], value: PGInterval) extends TypeCol[T] with FnCol {
   val conv = col.conv
+  def name = col.name
+  def template = "%s - ?"
   def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args ++ Vector(value)
 }
 
 // timestamp
 
-case class DateTimeFormatFn(col: TypeCol[_], format: String) extends StringCol {
-  def name = "cast_%s".format(col.name)
+case class DateTimeFormatFn(col: TypeCol[_], format: String) extends StringCol with FnCol {
+  def name = col.name
   def template = "to_char(%s, ?)"
   def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args ++ Vector(format)
 }
 
-case class TimestampAgeFn(col: TypeCol[Timestamp]) extends IntervalCol {
-  def name = "age_%s".format(col.name)
+case class TimestampAgeFn(col: TypeCol[Timestamp]) extends IntervalCol with FnCol {
+  def name = col.name
   def template = "age(%s)"
   def render(prefix: Prefix) = template.format(col.render(prefix))
   val args = col.args

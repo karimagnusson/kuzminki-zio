@@ -17,7 +17,6 @@
 package kuzminki.fn.types
 
 import kuzminki.column._
-import kuzminki.render.NoArgs
 
 
 trait StringNoArgsFn extends StringCol with FnColArgs

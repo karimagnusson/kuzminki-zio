@@ -58,18 +58,18 @@ case class FilterColLte(col: Renderable, col2: Renderable) extends ColFilter {
 
 // cache
 
-case class CacheGt[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheGt[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s > ?"
 }
 
-case class CacheLt[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheLt[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s < ?"
 }
 
-case class CacheGte[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheGte[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s >= ?"
 }
 
-case class CacheLte[P](col: Renderable, conv: ValConv[P]) extends CacheFilter[P] {
+case class CacheLte[P](col: Renderable, conv: ValConv[P]) extends CacheFilterCol[P] {
   val template = "%s <= ?"
 }

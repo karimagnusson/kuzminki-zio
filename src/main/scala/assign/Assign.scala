@@ -90,6 +90,26 @@ case class AddDesc(col: Renderable, arg: Any) extends AssignTwo(col) {
   val args = Vector(arg)
 }
 
+case class AddJsonb(col: Renderable, arg: Any, sort: String) extends AssignTwo(col) {
+  val template = s"%s = ARRAY(SELECT DISTINCT ON (e->'$sort') e FROM unnest(%s || ?) AS a(e))"
+  val args = Vector(arg)
+}
+
+case class AddJsonbAsc(col: Renderable, arg: Any, sort: String) extends AssignTwo(col) {
+  val template = s"%s = ARRAY(SELECT DISTINCT ON (e->'$sort') e FROM unnest(%s || ?) AS a(e) ORDER BY e->'$sort' ASC)"
+  val args = Vector(arg)
+}
+
+case class AddJsonbDesc(col: Renderable, arg: Any, sort: String) extends AssignTwo(col) {
+  val template = s"%s = ARRAY(SELECT DISTINCT ON (e->'$sort') e FROM unnest(%s || ?) AS a(e) ORDER BY e->'$sort' DESC)"
+  val args = Vector(arg)
+}
+
+case class RemoveJsonb(col: Renderable, arg: Any, sort: String) extends AssignTwo(col) {
+  val template = s"%s = ARRAY(SELECT e FROM unnest(%s) AS a(e)) WHERE e->>'$sort' != ?"
+  val args = Vector(arg)
+}
+
 // jsonb
 
 case class JsonbUpdate(col: Renderable, arg: Any) extends AssignTwo(col) {

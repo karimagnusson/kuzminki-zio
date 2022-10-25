@@ -18,7 +18,7 @@ package kuzminki.insert
 
 import kuzminki.api.Model
 import kuzminki.column.TypeCol
-import kuzminki.select.SelectSubquery
+import kuzminki.select.{Subquery, SubqueryInsertFc}
 
 
 class InsertOptions[M <: Model, P](
@@ -31,7 +31,7 @@ class InsertOptions[M <: Model, P](
     builder.toValuesBuilder(params)
   )
 
-  def fromSelect(sub: SelectSubquery[P]) = new RenderInsert(
+  def fromSelect(sub: Subquery[P]) = new RenderInsert(
     builder.fromSelect(sub)
   )
 
@@ -43,6 +43,13 @@ class InsertOptions[M <: Model, P](
       coll.render,
       coll.args,
       builder.paramShape.conv
+    )
+  }
+
+  def pickSelect[R](sub: SubqueryInsertFc[R, P]) = {
+    new RenderStoredInsert(
+      builder.fromSelect(sub),
+      sub.paramConv
     )
   }
 

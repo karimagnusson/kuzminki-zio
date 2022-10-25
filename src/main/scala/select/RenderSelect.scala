@@ -21,11 +21,10 @@ import kuzminki.render.Prefix
 import kuzminki.column.TypeCol
 import kuzminki.fn.aggFn.AggFn
 import kuzminki.run.RunQuery
+import kuzminki.shape.RowShapeSingle
+import kuzminki.shape.CachePart.seqConv
 import kuzminki.section._
-import kuzminki.render.{
-  RenderedOperation,
-  RenderedQuery
-}
+import kuzminki.render._
 
 
 class RenderSelect[M, R](
@@ -40,7 +39,24 @@ class RenderSelect[M, R](
     coll.rowShape.conv
   )
 
+  def cache = new StoredQuery(
+    coll.render,
+    coll.args,
+    coll.rowShape.conv
+  )
+
   // subquery
+
+  def asSubquery = new Subquery(coll)
+
+  def asColumn = {
+    coll.rowShape match {
+      case shape: RowShapeSingle[_] =>
+        new SubqueryCol(coll, shape.col.conv)
+      case _ =>
+        throw KuzminkiError("Subquery is invalid")
+    }
+  }
 
   private def firstColumn = {
     coll.sections(0) match {
@@ -49,16 +65,6 @@ class RenderSelect[M, R](
       case _ =>
         throw KuzminkiError("Subquery is invalid")
     }
-  }
-  
-  def asSubquery = {
-    firstColumn match {
-      case col: TypeCol[_] =>
-      case _ =>
-        throw KuzminkiError("Subquery column cannot use modifiers")
-    }
-
-    new SelectSubquery(coll)
   }
   
   def asAggregation = {

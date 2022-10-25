@@ -20,28 +20,31 @@ import kuzminki.column.TypeCol
 import kuzminki.render.{Prefix, NoArgs}
 
 
-trait FnBase {
-  val col: TypeCol[_]
+trait FnCol {
+  def name: String
   def template: String
 }
 
-trait FnRender extends FnBase {
+trait FnRender extends FnCol {
+  val col: TypeCol[_]
+  def name = col.name
   def render(prefix: Prefix) = template.format(col.render(prefix))
 }
 
-trait FnName extends FnBase {
-  def name = "%s_%s".format(
-    template.splitAt(template.indexOf('('))._1.toLowerCase,
-    col.name
-  )
+trait FnRenderArg extends FnCol {
+  val col: TypeCol[_]
+  val arg: Any
+  def name = col.name
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  val args = col.args ++ Vector(arg)
 }
 
-trait FnArgs extends FnRender with FnName {
+trait FnArgs extends FnRender {
   def fnArgs: Vector[Any]
   val args = col.args ++ fnArgs
 }
 
-trait FnColArgs extends FnRender with FnName {
+trait FnColArgs extends FnRender {
   val args = col.args
 }
 

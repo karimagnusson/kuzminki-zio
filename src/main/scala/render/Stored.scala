@@ -16,28 +16,37 @@
 
 package kuzminki.render
 
-import kuzminki.section.Section
-import kuzminki.section.{WhereBlankSec, HavingBlankSec}
+import kuzminki.run.{RunQuery, RunOperation}
+import kuzminki.render.{
+  RenderedOperation,
+  RenderedQuery
+}
+import kuzminki.shape.RowConv
 
 
-trait RenderCollector {
-  val sections: Vector[Section]
-  val prefix: Prefix
+class StoredQuery[R](
+    val statement: String,
+    args: Vector[Any],
+    rowConv: RowConv[R]
+  ) extends RunQuery[R] {
 
-  val notBlank: Section => Boolean = {
-    case WhereBlankSec => false
-    case HavingBlankSec => false
-    case _ => true
-  }
-
-  def render = sections.filter(notBlank).map(_.render(prefix)).mkString(" ")
-  
-  val args = sections.toSeq.map(_.args).flatten.toVector
+  def render = RenderedQuery(
+    statement,
+    args,
+    rowConv
+  )
 }
 
+class StoredOperation[R](
+    val statement: String,
+    args: Vector[Any],
+  ) extends RunOperation {
 
-
-
+  def render = RenderedOperation(
+    statement,
+    args
+  )
+}
 
 
 

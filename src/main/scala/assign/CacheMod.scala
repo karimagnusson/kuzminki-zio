@@ -83,6 +83,22 @@ case class CacheSeqAddDesc[P](col: Renderable, conv: ValConv[P]) extends CacheMo
   val template = "%s = ARRAY(SELECT DISTINCT e FROM unnest(%s || ?) AS a(e) ORDER BY e DESC)"
 }
 
+case class CacheSeqAddJsonb[P](col: Renderable, conv: ValConv[P], sort: String) extends CacheModTwo[P](col) {
+  val template = s"%s = ARRAY(SELECT DISTINCT ON (e->'$sort') e FROM unnest(%s || ?) AS a(e))"
+}
+
+case class CacheSeqAddJsonbAsc[P](col: Renderable, conv: ValConv[P], sort: String) extends CacheModTwo[P](col) {
+  val template = s"%s = ARRAY(SELECT DISTINCT ON (e->'$sort') e FROM unnest(%s || ?) AS a(e) ORDER BY e->'$sort' ASC)"
+}
+
+case class CacheSeqAddJsonbDesc[P](col: Renderable, conv: ValConv[P], sort: String) extends CacheModTwo[P](col) {
+  val template = s"%s = ARRAY(SELECT DISTINCT ON (e->'$sort') e FROM unnest(%s || ?) AS a(e) ORDER BY e->'$sort' DESC)"
+}
+
+case class CacheSeqRemoveJsonb[P](col: Renderable, conv: ValConv[P], sort: String) extends CacheModTwo[P](col) {
+  val template = s"%s = ARRAY(SELECT e FROM unnest(%s) AS a(e)) WHERE e->>'$sort' != ?"
+}
+
 // jsonb
 
 case class CacheJsonbSet[P](col: Renderable, conv: ValConv[P]) extends CacheModOne[P](col) {

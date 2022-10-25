@@ -16,13 +16,28 @@
 
 package kuzminki.select
 
-import kuzminki.shape.PartShape
+import kuzminki.shape._
 
 
-class SelectCacheWhere[R, P](coll: SelectCollector[R], partShape: PartShape[P]) {
-  def cache = coll.cacheWhere(partShape)
+abstract class SelectCache[P, R](
+  coll: SelectCollector[R],
+  partShape: PartShape[P]
+) {
+  def cache = coll.renderCache(partShape)
+  def asSubqueryInsertFc = coll.asSubqueryInsertFc(partShape)
 }
 
-class SelectCacheHaving[R, P](coll: SelectCollector[R], partShape: PartShape[P]) {
-  def cache = coll.cacheHaving(partShape)
+class SelectCacheMultiple[P, R](
+  coll: SelectCollector[R],
+  partShape: PartShape[P]
+) extends SelectCache(coll, partShape)
+
+class SelectCacheSingle[P, R](
+  coll: SelectCollector[R],
+  partShape: PartShapeSingle[P]
+) extends SelectCache(coll, partShape) {
+  def asSubqueryInFc = coll.asSubqueryInFc(partShape)
 }
+
+
+

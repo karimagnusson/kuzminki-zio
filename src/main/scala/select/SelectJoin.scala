@@ -6,6 +6,7 @@ import kuzminki.column.TypeCol
 import kuzminki.render.Prefix
 import kuzminki.section._
 import kuzminki.shape._
+import kuzminki.fn.Fn
 
 
 class SelectJoin[A <: Model, B <: Model](val join: Join[A, B]) {
@@ -39,6 +40,14 @@ class SelectJoin[A <: Model, B <: Model](val join: Join[A, B]) {
   def colsNamed(pick: Join[A, B] => Seq[Tuple2[String, TypeCol[_]]]) = {
     next(
       new RowShapeNamed(pick(join))
+    )
+  }
+
+  def colsJson(pick: Join[A, B] => Seq[Tuple2[String, TypeCol[_]]]) = {
+    next(
+      new RowShapeSingle(
+        Fn.json(pick(join))
+      )
     )
   }
 

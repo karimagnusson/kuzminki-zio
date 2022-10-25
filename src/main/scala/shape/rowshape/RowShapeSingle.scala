@@ -19,7 +19,7 @@ package kuzminki.shape
 import kuzminki.column.TypeCol
 
 
-class RowShapeSingle[R](col: TypeCol[R]) extends RowShape[R] {
+case class RowShapeSingle[R](col: TypeCol[R]) extends RowShape[R] {
   val cols = Vector(col)
   val conv = new RowConvSingle(col.conv)
 }

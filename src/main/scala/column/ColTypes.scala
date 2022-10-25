@@ -110,3 +110,7 @@ trait TimestampSeqCol extends TypeCol[Seq[Timestamp]] {
   val conv = TimestampSeqConv
 }
 
+trait JsonbSeqCol extends TypeCol[Seq[Jsonb]] {
+  val conv = JsonbSeqConv
+}
+

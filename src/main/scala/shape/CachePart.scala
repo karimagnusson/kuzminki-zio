@@ -39,6 +39,7 @@ object CachePart {
     case TimeSeqConv => TimeConv
     case DateSeqConv => DateConv
     case TimestampSeqConv => TimestampConv
+    case JsonbSeqConv => JsonbConv
     case _ => throw KuzminkiError("must be an array column")
   }
 
@@ -54,6 +55,7 @@ object CachePart {
     case TimeConv => TimeSeqConv
     case DateConv => DateSeqConv
     case TimestampConv => TimestampSeqConv
+    case JsonbConv => JsonbSeqConv
     case _ => throw KuzminkiError("must be an array column")
   }
 }

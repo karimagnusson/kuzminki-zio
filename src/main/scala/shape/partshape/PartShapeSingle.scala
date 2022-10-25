@@ -17,7 +17,7 @@
 package kuzminki.shape
 
 
-class PartShapeSingle[P](cond: CachePart[P]) extends PartShape[P] {
+class PartShapeSingle[P](val cond: CachePart[P]) extends PartShape[P] {
   val parts = Vector(cond)
   val conv = new ParamConvSingle(cond.conv)
 }

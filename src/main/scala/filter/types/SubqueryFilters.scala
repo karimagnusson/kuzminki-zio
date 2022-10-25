@@ -18,6 +18,7 @@ package kuzminki.filter.types
 
 import kuzminki.filter.Filter
 import kuzminki.column.TypeCol
+import kuzminki.conv.ValConv
 import kuzminki.render.{Renderable, Prefix}
 import kuzminki.render.Renderable
 
@@ -36,3 +37,32 @@ case class FilterInSubquery(col: Renderable, sub: Renderable) extends SubqueryFi
 case class FilterNotInSubquery(col: Renderable, sub: Renderable) extends SubqueryFilter {
   val template = "%s != ANY(%s)"
 }
+
+// cache
+
+case class CacheInSubquery[P](
+  col: Renderable,
+  sub: Renderable,
+  conv: ValConv[P]
+) extends CacheFilterSub[P] {
+  val template = "%s = ANY(%s)"
+}
+
+case class CacheNotInSubquery[P](
+  col: Renderable,
+  sub: Renderable,
+  conv: ValConv[P]
+) extends CacheFilterSub[P] {
+  val template = "%s != ANY(%s)"
+}
+
+
+
+
+
+
+
+
+
+
+
