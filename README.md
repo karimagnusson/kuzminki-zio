@@ -11,7 +11,7 @@ This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/kar
 
 See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
-You can take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
+Take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
 
 Release 0.9.4-RC4 adds the following featurees:
 - Select row as JSON string
@@ -23,6 +23,7 @@ Attention! There are some changes to the API in this version. They affect cached
 
 #### Sbt
 ```sbt
+// compiled for Scala 2.13.8 and ZIO 1.0.12
 libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.4-RC4"
 ```
 
