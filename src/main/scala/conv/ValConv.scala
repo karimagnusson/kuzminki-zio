@@ -79,6 +79,17 @@ object NoArgConv extends ValConvReg[NoArg] {
   def opt = throw KuzminkiError("cannot use asOpt on NoArg")
 }
 
+trait JsonbRead {
+  val read: AnyRef => Jsonb = {
+    case obj: String =>
+      Jsonb(obj)
+    case obj: PGobject =>
+      Jsonb(obj.getValue)
+    case obj =>
+      throw KuzminkiError("Not jsonb [%s]".format(obj.toString))
+  } 
+}
+
 // types
 
 object StringConv extends ValConvReg[String] {
@@ -136,18 +147,20 @@ object TimestampConv extends ValConvReg[Timestamp] {
   def opt = TimestampOptConv
 }
 
-object JsonbConv extends ValConvReg[Jsonb] {
-  def get(rs: ResultSet, index: Int) = Jsonb(rs.getString(index))
+object JsonbConv extends ValConvReg[Jsonb] with JsonbRead {
+  def get(rs: ResultSet, index: Int) = read(rs.getObject(index))
   def opt = JsonbOptConv
 }
 
 object UUIDConv extends ValConvReg[UUID] {
-  def get(rs: ResultSet, index: Int) = rs.getObject(index).asInstanceOf[UUID]
+  def get(rs: ResultSet, index: Int) =
+    rs.getObject(index).asInstanceOf[UUID]
   def opt = UUIDOptConv
 }
 
 object IntervalConv extends ValConvReg[PGInterval] {
-  def get(rs: ResultSet, index: Int) = rs.getObject(index).asInstanceOf[PGInterval]
+  def get(rs: ResultSet, index: Int) =
+    rs.getObject(index).asInstanceOf[PGInterval]
   def opt = IntervalOptConv
 }
 
@@ -219,10 +232,10 @@ object TimestampOptConv extends ValOptConv[Timestamp] {
     Option(rs.getTimestamp(index))
 }
 
-object JsonbOptConv extends ValOptConv[Jsonb] {
+object JsonbOptConv extends ValOptConv[Jsonb] with JsonbRead {
   val typeId = Types.OTHER
   def get(rs: ResultSet, index: Int) =
-    Option(rs.getString(index)).map(Jsonb(_))
+    Option(rs.getObject(index)).map(read)
 }
 
 object UUIDOptConv extends ValOptConv[UUID] {
@@ -316,7 +329,7 @@ object TimestampSeqConv extends ValSeqConv[Timestamp] {
   def opt = TimestampSeqOptConv
 }
 
-object JsonbSeqConv extends ValConv[Seq[Jsonb]] {
+object JsonbSeqConv extends ValConv[Seq[Jsonb]] with JsonbRead {
   
   val typeName = "jsonb"
   
@@ -334,7 +347,7 @@ object JsonbSeqConv extends ValConv[Seq[Jsonb]] {
       .getArray
       .asInstanceOf[Array[AnyRef]]
       .toVector
-      .map(o => Jsonb(o.asInstanceOf[String]))
+      .map(read)
   }
   
   def opt = JsonbSeqOptConv
@@ -408,7 +421,7 @@ object TimestampSeqOptConv extends ValSeqOptConv[Timestamp] {
     getVectorOpt(rs, index, o => o.asInstanceOf[Timestamp])
 }
 
-object JsonbSeqOptConv extends ValConv[Option[Seq[Jsonb]]] {
+object JsonbSeqOptConv extends ValConv[Option[Seq[Jsonb]]] with JsonbRead {
   
   val typeName = "jsonb"
   
@@ -430,7 +443,7 @@ object JsonbSeqOptConv extends ValConv[Option[Seq[Jsonb]]] {
         .getArray
         .asInstanceOf[Array[AnyRef]]
         .toVector
-        .map(o => Jsonb(o.asInstanceOf[String]))
+        .map(read)
     }
   }
 
