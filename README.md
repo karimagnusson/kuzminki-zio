@@ -2,10 +2,18 @@
 [![Gitter](https://img.shields.io/gitter/room/gitterHQ/gitter.svg?style=flat-square)](https://gitter.im/kuzminki/kuzminki-zio)
 # kuzminki-zio
 
-Kuzminki is query builder and access library for PostgreSQL written in Scala.  
-This version is for ZIO 1.
+Kuzminki is feature-rich query builder and access library for PostgreSQL written in Scala.
 
-Kuzminki is written for those who like SQL. Queries are written with the same logic you write SQL statements. As a result the code is easy to read and memorise while the resulting SQL statement is predictable.
+It is available with integration for ZIO 1 and ZIO 2 and a version that relies only on Scala ExecutionContext.The API follows the logic of SQL statements. As a result the code is easy to read and memorise while the resulting SQL statement is predictable. It is as type-checked as possible and does not use any wild-card types resulting in confusing errors.
+
+Features:
+- Cached queries, meaning that the SQL string is built only once, for improved performance and re-usability.
+- Streaming from and to the database
+- Extensive support for JSONB fields
+- Support for Array fields
+- Rich support for timestamp fields
+- Support for sub-queries
+- Support for transactions
 
 This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
 
