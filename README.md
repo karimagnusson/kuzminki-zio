@@ -1,6 +1,7 @@
-[![Twitter Follow](https://img.shields.io/twitter/follow/kuzminki_lib?label=follow&style=flat&logo=twitter&color=brightgreen)](https://twitter.com/kuzminki_lib)
-[![license](https://img.shields.io/github/license/rdbc-io/rdbc.svg?style=flat)](https://github.com/rdbc-io/rdbc/blob/master/LICENSE)
-[![Gitter](https://img.shields.io/gitter/room/gitterHQ/gitter.svg?style=flat)](https://gitter.im/kuzminki/kuzminki-zio)
+| Discord | Twitter |
+| --- | --- |
+| [![badge-discord](https://img.shields.io/discord/629491597070827530?logo=discord)](https://discord.com/channels/629491597070827530/1063139826636963931) | [![Twitter Follow](https://img.shields.io/twitter/follow/kuzminki_lib?label=follow&style=flat&logo=twitter&color=brightgreen)](https://twitter.com/kuzminki_lib) |
+
 # kuzminki-zio
 
 Kuzminki is feature-rich query builder and access library for PostgreSQL written in Scala.
