@@ -16,6 +16,7 @@
 
 package kuzminki.api
 
+import java.sql.SQLException
 import kuzminki.api._
 import kuzminki.render.{
   RenderedQuery,
@@ -28,66 +29,66 @@ import zio.blocking._
 
 object db { 
 
-  def query[R](render: => RenderedQuery[R]): RIO[Has[Kuzminki] with Blocking, List[R]] = {
+  def query[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking, SQLException, List[R]] = {
     for {
       inst <- Kuzminki.get
-      rows <- inst.query(render)
+      rows <- inst.query(render).refineToOrDie[SQLException]
     } yield rows
   }
 
-  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Has[Kuzminki] with Blocking, List[T]] = {
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking, SQLException, List[T]] = {
     for {
       inst <- Kuzminki.get
-      rows <- inst.queryAs(render, transform)
+      rows <- inst.queryAs(render, transform).refineToOrDie[SQLException]
     } yield rows
   }
 
-  def queryHead[R](render: => RenderedQuery[R]): RIO[Has[Kuzminki] with Blocking, R] = {
+  def queryHead[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking, SQLException, R] = {
     for {
       inst <- Kuzminki.get
-      head <- inst.queryHead(render)
+      head <- inst.queryHead(render).refineToOrDie[SQLException]
     } yield head
   }
 
-  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Has[Kuzminki] with Blocking, T] = {
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking, SQLException, T] = {
     for {
       inst <- Kuzminki.get
-      rows <- inst.queryHeadAs(render, transform)
+      rows <- inst.queryHeadAs(render, transform).refineToOrDie[SQLException]
     } yield rows
   }
 
-  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Has[Kuzminki] with Blocking, Option[R]] = {
+  def queryHeadOpt[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking, SQLException, Option[R]] = {
     for {
       inst    <- Kuzminki.get
-      headOpt <- inst.queryHeadOpt(render)
+      headOpt <- inst.queryHeadOpt(render).refineToOrDie[SQLException]
     } yield headOpt
   }
 
-  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Has[Kuzminki] with Blocking, Option[T]] = {
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking, SQLException, Option[T]] = {
     for {
       inst <- Kuzminki.get
-      rows <- inst.queryHeadOptAs(render, transform)
+      rows <- inst.queryHeadOptAs(render, transform).refineToOrDie[SQLException]
     } yield rows
   }
 
-  def exec(render: => RenderedOperation): RIO[Has[Kuzminki] with Blocking, Unit] = {
+  def exec(render: => RenderedOperation): ZIO[Has[Kuzminki] with Blocking, SQLException, Unit] = {
     for {
       inst <- Kuzminki.get
-      _    <- inst.exec(render)
+      _    <- inst.exec(render).refineToOrDie[SQLException]
     } yield ()
   }
 
-  def execNum(render: => RenderedOperation): RIO[Has[Kuzminki] with Blocking, Int] = {
+  def execNum(render: => RenderedOperation): ZIO[Has[Kuzminki] with Blocking, SQLException, Int] = {
     for {
       inst <- Kuzminki.get
-      num  <- inst.execNum(render)
+      num  <- inst.execNum(render).refineToOrDie[SQLException]
     } yield num
   }
 
-  def execList(stms: Seq[RenderedOperation]): RIO[Has[Kuzminki] with Blocking, Unit] = {
+  def execList(stms: Seq[RenderedOperation]): ZIO[Has[Kuzminki] with Blocking, SQLException, Unit] = {
     for {
       inst <- Kuzminki.get
-      _    <- inst.execList(stms)
+      _    <- inst.execList(stms).refineToOrDie[SQLException]
     } yield ()
   }
 }

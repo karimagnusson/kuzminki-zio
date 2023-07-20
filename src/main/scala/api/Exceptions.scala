@@ -16,5 +16,14 @@
 
 package kuzminki.api
 
+import java.sql.SQLException
+
 
 case class KuzminkiError(message: String) extends Exception(message)
+
+case class NoRowsException(message: String) extends SQLException(message)
+
+case class InvalidArgException(message: String) extends SQLException(message)
+
+case class ResultTypeException(message: String, cause: Throwable) extends SQLException(message, cause)
+

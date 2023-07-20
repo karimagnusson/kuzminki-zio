@@ -30,8 +30,8 @@ Take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-z
 
 #### Sbt
 ```sbt
-// compiled for Scala 2.13.8 and ZIO 1.0.12
-libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.4-RC4"
+// compiled for Scala 2.13.8 and ZIO 1.0.17
+libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.4-RC5"
 ```
 
 #### Example
@@ -71,11 +71,7 @@ object ExampleApp extends zio.App {
       .where(_.age > 25)
       .run
     
-    _ <- ZIO.foreach(clients) {
-      case (id, username, age) =>
-        putStrLn(s"$id $username $age")
-    }
-  } yield ()
+  } yield clients
 
   val dbLayer = Kuzminki.layer(DbConfig.forDb("company"))
 
@@ -83,6 +79,70 @@ object ExampleApp extends zio.App {
     job.provideCustomLayer(dbLayer).exitCode
   }
 }
+```
+
+#### In the latest version, 0.9.4-RC5
+
+Changes:
+Improved connection pool.  
+Improved exceptions. Queries return typed exception SQLException.  
+Improved custom functions.  
+Added Pages.
+
+#### Custom functions
+```scala
+import kuzminki.fn.StringFn
+
+case class FullName(
+  title: String,
+  first: TypeCol[String],
+  second: TypeCol[String]
+) extends StringFn {
+  val name = "full_name"
+  val template = s"concat_ws(' ', '$title', %s, %s)"
+  val cols = Vector(first, second)
+}
+
+sql
+  .select(user)
+  .cols2(t => (
+    t.id,
+    FullName("Mr", t.firstName, t.lastName)
+  ))
+  .where(_.id === 10)
+  .runHead
+
+```
+If you need to have the driver fill in arguments:
+```scala
+case class FullNameParam(
+  title: String,
+  first: TypeCol[String],
+  second: TypeCol[String]
+) extends StringParamsFn {
+  val name = "full_name"
+  val template = s"concat_ws(' ', ?, %s, %s)"
+  val cols = Vector(first, second)
+  val params = Vector(title)
+}
+```
+
+#### Pages
+```scala
+val pages = sql
+  .select(user)
+  .cols3(t => (
+    t.id,
+    t.firstName,
+    t.lastName)
+  ))
+  .orderBy(_.id.asc)
+  .asPages(10) // 10 rows
+
+val job = for {
+  next  <- pages.next
+  page3 <- pages.page(3)
+} yield (next, page3)
 ```
 
 

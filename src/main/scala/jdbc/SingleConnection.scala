@@ -39,7 +39,9 @@ import kuzminki.api.{
   DbConfig,
   KuzminkiError,
   Jsonb,
-  NoArg
+  NoArg,
+  InvalidArgException,
+  ResultTypeException
 }
 import kuzminki.render.{
   RenderedQuery,
@@ -115,12 +117,17 @@ class SingleConnection(conn: Connection) {
       val jdbcResultSet = jdbcStm.executeQuery()
       var buff = ListBuffer.empty[R]
       while (jdbcResultSet.next()) {
-        buff += stm.rowConv.fromRow(jdbcResultSet)
+        try {
+          buff += stm.rowConv.fromRow(jdbcResultSet)
+        } catch {
+          case ex: Throwable =>
+            throw ResultTypeException("Your mode may not match the table", ex)
+        }
       }
       jdbcResultSet.close()
       jdbcStm.close()
       buff.toList
-    }
+    }.refineToOrDie[SQLException]
   }
 
   def exec(stm: RenderedOperation): RIO[Blocking, Unit] = {
@@ -129,7 +136,7 @@ class SingleConnection(conn: Connection) {
       jdbcStm.execute()
       jdbcStm.close()
       ()
-    }
+    }.refineToOrDie[SQLException]
   }
 
   def execNum(stm: RenderedOperation): RIO[Blocking, Int] = {
@@ -138,27 +145,25 @@ class SingleConnection(conn: Connection) {
       val num = jdbcStm.executeUpdate()
       jdbcStm.close()
       num
-    }
+    }.refineToOrDie[SQLException]
   }
 
   def execList(stms: Seq[RenderedOperation]): RIO[Blocking, Unit] = {
     effectBlocking {
-      try {
-        conn.setAutoCommit(false)
-        stms.foreach { stm => 
-          val jdbcStm = getStatement(stm.statement, stm.args)
-          jdbcStm.execute()
-        }
-        conn.commit()
-        conn.setAutoCommit(true)
-        ()
-      } catch {
-        case th: Throwable =>
-          conn.rollback()
-          conn.setAutoCommit(true)
-          throw th
+      conn.setAutoCommit(false)
+      stms.foreach { stm => 
+        val jdbcStm = getStatement(stm.statement, stm.args)
+        jdbcStm.execute()
       }
+      conn.commit()
+      conn.setAutoCommit(true)
     }
+    .tapError(e => ZIO.succeed {
+      conn.rollback()
+      conn.setAutoCommit(true)
+    })
+    .unit
+    .refineToOrDie[SQLException]
   }
 
   def close() = {

@@ -16,9 +16,8 @@
 
 package kuzminki.fn
 
-import kuzminki.column._
+import kuzminki.column.TypeCol
 import kuzminki.fn.types._
-import kuzminki.render.NoArgs
 
 
 object Cast {

@@ -16,66 +16,53 @@
 
 package kuzminki.fn.types
 
+import kuzminki.fn.JsonbFn
 import kuzminki.column._
-import kuzminki.conv._
-import kuzminki.api.{Jsonb, KuzminkiError}
-import kuzminki.render.Prefix
+import kuzminki.api.Jsonb
 
 
-trait JsonbFn extends FnRender
+trait JsonbOpr
 
-case class JsonbPickFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with JsonbFn {
-  def template = "%s->?"
-  val args = col.args ++ Vector(arg)
+case class JsonbPickFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with SingleColArgFn with JsonbOpr {
+  val template = "%s->?"
 }
 
-case class JsonbPickStrFn(col: TypeCol[Jsonb], arg: Any) extends StringCol with JsonbFn {
-  def template = "%s->>?"
-  val args = col.args ++ Vector(arg)
+case class JsonbPickStrFn(col: TypeCol[Jsonb], arg: Any) extends StringCol with SingleColArgFn with JsonbOpr {
+  val template = "%s->>?"
 }
 
-case class JsonbPathFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with JsonbFn {
+case class JsonbPathFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with SingleColArgFn with JsonbOpr {
   val template = "%s#>?"
-  val args = col.args ++ Vector(arg)
 }
 
-case class JsonbPathStrFn(col: TypeCol[Jsonb], arg: Any) extends StringCol with JsonbFn {
-  def template = "%s#>>?"
-  val args = col.args ++ Vector(arg)
+case class JsonbPathStrFn(col: TypeCol[Jsonb], arg: Any) extends StringCol with SingleColArgFn with JsonbOpr {
+  val template = "%s#>>?"
 }
 
-case class JsonbConcatFn(col: TypeCol[Jsonb], col2: TypeCol[Jsonb]) extends JsonbCol with FnCol {
-  def name = col.name
-  def template = "%s || %s"
-  def render(prefix: Prefix) = template.format(col.render(prefix), col2.render(prefix))
-  val args = col.args ++ col2.args
+case class JsonbDropFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with SingleColArgFn with JsonbOpr {
+  val template = "%s - ?"
 }
 
-case class JsonbDropFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with JsonbFn {
-  def template = "%s - ?"
-  val args = col.args ++ Vector(arg)
+case class JsonbDropManyFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with SingleColArgFn with JsonbOpr {
+  val template = "%s - ?"
 }
 
-case class JsonbDropManyFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with JsonbFn {
-  def template = "%s - ?"
-  val args = col.args ++ Vector(arg)
+case class JsonbDropPathFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with SingleColArgFn with JsonbOpr {
+  val template = "%s #- ?"
 }
 
-case class JsonbDropPathFn(col: TypeCol[Jsonb], arg: Any) extends JsonbCol with JsonbFn {
-  def template = "%s #- ?"
-  val args = col.args ++ Vector(arg)
+case class JsonbConcatFn(col1: TypeCol[Jsonb], col2: TypeCol[Jsonb]) extends JsonbFn with JsonbOpr {
+  def name = "jsonb_concat"
+  val template = "%s || %s"
+  val cols = Vector(col1, col2)
 }
 
-case class JsonbResFn(cols: Seq[Tuple2[String, TypeCol[_]]]) extends JsonbCol with FnCol {
+case class JsonbResFn(kv: Seq[Tuple2[String, TypeCol[_]]]) extends JsonbFn with JsonbOpr {
   def name = "json"
-  def template = "json_build_object(%s)"
-  def render(prefix: Prefix) = template.format(
-    cols.map {
-      case (name, col) =>
-        "'%s', %s".format(name, col.render(prefix))
-    }.mkString(", ")
+  val template = "json_build_object(%s)".format(
+    kv.map(_._1).map(name => s"'$name', %s").mkString(", ")
   )
-  val args = cols.map(t => t._2.args).flatten.toVector
+  val cols = kv.map(_._2).toVector
 }
 
 

@@ -20,6 +20,7 @@ import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.UUID
+import java.sql.SQLException
 import scala.language.implicitConversions
 
 import kuzminki.column._

@@ -16,17 +16,11 @@
 
 package kuzminki.fn.types
 
-import java.sql.Time
-import java.sql.Date
-import java.sql.Timestamp
 import kuzminki.column._
-import kuzminki.render.Prefix
-import kuzminki.api.Jsonb
 
 
-trait ExtractFn extends IntCol with FnColArgs {
+trait ExtractFn extends IntCol with SingleColFn {
   val field: String
-  val col: TypeCol[_]
   def template = s"EXTRACT($field FROM %s)::int"
 }
 
@@ -94,18 +88,12 @@ case class ExtractYearFn(col: TypeCol[_]) extends ExtractFn {
   val field = "YEAR"
 }
 
-case class ExtractEpochSecsFn(col: TypeCol[_]) extends LongCol with FnCol {
-  def name = col.name
+case class ExtractEpochSecsFn(col: TypeCol[_]) extends LongCol with SingleColFn {
   val template = "EXTRACT(EPOCH FROM %s)::bigint"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args
 }
 
-case class ExtractEpochMillisFn(col: TypeCol[_]) extends LongCol with FnCol {
-  def name = col.name
+case class ExtractEpochMillisFn(col: TypeCol[_]) extends LongCol with SingleColFn {
   val template = "(EXTRACT(EPOCH FROM %s) * 1000)::bigint"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args
 }
 
 // cast

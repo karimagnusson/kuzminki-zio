@@ -20,17 +20,20 @@ import kuzminki.column.TypeCol
 import kuzminki.render.{Prefix, NoArgs}
 
 
+@deprecated("this trait will be removed", "0.9.5")
 trait FnCol {
   def name: String
   def template: String
 }
 
+@deprecated("this trait will be removed", "0.9.5")
 trait FnRender extends FnCol {
   val col: TypeCol[_]
   def name = col.name
   def render(prefix: Prefix) = template.format(col.render(prefix))
 }
 
+@deprecated("this trait will be removed", "0.9.5")
 trait FnRenderArg extends FnCol {
   val col: TypeCol[_]
   val arg: Any
@@ -39,11 +42,13 @@ trait FnRenderArg extends FnCol {
   val args = col.args ++ Vector(arg)
 }
 
+@deprecated("this trait will be removed", "0.9.5")
 trait FnArgs extends FnRender {
   def fnArgs: Vector[Any]
   val args = col.args ++ fnArgs
 }
 
+@deprecated("this trait will be removed", "0.9.5")
 trait FnColArgs extends FnRender {
   val args = col.args
 }

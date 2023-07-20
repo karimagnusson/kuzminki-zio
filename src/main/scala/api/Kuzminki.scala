@@ -16,8 +16,8 @@
 
 package kuzminki.api
 
+import java.sql.SQLException
 import kuzminki.api._
-
 import kuzminki.jdbc.SingleConnection
 import kuzminki.render.{
   RenderedQuery,
@@ -40,7 +40,7 @@ object Kuzminki {
                    }
     queue       <- Queue.bounded[SingleConnection](conf.poolSize)
     _           <- queue.offerAll(connections)
-  } yield Pool(queue, connections.toList)
+  } yield new Pool(queue, connections.toList)
 
   def forConfig(conf: DbConfig) = create(conf)
 
@@ -90,144 +90,101 @@ trait Kuzminki {
 }
 
 
-private case class Pool(
-  queue: Queue[SingleConnection],
-  all: List[SingleConnection]
-)
+private class Pool(queue: Queue[SingleConnection], all: List[SingleConnection]) {
+  
+  val get = ZManaged.make(queue.take)(queue.offer(_))
+
+  def close = for {
+    _ <- ZIO.foreach(all)(_.close()).orDie
+    _ <- queue.shutdown
+  } yield ()
+}
 
 
 private class DefaultApi(pool: Pool) extends Kuzminki {
 
   def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]] = for {
-    stm  <- Task.effect { render }
-    conn <- pool.queue.take
-    rows <- conn.query(stm).ensuring { pool.queue.offer(conn) }
+    stm     <- ZIO.effect(render)
+    rows    <- pool.get.use(_.query(stm))
   } yield rows
 
-  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]] = for {
-    stm  <- Task.effect { render }
-    conn <- pool.queue.take
-    rows <- conn.query(stm).ensuring { pool.queue.offer(conn) }
-    res  <- Task.effect { rows.map(transform) }
-  } yield res
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]] =
+    query(render).map(_.map(transform))
 
-  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] = for {
-    stm  <- Task.effect { render }
-    conn <- pool.queue.take
-    rows <- conn.query(stm).ensuring { pool.queue.offer(conn) }
-    head <- Task.effect { rows.head }
-  } yield head
+  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] =
+    query(render).map(_.headOption.getOrElse(throw NoRowsException("Query returned no rows")))
 
-  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T] = for {
-    stm  <- Task.effect { render }
-    conn <- pool.queue.take
-    rows <- conn.query(stm).ensuring { pool.queue.offer(conn) }
-    head <- Task.effect { transform(rows.head) }
-  } yield head
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T] =
+    queryHead(render).map(transform)
 
-  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] = for {
-    stm     <- Task.effect { render }
-    conn    <- pool.queue.take
-    rows    <- conn.query(stm).ensuring { pool.queue.offer(conn) }
-    headOpt <- Task.effect { rows.headOption }
-  } yield headOpt
+  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] =
+    query(render).map(_.headOption)
 
-  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]] = for {
-    stm     <- Task.effect { render }
-    conn    <- pool.queue.take
-    rows    <- conn.query(stm).ensuring { pool.queue.offer(conn) }
-    headOpt <- Task.effect { rows.headOption.map(transform) }
-  } yield headOpt
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]] =
+    query(render).map(_.headOption.map(transform))
 
   def exec(render: => RenderedOperation): RIO[Blocking, Unit] = for {
-    stm  <- Task.effect { render }
-    conn <- pool.queue.take
-    _    <- conn.exec(stm).ensuring { pool.queue.offer(conn) }
+    stm     <- ZIO.effect(render)
+    _       <- pool.get.use(_.exec(stm))
   } yield ()
 
   def execNum(render: => RenderedOperation): RIO[Blocking, Int] = for {
-    stm  <- Task.effect { render }
-    conn <- pool.queue.take
-    num  <- conn.execNum(stm).ensuring { pool.queue.offer(conn) }
+    stm     <- ZIO.effect(render)
+    num     <- pool.get.use(_.execNum(stm))
   } yield num
 
   def execList(stms: Seq[RenderedOperation]): RIO[Blocking, Unit] = for {
-    conn <- pool.queue.take
-    _    <- conn.execList(stms).ensuring { pool.queue.offer(conn) }
+    _       <- pool.get.use(_.execList(stms))
   } yield ()
 
-  def close: URIO[Blocking, Unit] = for {
-    _ <- ZIO.foreach(pool.all)(_.close()).orDie
-    _ <- pool.queue.shutdown
-  } yield ()
+  def close = pool.close
 }
 
 
 private class SplitApi(getPool: Pool, setPool: Pool) extends Kuzminki {
 
+  private def router(stm: String) = stm.split(" ").head match {
+    case "SELECT" => getPool
+    case _ => setPool
+  }
+
   def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]] = for {
-    stm  <- Task.effect { render }
-    conn <- getPool.queue.take
-    rows <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
+    stm     <- ZIO.effect(render)
+    rows    <- router(stm.statement).get.use(_.query(stm))
   } yield rows
 
-  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]] = for {
-    stm  <- Task.effect { render }
-    conn <- getPool.queue.take
-    rows <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
-    res  <- Task.effect { rows.map(transform) }
-  } yield res
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]] =
+    query(render).map(_.map(transform))
 
-  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] = for {
-    stm  <- Task.effect { render }
-    conn <- getPool.queue.take
-    rows <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
-    head <- Task.effect { rows.head }
-  } yield head
+  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] =
+    query(render).map(_.headOption.getOrElse(throw NoRowsException("Query returned no rows")))
 
-  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T] = for {
-    stm  <- Task.effect { render }
-    conn <- getPool.queue.take
-    rows <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
-    head <- Task.effect { transform(rows.head) }
-  } yield head
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T] =
+    queryHead(render).map(transform)
 
-  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] = for {
-    stm     <- Task.effect { render }
-    conn    <- getPool.queue.take
-    rows    <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
-    headOpt <- Task.effect { rows.headOption }
-  } yield headOpt
+  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] =
+    query(render).map(_.headOption)
 
-  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]] = for {
-    stm     <- Task.effect { render }
-    conn    <- getPool.queue.take
-    rows    <- conn.query(stm).ensuring { getPool.queue.offer(conn) }
-    headOpt <- Task.effect { rows.headOption.map(transform) }
-  } yield headOpt
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]] =
+    query(render).map(_.headOption.map(transform))
 
   def exec(render: => RenderedOperation): RIO[Blocking, Unit] = for {
-    stm  <- Task.effect { render }
-    conn <- setPool.queue.take
-    _    <- conn.exec(stm).ensuring { setPool.queue.offer(conn) }
+    stm     <- ZIO.effect(render)
+    _       <- setPool.get.use(_.exec(stm))
   } yield ()
 
   def execNum(render: => RenderedOperation): RIO[Blocking, Int] = for {
-    stm  <- Task.effect { render }
-    conn <- setPool.queue.take
-    num  <- conn.execNum(stm).ensuring { setPool.queue.offer(conn) }
+    stm     <- ZIO.effect(render)
+    num     <- setPool.get.use(_.execNum(stm))
   } yield num
 
   def execList(stms: Seq[RenderedOperation]): RIO[Blocking, Unit] = for {
-    conn <- setPool.queue.take
-    _    <- conn.execList(stms).ensuring { setPool.queue.offer(conn) }
+    _       <- setPool.get.use(_.execList(stms))
   } yield ()
 
-  def close: URIO[Blocking, Unit] = for {
-    _ <- ZIO.foreach(getPool.all)(_.close()).orDie
-    _ <- getPool.queue.shutdown
-    _ <- ZIO.foreach(setPool.all)(_.close()).orDie
-    _ <- setPool.queue.shutdown
+  def close = for {
+    _ <- getPool.close
+    _ <- setPool.close
   } yield ()
 }
 

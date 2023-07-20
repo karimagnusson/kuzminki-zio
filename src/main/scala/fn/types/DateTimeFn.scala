@@ -16,47 +16,28 @@
 
 package kuzminki.fn.types
 
-import java.sql.Time
-import java.sql.Date
 import java.sql.Timestamp
 import org.postgresql.util.PGInterval
 import kuzminki.column._
-import kuzminki.fn.types._
-import kuzminki.render.Prefix
-import kuzminki.api.Jsonb
 
 // common
 
-case class DateTimeIncFn[T](col: TypeCol[T], value: PGInterval) extends TypeCol[T] with FnCol {
-  val conv = col.conv
-  def name = col.name
-  def template = "%s + ?"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args ++ Vector(value)
+case class DateTimeIncFn[T](col: TypeCol[T], arg: PGInterval) extends PassConvFn[T] with SingleColArgFn {
+  val template = "%s + ?"
 }
 
-case class DateTimeDecFn[T](col: TypeCol[T], value: PGInterval) extends TypeCol[T] with FnCol {
-  val conv = col.conv
-  def name = col.name
-  def template = "%s - ?"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args ++ Vector(value)
+case class DateTimeDecFn[T](col: TypeCol[T], arg: PGInterval) extends PassConvFn[T] with SingleColArgFn {
+  val template = "%s - ?"
 }
 
 // timestamp
 
-case class DateTimeFormatFn(col: TypeCol[_], format: String) extends StringCol with FnCol {
-  def name = col.name
-  def template = "to_char(%s, ?)"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args ++ Vector(format)
+case class DateTimeFormatFn(col: TypeCol[_], arg: String) extends StringCol with SingleColArgFn {
+  val template = "to_char(%s, ?)"
 }
 
-case class TimestampAgeFn(col: TypeCol[Timestamp]) extends IntervalCol with FnCol {
-  def name = col.name
-  def template = "age(%s)"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args
+case class TimestampAgeFn(col: TypeCol[Timestamp]) extends IntervalCol with SingleColFn {
+  val template = "age(%s)"
 }
 
 

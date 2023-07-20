@@ -19,12 +19,10 @@ package kuzminki.fn.types
 import kuzminki.column._
 
 
-trait CastFn extends FnRender {
+trait CastFn extends SingleColFn {
   val castAs: String
-  val col: TypeCol[_]
-  val args = col.args
   def template = col match {
-    case c: JsonbFn => "(%s)::" + castAs
+    case _ : JsonbOpr => "(%s)::" + castAs
     case _ => "%s::" + castAs
   }
 }

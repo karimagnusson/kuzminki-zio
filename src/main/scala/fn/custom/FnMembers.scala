@@ -16,33 +16,32 @@
 
 package kuzminki.fn.types
 
-import kuzminki.column._
+import kuzminki.column.TypeCol
+import kuzminki.conv.ValConv
+import kuzminki.api.KuzminkiError
+import kuzminki.render.Prefix
 
 
-case class RoundFn(col: TypeCol[_], arg: Any) extends BigDecimalCol with SingleColArgFn {
-  val template = col match {
-    case _ : BigDecimalCol => "round(%s, ?)"
-    case _ => "round(%s::numeric, ?)"
-  }
+trait PassConvFn[T] extends TypeCol[T] {
+  val col: TypeCol[T]
+  val conv = col.conv
 }
 
-case class RoundStrFn(col: TypeCol[_], arg: Any) extends StringCol with SingleColArgFn {
-  val template = col match {
-    case _ : BigDecimalCol => "round(%s, ?)::text"
-    case _ => "round(%s::numeric, ?)::text"
-  }
+trait SingleColFn {
+  val col: TypeCol[_]
+  def template: String
+  def name = col.name
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  val args = col.args
 }
 
-
-
-
-
-
-
-
-
-
-
-
+trait SingleColArgFn {
+  val col: TypeCol[_]
+  val arg: Any
+  def template: String
+  def name = col.name
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  val args = col.args ++ Vector(arg)
+}
 
 

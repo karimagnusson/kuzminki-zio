@@ -16,87 +16,57 @@
 
 package kuzminki.fn.types
 
+import kuzminki.fn.TypeFn
 import kuzminki.column._
 import kuzminki.conv._
-import kuzminki.api.Jsonb
-import kuzminki.render.Prefix
 import kuzminki.shape.CachePart.itemConv
 
 
-case class SeqUnnestFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] with FnCol {
+case class SeqUnnestFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] with SingleColFn {
   val conv = itemConv(col.conv)
-  def name = col.name
-  def template = "unnest(%s)"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args
+  val template = "unnest(%s)"
 }
 
-case class SeqLengthFn[T](col: TypeCol[Seq[T]]) extends IntCol with FnCol {
-  def name = col.name
-  def template = "array_length(%s, 1)"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args
+case class SeqLengthFn[T](col: TypeCol[Seq[T]]) extends IntCol with SingleColFn {
+  val template = "array_length(%s, 1)"
 }
 
-case class SeqTrimFn[T](col: TypeCol[Seq[T]], arg: Any) extends TypeCol[Seq[T]] with FnCol {
+case class SeqTrimFn[T](col: TypeCol[Seq[T]], size: Int) extends TypeCol[Seq[T]] with SingleColFn {
   val conv = col.conv
-  def name = col.name
-  def template = "trim_array(%s, ?)"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args ++ Vector(arg)
+  val template = s"trim_array(%s, $size)"
 }
 
-case class SeqPosFn[T](col: TypeCol[Seq[T]], arg: Any) extends IntCol with FnCol {
-  def name = col.name
-  def template = "array_position(%s, ?)"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args ++ Vector(arg)
+case class SeqPosFn[T](col: TypeCol[Seq[T]], arg: T) extends IntCol with SingleColArgFn {
+  val template = s"array_position(%s, ?)"
 }
 
-case class SeqGetFn[T](col: TypeCol[Seq[T]], arg: Any) extends TypeCol[T] with FnCol {
+case class SeqGetFn[T](col: TypeCol[Seq[T]], index: Int) extends TypeCol[T] with SingleColFn {
+  val conv = itemConv(col.conv)
+  val template = s"(%s)[$index]"
+}
+
+case class SeqFirstFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] with SingleColFn {
+  val conv = itemConv(col.conv)
+  val template = "(%s)[1]"
+}
+
+case class SeqLastFn[T](col: TypeCol[Seq[T]]) extends TypeFn[T] {
   val conv = itemConv(col.conv)
   def name = col.name
-  def template = "(%s)[?]"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args ++ Vector(arg)
+  val template = "(%s)[array_length(%s, 1)]"
+  val cols = Vector(col, col)
+  override val args = col.args
 }
 
-case class SeqFirstFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] with FnCol {
-  val conv = itemConv(col.conv)
-  def name = col.name
-  def template = "(%s)[1]"
-  def render(prefix: Prefix) = template.format(col.render(prefix))
-  val args = col.args
+case class SeqJoinFn[T](col: TypeCol[Seq[T]], glue: String) extends StringCol with SingleColFn {
+  val template = s"array_to_string(%s, '$glue')"
 }
 
-case class SeqLastFn[T](col: TypeCol[Seq[T]]) extends TypeCol[T] with FnCol {
-  val conv = itemConv(col.conv)
-  def name = col.name
-  def template = "(%s)[array_length(%s, 1)]"
-  def render(prefix: Prefix) = {
-    template.format(col.render(prefix), col.render(prefix))
-  }
-  val args = col.args
-}
-
-case class SeqJoinFn[T](col: TypeCol[Seq[T]], arg: Any) extends TypeCol[T] with FnCol {
-  val conv = itemConv(col.conv)
-  def name = col.name
-  def template = "array_to_string(%s, ?)"
-  def render(prefix: Prefix) = {
-    template.format(col.render(prefix), col.render(prefix))
-  }
-  val args = col.args ++ Vector(arg)
-}
-
-case class SeqExtendFn[T](col: TypeCol[Seq[T]], col2: TypeCol[Seq[T]]) extends TypeCol[T] with FnCol {
-  val conv = itemConv(col.conv)
-  def name = col.name
-  def template = "%s || %s"
-  def render(prefix: Prefix) = {
-    template.format(col.render(prefix), col2.render(prefix))
-  }
-  val args = col.args
+case class SeqExtendFn[T](col1: TypeCol[Seq[T]], col2: TypeCol[Seq[T]]) extends TypeFn[T] {
+  val conv = itemConv(col1.conv)
+  def name = "extend"
+  val template = "%s || %s"
+  val cols = Vector(col1, col2)
 }
 
 

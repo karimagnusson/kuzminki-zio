@@ -20,11 +20,13 @@ import kuzminki.column.TypeCol
 import kuzminki.render.NoArgs
 
 
+@deprecated("this trait will be removed", "0.9.5")
 trait TypeFn[T] extends TypeCol[T] with FnColArgs {
   val col: TypeCol[T]
   val conv = col.conv
 }
 
+@deprecated("this trait will be removed", "0.9.5")
 trait TypeArgsFn[T] extends TypeCol[T] with FnArgs {
   val col: TypeCol[T]
   val conv = col.conv

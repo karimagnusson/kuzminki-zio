@@ -16,11 +16,8 @@
 
 package kuzminki.fn
 
-import kuzminki.column._
 import kuzminki.fn.types._
 import kuzminki.column.TypeCol
-import kuzminki.render.Prefix
-import kuzminki.api.KuzminkiError
 import org.postgresql.util.PGInterval
 
 // coalesce
@@ -41,13 +38,13 @@ object Fn {
 
   def replace(col: TypeCol[String], from: String, to: String) = ReplaceFn(col, from, to)
 
-  def trim(col: TypeCol[String]) = CustomStringFn(col, "trim(%s)")
+  def trim(col: TypeCol[String]) = TrimFn(col)
 
-  def upper(col: TypeCol[String]) = CustomStringFn(col, "upper(%s)")
+  def upper(col: TypeCol[String]) = UpperFn(col)
 
-  def lower(col: TypeCol[String]) = CustomStringFn(col, "lower(%s)")
+  def lower(col: TypeCol[String]) = LowerFn(col)
 
-  def initcap(col: TypeCol[String]) = CustomStringFn(col, "initcap(%s)")
+  def initcap(col: TypeCol[String]) = InitcapFn(col)
 
   // numeric
 

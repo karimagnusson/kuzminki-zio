@@ -18,18 +18,20 @@ package kuzminki.fn
 
 import kuzminki.column.{TypeCol, LongCol}
 import kuzminki.render.{Prefix, NoArgs}
-import kuzminki.fn.types.LongNoArgsFn
 
 
 object Count {
   def all = Count(CountAll)
 }
 
-case class Count(col: TypeCol[_]) extends LongNoArgsFn {
-  def template = "count(%s)"
+case class Count(col: TypeCol[_]) extends LongCol {
+  def name = "count"
+  val template = "count(%s)"
+  def render(prefix: Prefix) = template.format(col.render(prefix))
+  def args = col.args
 }
 
 object CountAll extends LongCol with NoArgs {
-  def name = "*"
-  def render(prefix: Prefix) = name
+  def name = "count"
+  def render(prefix: Prefix) = "*"
 }
