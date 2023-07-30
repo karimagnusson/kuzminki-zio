@@ -16,22 +16,28 @@
 
 package kuzminki.select
 
-import kuzminki.section.OrderBySec
+import kuzminki.column.TypeCol
+import kuzminki.section.{OrderBySec, GroupBySec}
 import kuzminki.sorting.Sorting
 
 
 class OrderBy[M, R](model: M, coll: SelectCollector[R]) extends Offset(model, coll) {
 
-  private def toOffset(sorting: Vector[Sorting]) = {
+  def orderBy(pick: M => Seq[Sorting]) = {
     new Offset(
       model,
       coll.add(
-        OrderBySec(sorting)
+        OrderBySec(pick(model).toVector)
       )
     )
   }
 
-  def orderBy(pick: M => Seq[Sorting]) = {
-    toOffset(pick(model).toVector)
+  def groupBy(pick: M => Seq[TypeCol[_]]) = {
+    new Having(
+      model,
+      coll.add(
+        GroupBySec(pick(model).toVector)
+      )
+    )
   }
 }

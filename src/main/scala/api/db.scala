@@ -25,67 +25,68 @@ import kuzminki.render.{
 
 import zio._
 import zio.blocking._
+import zio.clock.Clock
 
 
 object db { 
 
-  def query[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking, SQLException, List[R]] = {
+  def query[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, List[R]] = {
     for {
       inst <- Kuzminki.get
       rows <- inst.query(render).refineToOrDie[SQLException]
     } yield rows
   }
 
-  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking, SQLException, List[T]] = {
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, List[T]] = {
     for {
       inst <- Kuzminki.get
       rows <- inst.queryAs(render, transform).refineToOrDie[SQLException]
     } yield rows
   }
 
-  def queryHead[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking, SQLException, R] = {
+  def queryHead[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, R] = {
     for {
       inst <- Kuzminki.get
       head <- inst.queryHead(render).refineToOrDie[SQLException]
     } yield head
   }
 
-  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking, SQLException, T] = {
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, T] = {
     for {
       inst <- Kuzminki.get
       rows <- inst.queryHeadAs(render, transform).refineToOrDie[SQLException]
     } yield rows
   }
 
-  def queryHeadOpt[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking, SQLException, Option[R]] = {
+  def queryHeadOpt[R](render: => RenderedQuery[R]): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Option[R]] = {
     for {
       inst    <- Kuzminki.get
       headOpt <- inst.queryHeadOpt(render).refineToOrDie[SQLException]
     } yield headOpt
   }
 
-  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking, SQLException, Option[T]] = {
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Option[T]] = {
     for {
       inst <- Kuzminki.get
       rows <- inst.queryHeadOptAs(render, transform).refineToOrDie[SQLException]
     } yield rows
   }
 
-  def exec(render: => RenderedOperation): ZIO[Has[Kuzminki] with Blocking, SQLException, Unit] = {
+  def exec(render: => RenderedOperation): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Unit] = {
     for {
       inst <- Kuzminki.get
       _    <- inst.exec(render).refineToOrDie[SQLException]
     } yield ()
   }
 
-  def execNum(render: => RenderedOperation): ZIO[Has[Kuzminki] with Blocking, SQLException, Int] = {
+  def execNum(render: => RenderedOperation): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Int] = {
     for {
       inst <- Kuzminki.get
       num  <- inst.execNum(render).refineToOrDie[SQLException]
     } yield num
   }
 
-  def execList(stms: Seq[RenderedOperation]): ZIO[Has[Kuzminki] with Blocking, SQLException, Unit] = {
+  def execList(stms: Seq[RenderedOperation]): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Unit] = {
     for {
       inst <- Kuzminki.get
       _    <- inst.execList(stms).refineToOrDie[SQLException]

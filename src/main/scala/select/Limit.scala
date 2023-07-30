@@ -20,9 +20,9 @@ import kuzminki.section.LimitSec
 
 
 class Limit[M, R](
-    model: M,
-    coll: SelectCollector[R]
-  ) extends RenderSelect(model, coll) {
+  model: M,
+  coll: SelectCollector[R]
+) extends RenderSelect(model, coll) {
 
   def limit(num: Int) = {
     new RenderSelect(

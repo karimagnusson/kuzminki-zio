@@ -39,19 +39,10 @@ case class SelectCollector[R](
   }
 
   private def replaceBlank[P](partShape: PartShape[P]) = sections.map {
-      
     case WhereBlankSec =>
       WhereSec(partShape.parts)
-    
     case WhereSec(conds) =>
       WhereSec(conds ++ partShape.parts)
-
-    case HavingBlankSec =>
-      HavingSec(partShape.parts)
-    
-    case HavingSec(conds) =>
-      HavingSec(conds ++ partShape.parts)
-    
     case section: Section =>
       section
   }
@@ -63,7 +54,7 @@ case class SelectCollector[R](
   def renderCache[P](partShape: PartShape[P]) = {
     val modifiedSections = replaceBlank(partShape)
     new StoredSelect(
-      modifiedSections.map(_.render(prefix)).mkString(" "),
+      modifiedSections.filter(notBlank).map(_.render(prefix)).mkString(" "),
       modifiedSections.map(_.args).flatten,
       partShape.conv,
       rowShape.conv

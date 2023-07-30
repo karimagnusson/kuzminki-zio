@@ -26,17 +26,19 @@ import kuzminki.render.{
 
 import zio._
 import zio.blocking._
+import zio.duration._
+import zio.clock.Clock
 
 
 object Kuzminki {
 
   Class.forName("org.postgresql.Driver")
 
-  private def makeConn(conf: DbConfig): RIO[Any, SingleConnection] = effectBlocking {
+  private def makeConn(conf: DbConfig): RIO[Blocking, SingleConnection] = effectBlocking {
     SingleConnection.create(conf.url, conf.props)
   }
 
-  private def create(conf: DbConfig): ZIO[Scope, Nothing, ZPool[Throwable, SingleConnection]] = {
+  private def create(conf: DbConfig): ZManaged[Blocking with Clock, Nothing, ZPool[Throwable, SingleConnection]] = {
     val getConn = ZManaged.make(makeConn(conf).retry(Schedule.exponential(1.second)))(_.close)
     ZPool.make(getConn, Range(conf.minPoolSize, conf.poolSize), 300.seconds)
   }
@@ -44,107 +46,110 @@ object Kuzminki {
   @deprecated("this method will be removed", "0.9.5")
   def forConfig(conf: DbConfig) = throw KuzminkiError("This method is deprecated")
 
-  def layer(conf: DbConfig): ZLayer[Any, Throwable, Kuzminki] = {
-    ZLayer.scoped {
-      for {
-        pool <- create(conf)
-      } yield new DefaultApi(new Pool(pool))
-    }
+  def layer(conf: DbConfig): ZLayer[Blocking with Clock, Throwable, Has[Kuzminki]] = {
+    create(conf)
+      .flatMap { pool =>
+        ZManaged.succeed(
+          new DefaultApi(
+            new Pool(pool)
+          )
+        )
+      }.toLayer
   }
-
-  def layer(conf: DbConfig): ZLayer[Blocking, Throwable, Has[Kuzminki]] = {
-    ZLayer.fromAcquireRelease(create(conf))(_.close)
+  
+  def layerSplit(getConf: DbConfig, setConf: DbConfig): ZLayer[Blocking with Clock, Throwable, Has[Kuzminki]] = {
+    create(getConf).zip(create(setConf))
+      .flatMap {
+        case (getPool, setPool) =>
+          ZManaged.succeed(
+            new SplitApi(
+              new Pool(getPool),
+              new Pool(setPool)
+            )
+          )
+      }.toLayer    
   }
-  /*
-  def createSplit(getConf: DbConfig,
-                  setConf: DbConfig): RIO[Blocking, Kuzminki] = for {
-    getPool <- createPool(getConf)
-    setPool <- createPool(setConf)
-  } yield new SplitApi(getPool, setPool)
-
-  def layerSplit(getConf: DbConfig,
-                 setConf: DbConfig): ZLayer[Blocking, Throwable, Has[Kuzminki]] = {
-    ZLayer.fromAcquireRelease(createSplit(getConf, setConf))(_.close)
-  }
-  */
+  
   def get = ZIO.access[Has[Kuzminki]](_.get)
 }
 
 trait Kuzminki {
 
-  def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]]
+  def query[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, List[R]]
 
-  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]]
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, List[T]]
 
-  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R]
+  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, R]
 
-  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T]
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, T]
 
-  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]]
+  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, Option[R]]
 
-  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]]
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, Option[T]]
 
-  def exec(render: => RenderedOperation): RIO[Blocking, Unit]
+  def exec(render: => RenderedOperation): RIO[Blocking with Clock, Unit]
 
-  def execNum(render: => RenderedOperation): RIO[Blocking, Int]
+  def execNum(render: => RenderedOperation): RIO[Blocking with Clock, Int]
 
-  def execList(stms: Seq[RenderedOperation]): RIO[Blocking, Unit]
+  def execList(stms: Seq[RenderedOperation]): RIO[Blocking with Clock, Unit]
 
-  def close: URIO[Blocking, Unit]
+  @deprecated("this method will be removed", "0.9.5")
+  def close = ZIO.fail(KuzminkiError("This method is deprecated"))
 }
 
+private class Pool(pool: ZPool[Throwable, SingleConnection]) {
 
-private class Pool(queue: Queue[SingleConnection], all: List[SingleConnection]) {
-  
-  val get = ZManaged.make(queue.take)(queue.offer(_))
-
-  def close = for {
-    _ <- ZIO.foreach(all)(_.close()).orDie
-    _ <- queue.shutdown
-  } yield ()
+  def use[R](fn: SingleConnection => ZIO[Blocking with Clock, Throwable, R]) = {
+    pool.get.use { conn =>
+      fn(conn).tapError { _ =>
+        for {
+          isValid <- conn.isValid
+          _       <- ZIO.unless(isValid)(pool.invalidate(conn))
+          _       <- ZIO.effect(println(s"<-- isValid ($isValid) -->"))
+        } yield ()
+      }
+    }
+  }
 }
-
 
 private class DefaultApi(pool: Pool) extends Kuzminki {
 
-  def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]] = for {
+  def query[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, List[R]] = for {
     stm     <- ZIO.effect(render)
-    rows    <- pool.get.use(_.query(stm))
+    rows    <- pool.use(_.query(stm))
   } yield rows
 
-  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]] =
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, List[T]] =
     query(render).map(_.map(transform))
 
-  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] =
+  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, R] =
     query(render).map(_.headOption.getOrElse(throw NoRowsException("Query returned no rows")))
 
-  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T] =
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, T] =
     queryHead(render).map(transform)
 
-  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] =
+  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, Option[R]] =
     query(render).map(_.headOption)
 
-  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]] =
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, Option[T]] =
     query(render).map(_.headOption.map(transform))
 
-  def exec(render: => RenderedOperation): RIO[Blocking, Unit] = for {
+  def exec(render: => RenderedOperation): RIO[Blocking with Clock, Unit] = for {
     stm     <- ZIO.effect(render)
-    _       <- pool.get.use(_.exec(stm))
+    _       <- pool.use(_.exec(stm))
   } yield ()
 
-  def execNum(render: => RenderedOperation): RIO[Blocking, Int] = for {
+  def execNum(render: => RenderedOperation): RIO[Blocking with Clock, Int] = for {
     stm     <- ZIO.effect(render)
-    num     <- pool.get.use(_.execNum(stm))
+    num     <- pool.use(_.execNum(stm))
   } yield num
 
-  def execList(stms: Seq[RenderedOperation]): RIO[Blocking, Unit] = for {
-    _       <- pool.get.use(_.execList(stms))
+  def execList(stms: Seq[RenderedOperation]): RIO[Blocking with Clock, Unit] = for {
+    _       <- pool.use(_.execList(stms))
   } yield ()
-
-  def close = pool.close
 }
 
-/*
+
 private class SplitApi(getPool: Pool, setPool: Pool) extends Kuzminki {
 
   private def router(stm: String) = stm.split(" ").head match {
@@ -152,46 +157,41 @@ private class SplitApi(getPool: Pool, setPool: Pool) extends Kuzminki {
     case _ => setPool
   }
 
-  def query[R](render: => RenderedQuery[R]): RIO[Blocking, List[R]] = for {
+  def query[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, List[R]] = for {
     stm     <- ZIO.effect(render)
-    rows    <- router(stm.statement).get.use(_.query(stm))
+    rows    <- router(stm.statement).use(_.query(stm))
   } yield rows
 
-  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, List[T]] =
+  def queryAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, List[T]] =
     query(render).map(_.map(transform))
 
-  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking, R] =
+  def queryHead[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, R] =
     query(render).map(_.headOption.getOrElse(throw NoRowsException("Query returned no rows")))
 
-  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, T] =
+  def queryHeadAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, T] =
     queryHead(render).map(transform)
 
-  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking, Option[R]] =
+  def queryHeadOpt[R](render: => RenderedQuery[R]): RIO[Blocking with Clock, Option[R]] =
     query(render).map(_.headOption)
 
-  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking, Option[T]] =
+  def queryHeadOptAs[R, T](render: => RenderedQuery[R], transform: R => T): RIO[Blocking with Clock, Option[T]] =
     query(render).map(_.headOption.map(transform))
 
-  def exec(render: => RenderedOperation): RIO[Blocking, Unit] = for {
+  def exec(render: => RenderedOperation): RIO[Blocking with Clock, Unit] = for {
     stm     <- ZIO.effect(render)
-    _       <- setPool.get.use(_.exec(stm))
+    _       <- setPool.use(_.exec(stm))
   } yield ()
 
-  def execNum(render: => RenderedOperation): RIO[Blocking, Int] = for {
+  def execNum(render: => RenderedOperation): RIO[Blocking with Clock, Int] = for {
     stm     <- ZIO.effect(render)
-    num     <- setPool.get.use(_.execNum(stm))
+    num     <- setPool.use(_.execNum(stm))
   } yield num
 
-  def execList(stms: Seq[RenderedOperation]): RIO[Blocking, Unit] = for {
-    _       <- setPool.get.use(_.execList(stms))
-  } yield ()
-
-  def close = for {
-    _ <- getPool.close
-    _ <- setPool.close
+  def execList(stms: Seq[RenderedOperation]): RIO[Blocking with Clock, Unit] = for {
+    _       <- setPool.use(_.execList(stms))
   } yield ()
 }
-*/
+
 
 
 

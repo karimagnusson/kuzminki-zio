@@ -78,6 +78,41 @@ See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
 Take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
 
+#### In the latest push
+Improved connection pool  
+GROUP BY and HAVING
+
+```scala
+sql
+  .select(user)
+  .cols2(t => (
+    t.gender,
+    Agg.avg(t.age)
+  ))
+  .where(_.age > 0)
+  .groupBy(_.gender)
+  .having(_.gender !== "")
+  .orderBy(t => Agg.avg(t.age).desc)
+  .run
+```
+If you wish to cache the query:
+```scala
+val stm = sql
+  .select(user)
+  .cols2(t => (
+    t.gender,
+    Agg.avg(t.age)
+  ))
+  .all
+  .groupBy(_.gender)
+  .having(_.gender !== "")
+  .orderBy(t => Agg.avg(t.age).desc)
+  .pickWhere1(_.gender.use > Arg)
+  .cache
+
+stm.run(0)
+```
+
 #### In the latest version, 0.9.4-RC5
 
 Changes:  

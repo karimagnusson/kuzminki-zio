@@ -52,7 +52,7 @@ trait RowTypeNames {
     case col: TimeSeqCol        => "Vector[java.sql.Time]"
     case col: DateSeqCol        => "Vector[java.sql.Date]"
     case col: TimestampSeqCol   => "Vector[java.sql.Timestamp]"
-    case col: JsonbSeqConv      => "Vector[kuzminki.api.Jsonb]"
+    case col: JsonbSeqCol       => "Vector[kuzminki.api.Jsonb]"
     case col => throw KuzminkiError(s"Unsupported column: [${col.getClass.getName}]")
   }
 

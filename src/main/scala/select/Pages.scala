@@ -19,6 +19,7 @@ package kuzminki.select
 import java.sql.SQLException
 import zio._
 import zio.blocking._
+import zio.clock.Clock
 import kuzminki.api.{Kuzminki, KuzminkiError}
 import kuzminki.render.RenderedQuery
 import kuzminki.api.db
@@ -59,13 +60,13 @@ class Pages[R](query: RenderedQuery[R], limit: Int) {
 
   def getOriginal = new Pages(query, limit)
 
-  def nextOpt: ZIO[Has[Kuzminki] with Blocking, SQLException, Option[List[R]]] =
+  def nextOpt: ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Option[List[R]]] =
     next.map {
       case Nil => None
       case rows => Some(rows)
     }
 
-  def next: ZIO[Has[Kuzminki] with Blocking, SQLException, List[R]] = {
+  def next: ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, List[R]] = {
     if (isDone) db.query(nextQuery).map(markDone)
     else ZIO.succeed(List.empty[R])
   }
@@ -77,13 +78,13 @@ class Pages[R](query: RenderedQuery[R], limit: Int) {
     new RenderedQuery(pageStatement, args, query.rowConv)
   }
 
-  def pageOpt(num: Int): ZIO[Has[Kuzminki] with Blocking, SQLException, Option[List[R]]] =
+  def pageOpt(num: Int): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Option[List[R]]] =
     page(num).map {
       case Nil => None
       case rows => Some(rows)
     }
 
-  def page(num: Int): ZIO[Has[Kuzminki] with Blocking, SQLException, List[R]] = 
+  def page(num: Int): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, List[R]] = 
     db.query(pageQuery(num))
 }
 

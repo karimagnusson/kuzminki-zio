@@ -172,7 +172,10 @@ class SingleConnection(conn: Connection) {
     isAlive   <- ZIO.succeed(!closed && statement != null)
   } yield isAlive).refineToOrDie[SQLException]
 
-  def close() = effectBlocking(conn.close()).orDie
+  def close = {
+    println("<-- close -->")
+    effectBlocking(conn.close()).orDie
+  }
 }
 
 

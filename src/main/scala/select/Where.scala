@@ -63,17 +63,6 @@ class Where[M, R](
     )
   }
 
-  // group by
-
-  def groupBy(pick: M => Seq[TypeCol[_]]) = {
-    new Having(
-      model,
-      coll.add(
-        GroupBySec(pick(model).toVector)
-      )
-    )
-  }
-
   // distinct
 
   def distinct = {
