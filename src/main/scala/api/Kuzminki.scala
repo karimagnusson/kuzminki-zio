@@ -46,27 +46,13 @@ object Kuzminki {
   @deprecated("this method will be removed", "0.9.5")
   def forConfig(conf: DbConfig) = throw KuzminkiError("This method is deprecated")
 
-  def layer(conf: DbConfig): ZLayer[Blocking with Clock, Throwable, Has[Kuzminki]] = {
-    create(conf)
-      .flatMap { pool =>
-        ZManaged.succeed(
-          new DefaultApi(
-            new Pool(pool)
-          )
-        )
-      }.toLayer
-  }
+  def layer(conf: DbConfig): ZLayer[Blocking with Clock, Nothing, Has[Kuzminki]] =
+    create(conf).map(pool => new DefaultApi(new Pool(pool))).toLayer
   
   def layerSplit(getConf: DbConfig, setConf: DbConfig): ZLayer[Blocking with Clock, Throwable, Has[Kuzminki]] = {
-    create(getConf).zip(create(setConf))
-      .flatMap {
-        case (getPool, setPool) =>
-          ZManaged.succeed(
-            new SplitApi(
-              new Pool(getPool),
-              new Pool(setPool)
-            )
-          )
+    create(getConf).zip(create(setConf)).map {
+      case (getPool, setPool) =>
+        new SplitApi(new Pool(getPool), new Pool(setPool))
       }.toLayer    
   }
   
@@ -105,7 +91,6 @@ private class Pool(pool: ZPool[Throwable, SingleConnection]) {
         for {
           isValid <- conn.isValid
           _       <- ZIO.unless(isValid)(pool.invalidate(conn))
-          _       <- ZIO.effect(println(s"<-- isValid ($isValid) -->"))
         } yield ()
       }
     }
