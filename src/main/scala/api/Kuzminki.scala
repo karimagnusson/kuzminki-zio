@@ -53,7 +53,7 @@ object Kuzminki {
     create(getConf).zip(create(setConf)).map {
       case (getPool, setPool) =>
         new SplitApi(new Pool(getPool), new Pool(setPool))
-      }.toLayer    
+    }.toLayer    
   }
   
   def get = ZIO.access[Has[Kuzminki]](_.get)
