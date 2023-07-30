@@ -32,26 +32,30 @@ object Kuzminki {
 
   Class.forName("org.postgresql.Driver")
 
-  private def createPool(conf: DbConfig): RIO[Blocking, Pool] = for {
-    connections <- ZIO.foreach(1 to conf.poolSize) { _ =>
-                     effectBlocking {
-                       SingleConnection.create(conf.url, conf.props)
-                     }
-                   }
-    queue       <- Queue.bounded[SingleConnection](conf.poolSize)
-    _           <- queue.offerAll(connections)
-  } yield new Pool(queue, connections.toList)
+  private def makeConn(conf: DbConfig): RIO[Any, SingleConnection] = effectBlocking {
+    SingleConnection.create(conf.url, conf.props)
+  }
 
-  def forConfig(conf: DbConfig) = create(conf)
+  private def create(conf: DbConfig): ZIO[Scope, Nothing, ZPool[Throwable, SingleConnection]] = {
+    val getConn = ZManaged.make(makeConn(conf).retry(Schedule.exponential(1.second)))(_.close)
+    ZPool.make(getConn, Range(conf.minPoolSize, conf.poolSize), 300.seconds)
+  }
 
-  def create(conf: DbConfig): RIO[Blocking, Kuzminki] = for {
-    pool <- createPool(conf)
-  } yield new DefaultApi(pool)
+  @deprecated("this method will be removed", "0.9.5")
+  def forConfig(conf: DbConfig) = throw KuzminkiError("This method is deprecated")
+
+  def layer(conf: DbConfig): ZLayer[Any, Throwable, Kuzminki] = {
+    ZLayer.scoped {
+      for {
+        pool <- create(conf)
+      } yield new DefaultApi(new Pool(pool))
+    }
+  }
 
   def layer(conf: DbConfig): ZLayer[Blocking, Throwable, Has[Kuzminki]] = {
     ZLayer.fromAcquireRelease(create(conf))(_.close)
   }
-
+  /*
   def createSplit(getConf: DbConfig,
                   setConf: DbConfig): RIO[Blocking, Kuzminki] = for {
     getPool <- createPool(getConf)
@@ -62,7 +66,7 @@ object Kuzminki {
                  setConf: DbConfig): ZLayer[Blocking, Throwable, Has[Kuzminki]] = {
     ZLayer.fromAcquireRelease(createSplit(getConf, setConf))(_.close)
   }
-
+  */
   def get = ZIO.access[Has[Kuzminki]](_.get)
 }
 
@@ -140,7 +144,7 @@ private class DefaultApi(pool: Pool) extends Kuzminki {
   def close = pool.close
 }
 
-
+/*
 private class SplitApi(getPool: Pool, setPool: Pool) extends Kuzminki {
 
   private def router(stm: String) = stm.split(" ").head match {
@@ -187,7 +191,7 @@ private class SplitApi(getPool: Pool, setPool: Pool) extends Kuzminki {
     _ <- setPool.close
   } yield ()
 }
-
+*/
 
 
 

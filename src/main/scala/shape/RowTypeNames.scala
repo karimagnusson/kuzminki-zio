@@ -27,7 +27,7 @@ import kuzminki.column._
 
 trait RowTypeNames {
 
-   protected val baseColTypeName: TypeCol[_] => String = {
+  protected val baseColTypeName: TypeCol[_] => String = {
     case col: StringCol         => "String"
     case col: BooleanCol        => "Boolean"
     case col: ShortCol          => "Short"
@@ -52,6 +52,7 @@ trait RowTypeNames {
     case col: TimeSeqCol        => "Vector[java.sql.Time]"
     case col: DateSeqCol        => "Vector[java.sql.Date]"
     case col: TimestampSeqCol   => "Vector[java.sql.Timestamp]"
+    case col: JsonbSeqConv      => "Vector[kuzminki.api.Jsonb]"
     case col => throw KuzminkiError(s"Unsupported column: [${col.getClass.getName}]")
   }
 
