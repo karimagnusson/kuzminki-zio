@@ -6,8 +6,8 @@
 
 #### Sbt
 ```sbt
-// compiled for Scala 2.13.8 and ZIO 1.0.17
-libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.4-RC6"
+// compiled for Scala 2.13.8 and ZIO 1.0.18
+libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.4"
 ```
 
 #### Example
@@ -78,103 +78,6 @@ See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
 
 Take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
 
-#### In the latest push
-Improved connection pool  
-GROUP BY and HAVING
-
-```scala
-sql
-  .select(user)
-  .cols2(t => (
-    t.gender,
-    Agg.avg(t.age)
-  ))
-  .where(_.age > 0)
-  .groupBy(_.gender)
-  .having(_.gender !== "")
-  .orderBy(t => Agg.avg(t.age).desc)
-  .run
-```
-If you wish to cache the query:
-```scala
-val stm = sql
-  .select(user)
-  .cols2(t => (
-    t.gender,
-    Agg.avg(t.age)
-  ))
-  .all
-  .groupBy(_.gender)
-  .having(_.gender !== "")
-  .orderBy(t => Agg.avg(t.age).desc)
-  .pickWhere1(_.gender.use > Arg)
-  .cache
-
-stm.run(0)
-```
-
-#### In the latest version, 0.9.4-RC5
-
-Changes:  
-Improved exceptions. Queries return typed exception SQLException.  
-Improved custom functions.  
-Added Pages.
-
-#### Custom functions
-```scala
-import kuzminki.fn.StringFn
-
-case class FullName(
-  title: String,
-  first: TypeCol[String],
-  second: TypeCol[String]
-) extends StringFn {
-  val name = "full_name"
-  val template = s"concat_ws(' ', '$title', %s, %s)"
-  val cols = Vector(first, second)
-}
-
-sql
-  .select(user)
-  .cols2(t => (
-    t.id,
-    FullName("Mr", t.firstName, t.lastName)
-  ))
-  .where(_.id === 10)
-  .runHead
-
-```
-If you need to have the driver fill in arguments:
-```scala
-case class FullNameParam(
-  title: String,
-  first: TypeCol[String],
-  second: TypeCol[String]
-) extends StringParamsFn {
-  val name = "full_name"
-  val template = s"concat_ws(' ', ?, %s, %s)"
-  val cols = Vector(first, second)
-  val params = Vector(title)
-}
-```
-
-#### Pages
-```scala
-val pages = sql
-  .select(user)
-  .cols3(t => (
-    t.id,
-    t.firstName,
-    t.lastName)
-  ))
-  .orderBy(_.id.asc)
-  .asPages(10) // 10 rows
-
-val job = for {
-  next  <- pages.next
-  page3 <- pages.page(3)
-} yield (next, page3)
-```
 
 
 
