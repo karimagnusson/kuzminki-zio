@@ -74,7 +74,7 @@ Kuzminki supports only Postgresql. It could be adapted for use with other databa
 
 This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
 
-See full documentation at [https://kuzminki.io/](https://kuzminki.io/)
+See full documentation at [https://kuzminki.io/](https://kuzminki.info/)
 
 Take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
 
