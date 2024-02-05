@@ -4,10 +4,16 @@
 
 # kuzminki-zio
 
+The main goal of the latest version 0.9.5-RC2 is to provide support for Scala 3. It also has some import improvements and although it is a release candidate, it should be chosen over 0.9.4.
+
+This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
+
+See full documentation at [https://kuzminki.info/](https://kuzminki.info/)
+
 #### Sbt
 ```sbt
-// compiled for Scala 2.13.8 and ZIO 1.0.18
-libraryDependencies += "io.github.karimagnusson" % "kuzminki-zio" % "0.9.4"
+// available for Scala 2.13 and Scala 3
+libraryDependencies += "io.github.karimagnusson" %% "kuzminki-zio" % "0.9.5-RC2"
 ```
 
 #### Example
@@ -71,10 +77,6 @@ Statements can be cached for better performance and reusability. This means that
 
 #### Only Postgres
 Kuzminki supports only Postgresql. It could be adapted for use with other databases if there is interest in that. But given that it has support for many postgres specific features, support for another database would require it’s own project rather than a size fits all approach. Therefore, at the moment the goal is to deliver a good library for Postgres. That being said, there are other Postgres compatible databases that work with Kuzminki. For example CockroachDB. For those looking to scale up, it might be a good choice.
-
-This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
-
-See full documentation at [https://kuzminki.info/](https://kuzminki.info/)
 
 Take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)
 
