@@ -16,10 +16,8 @@
 
 package kuzminki.run
 
-import zio._
-import zio.stream.{ZSink, ZTransducer}
 import kuzminki.api.db
-import kuzminki.render.{RenderedOperation, JoinArgs}
+import kuzminki.render.RenderedOperation
 
 
 trait RunOperation {
@@ -41,37 +39,6 @@ trait RunOperation {
 }
 
 
-trait RunOperationParams[P] extends JoinArgs {
-
-  val statement: String
-
-  def render(params: P): RenderedOperation
-
-  def run(params: P) = db.exec(render(params))
-
-  def runNum(params: P) = db.execNum(render(params))
-
-  def runList(paramList: Seq[P]) = db.execList(paramList.map(render(_)))
-
-  def asSink = ZSink.foreach((params: P) => db.exec(render(params)))
-
-  def collect(size: Int) = ZTransducer.collectAllN[P](size)
-
-  def asChunkSink = ZSink.foreach { (chunk: Chunk[P]) =>
-    db.execList(chunk.toList.map(p => render(p)))
-  }
-
-  def printSql = {
-    println(statement)
-    this
-  }
-  
-  def printSqlAndArgs(params: P) =
-    render(params).printStatementAndArgs(this)
-  
-  def printSqlWithArgs(params: P) =
-    render(params).printStatementWithArgs(this)
-}
 
 
 

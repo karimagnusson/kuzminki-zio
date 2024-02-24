@@ -16,7 +16,12 @@
 
 package kuzminki.select
 
+import java.sql.SQLException
+import zio._
+import zio.blocking._
+import zio.clock.Clock
 import zio.stream.ZStream
+import kuzminki.api.Kuzminki
 import kuzminki.section.OffsetSec
 
 
@@ -33,14 +38,26 @@ class Offset[M, R](model: M, coll: SelectCollector[R]) extends Limit(model, coll
 
   def asPages(size: Int) = Pages(render, size)
 
-  def stream = streamBatch(100)
+  def stream: ZStream[Has[Kuzminki] with Blocking with Clock, SQLException, R] = stream(100)
 
-  def streamBatch(size: Int) = {
+  def stream(size: Int): ZStream[Has[Kuzminki] with Blocking with Clock, SQLException, R] = {
     val gen = new StreamQuery(asPages(size))
     ZStream.unfoldChunkM(gen)(a => a.next)
   }
 
+  @deprecated("this method will be removed, Use 'stream(size = 200)'", "0.9.5")
+  def streamBatch(size: Int) = stream(size)
+
+  @deprecated("this method will be removed", "0.9.5")
   def streamBatchBuffer(batchSize: Int, bufferSize: Int) = {
     streamBatch(batchSize).buffer(bufferSize)
   }
 }
+
+
+
+
+
+
+
+

@@ -17,7 +17,7 @@ homepage := Some(
   url("https://github.com/karimagnusson/kuzminki-zio")
 )
 
-ThisBuild / version := "0.9.5-RC2"
+ThisBuild / version := "0.9.5-RC3"
 ThisBuild / versionScheme := Some("early-semver")
 
 scalaVersion := "3.3.1"
@@ -45,7 +45,11 @@ lazy val zioPath = (project in file("kuzminki-zio"))
     libraryDependencies ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) =>
-          Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
+          Seq(
+            "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+            "com.chuusai" %% "shapeless" % "2.3.10"
+          )
+
         case Some((3, _)) =>
           Seq("org.tpolecat" %% "typename" % "1.1.0")
         case _ => Seq.empty

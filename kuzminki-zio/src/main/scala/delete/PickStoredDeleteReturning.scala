@@ -21,6 +21,7 @@ abstract class PickStoredDeleteReturning[M, P](
     )
   }
 
+  @deprecated("this method will be removed, Use 'runType'", "0.9.5")
   def returningType[R](pick: M => RowReader[R]) = {
     next(
       pick(model)

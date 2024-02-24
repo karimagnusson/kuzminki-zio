@@ -4,7 +4,9 @@
 
 # kuzminki-zio
 
-The main goal of the latest version 0.9.5-RC2 is to provide support for Scala 3. It also has some import improvements and although it is a release candidate, it should be chosen over 0.9.4.
+Kuzminki is feature-rich query builder and access library for PostgreSQL written in Scala. It focuses on productivity by providing readable transparent syntax and making Postgres features available through the API.
+
+The main goal of the latest version 0.9.5-RC3 is to provide support for Scala 3. It also has some import improvements and although it is a release candidate, it should be chosen over 0.9.4. This latest version adds a method to return rows as types (see at the bottom). Please report bugs if you find them and feel free to DM me on Twitter if you have any questions.
 
 This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
 
@@ -79,6 +81,25 @@ Statements can be cached for better performance and reusability. This means that
 
 #### Only Postgres
 Kuzminki supports only Postgresql. It could be adapted for use with other databases if there is interest in that. But given that it has support for many postgres specific features, support for another database would require it’s own project rather than a size fits all approach. Therefore, at the moment the goal is to deliver a good library for Postgres. That being said, there are other Postgres compatible databases that work with Kuzminki. For example CockroachDB. For those looking to scale up, it might be a good choice.
+
+#### Version 0.9.5-RC3
+The latest version 0.9.5-RC3 adds a compiler checked method to return rows as types.
+
+```scala
+case class User(id: Int, name: String, age: Int)
+
+sql
+  .select(user)
+  .cols3(t => (
+    t.id,
+    t.name,
+    t.age
+  ))
+  .where(_.age > 25)
+  .orderBy(_.age.asc)
+  .limit(10)
+  .runType[User] // .runHeadType[User] .runHeadOptType[User]
+```
 
 
 

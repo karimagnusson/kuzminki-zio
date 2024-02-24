@@ -28,6 +28,7 @@ class Insert[M <: Model](model: M) {
     )
   }
 
+  @deprecated("this method will be removed, Use 'runType'", "0.9.5")
   def colsType[P](pick: M => ParamShapeWrite[P]) = {
     next(pick(model))
   }

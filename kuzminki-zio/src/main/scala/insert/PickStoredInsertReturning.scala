@@ -6,7 +6,7 @@ import kuzminki.shape._
 import kuzminki.fn.Fn
 
 
-abstract class PickInsertStoredReturning[M <: Model, P](builder: InsertBuilder[M, P]) {
+abstract class PickStoredInsertReturning[M <: Model, P](builder: InsertBuilder[M, P]) {
 
   private def next[R](rowShape: RowShape[R]) = {
     new RenderStoredInsertReturning(
@@ -16,6 +16,7 @@ abstract class PickInsertStoredReturning[M <: Model, P](builder: InsertBuilder[M
     )
   }
 
+  @deprecated("this method will be removed, Use 'runType'", "0.9.5")
   def returningType[R](pick: M => RowReader[R]) = {
     next(
       pick(builder.model)

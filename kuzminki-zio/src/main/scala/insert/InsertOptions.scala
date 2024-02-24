@@ -23,7 +23,7 @@ import kuzminki.select.{Subquery, SubqueryInsertFc}
 
 class InsertOptions[M <: Model, P](
   builder: InsertBuilder[M, P]
-) extends PickInsertStoredReturning(builder) {
+) extends PickStoredInsertReturning(builder) {
 
   // no cache
 

@@ -25,6 +25,7 @@ class SelectJoin[A <: Model, B <: Model](val join: Join[A, B]) {
     )
   }
 
+  @deprecated("this method will be removed, Use 'runType'", "0.9.5")
   def colsType[R](pick: Join[A, B] => RowReader[R]) = {
     next(
       pick(join)

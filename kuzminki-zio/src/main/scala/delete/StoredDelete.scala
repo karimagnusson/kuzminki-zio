@@ -16,14 +16,15 @@
 
 package kuzminki.delete
 
+import zio._
+import zio.stream.{ZSink, ZTransducer}
+import kuzminki.api.db
 import kuzminki.shape.{RowConv, ParamConv}
+import kuzminki.run.RunQueryParams
 import kuzminki.render.{
   RenderedOperation,
-  RenderedQuery
-}
-import kuzminki.run.{
-  RunQueryParams,
-  RunOperationParams
+  RenderedQuery,
+  JoinArgs
 }
 
 
@@ -31,12 +32,37 @@ class StoredDelete[P](
   val statement: String,
   args: Vector[Any],
   paramConv: ParamConv[P]
-) extends RunOperationParams[P] {
+) extends JoinArgs {
 
   def render(params: P) = RenderedOperation(
     statement,
     joinArgs(args, paramConv.fromShape(params))
   )
+
+  def run(params: P) = db.exec(render(params))
+
+  def runNum(params: P) = db.execNum(render(params))
+
+  def runList(paramList: Seq[P]) = db.execList(paramList.map(render(_)))
+
+  def asSink = ZSink.foreach((params: P) => db.exec(render(params)))
+
+  def collect(size: Int) = ZTransducer.collectAllN[P](size)
+
+  def asChunkSink = ZSink.foreach { (chunk: Chunk[P]) =>
+    db.execList(chunk.toList.map(p => render(p)))
+  }
+
+  def printSql = {
+    println(statement)
+    this
+  }
+  
+  def printSqlAndArgs(params: P) =
+    render(params).printStatementAndArgs(this)
+  
+  def printSqlWithArgs(params: P) =
+    render(params).printStatementWithArgs(this)
 }
 
 

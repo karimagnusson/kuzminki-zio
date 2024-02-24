@@ -24,6 +24,7 @@ import kuzminki.shape._
 
 trait ModelRead {
   
+  @deprecated("this method will be removed, Use 'runType'", "0.9.5")
   def read[T](colArgs: TypeCol[_]*)(implicit cTag: ClassTag[T], tTag: TypeTag[T]) = {
     val cols = colArgs.toVector
     val names = TypeMembers.getTypes[T]
