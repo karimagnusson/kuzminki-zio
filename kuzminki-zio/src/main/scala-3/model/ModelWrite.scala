@@ -16,21 +16,21 @@
 
 package kuzminki.model
 
-import scala.reflect.{classTag, ClassTag}
+import scala.reflect.ClassTag
 import scala.deriving.Mirror.ProductOf
 import kuzminki.column.TypeCol
 import kuzminki.shape._
 
 
-trait ModelRead {
+trait ModelWrite {
 
   import org.tpolecat.typename.TypeName
-  
-  @deprecated("this method will be removed, Use 'runType'", "0.9.5")
-  inline def read[T](colArgs: TypeCol[_]*)(using p: ProductOf[T], cTag: ClassTag[T]) = {
+
+  @deprecated("this method will be removed", "0.9.5")
+  inline def write[T](colArgs: TypeCol[_]*)(using p: ProductOf[T], cTag: ClassTag[T]) = {
     val cols = colArgs.toVector
     val names = TypeMembers.getTypes[T]
     RowTypeNames.validate(cols, names)
-    new RowReader(cols, cTag)
+    new ParamShapeWrite(cols, cTag)
   }
 }

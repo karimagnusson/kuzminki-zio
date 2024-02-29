@@ -19,13 +19,7 @@ package kuzminki
 import java.sql.Time
 import java.sql.Date
 import java.sql.Timestamp
-import java.sql.SQLException
 import java.util.UUID
-
-import shapeless._
-import zio._
-import zio.blocking._
-import zio.clock.Clock
 
 import kuzminki.column._
 import kuzminki.filter._
@@ -34,12 +28,11 @@ import kuzminki.assign.Assign
 import kuzminki.update.RenderUpdate
 import kuzminki.delete.RenderDelete
 import kuzminki.insert.{RenderInsert, Values}
-import kuzminki.run._
 import kuzminki.select._
 import kuzminki.render._
 
 
-package object api extends filters {
+package object api extends filters with datatypes {
 
   // create model col
 
@@ -93,55 +86,6 @@ package object api extends filters {
   implicit val kzFilterOptToSeq: Option[Filter] => Seq[Option[Filter]] = filterOpt => Seq(filterOpt)
   implicit val kzSortingToSeq: Sorting => Seq[Sorting] = sorting => Seq(sorting)
   implicit val kzAssignToSeq: Assign => Seq[Assign] = assign => Seq(assign)
-
-  // result type
-
-  implicit class RunQueryType[R <: Product, B <: HList](query: RunQuery[R]) {
-
-    def runType[T](
-      implicit untupler: Generic.Aux[R, B],
-               generic: Generic.Aux[T, B]
-    ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, List[T]] = {
-      query.runAs(r => generic.from(untupler.to(r)))
-    }
-    
-    def runHeadType[T](
-      implicit untupler: Generic.Aux[R, B],
-               generic: Generic.Aux[T, B]
-    ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, T] = {
-      query.runHeadAs(r => generic.from(untupler.to(r)))
-    }
-
-    def runHeadOptType[T](
-      implicit untupler: Generic.Aux[R, B],
-               generic: Generic.Aux[T, B]
-    ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Option[T]] = {
-      query.runHeadOptAs(r => generic.from(untupler.to(r)))
-    }
-  }
-
-  implicit class RunQueryParamsType[P, R <: Product, B <: HList](query: RunQueryParams[P, R]) {
-
-    def runType[T](params: P)(
-      implicit untupler: Generic.Aux[R, B],
-               generic: Generic.Aux[T, B]
-    ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, List[T]] = {
-      query.runAs(params)(r => generic.from(untupler.to(r)))
-    }
-
-    def runHeadType[T](params: P)(
-      implicit untupler: Generic.Aux[R, B],
-               generic: Generic.Aux[T, B]
-    ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, T] =
-      query.runHeadAs(params)(r => generic.from(untupler.to(r)))
-
-    def runHeadOptType[T](params: P)(
-      implicit untupler: Generic.Aux[R, B],
-               generic: Generic.Aux[T, B]
-    ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Option[T]] = {
-      query.runHeadOptAs(params)(r => generic.from(untupler.to(r)))
-    }
-  }
 
   // raw SQL
 

@@ -36,13 +36,19 @@ class DbConfig(db: String) {
 
   def url = s"jdbc:postgresql://$host:$port/$db"
 
-  def withPoolSize(value: Int) = {
+  def withMaxPoolSize(value: Int) = {
     poolSize = value
     this
   }
 
   def withMinPoolSize(value: Int) = {
     minPoolSize = value
+    this
+  }
+
+  @deprecated("this method will be removed, Use 'withMaxPoolSize'", "0.9.5")
+  def withPoolSize(value: Int) = {
+    poolSize = value
     this
   }
 

@@ -25,8 +25,6 @@ class InsertOptions[M <: Model, P](
   builder: InsertBuilder[M, P]
 ) extends PickStoredInsertReturning(builder) {
 
-  // no cache
-
   def values(params: P) = new Values(
     builder.toValuesBuilder(params)
   )

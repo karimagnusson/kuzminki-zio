@@ -17,12 +17,13 @@
 package kuzminki.select
 
 import java.sql.SQLException
-import zio._
-import zio.blocking._
-import zio.clock.Clock
-import zio.stream.ZStream
+import scala.deriving.Mirror.ProductOf
 import kuzminki.api.Kuzminki
 import kuzminki.section.OffsetSec
+import zio.blocking._
+import zio.clock.Clock
+import zio._
+import zio.stream.ZStream
 
 
 class Offset[M, R](model: M, coll: SelectCollector[R]) extends Limit(model, coll) {
@@ -45,6 +46,20 @@ class Offset[M, R](model: M, coll: SelectCollector[R]) extends Limit(model, coll
     ZStream.unfoldChunkM(gen)(a => a.next)
   }
 
+  def streamType[T](
+    using mirror: ProductOf[T],
+          ev: R <:< mirror.MirroredElemTypes
+  ): ZStream[Has[Kuzminki] with Blocking with Clock, SQLException, T] = {
+    stream.map((r: R) => mirror.fromProduct(r))
+  }
+
+  def streamType[T](size: Int)(
+    using mirror: ProductOf[T],
+          ev: R <:< mirror.MirroredElemTypes
+  ): ZStream[Has[Kuzminki] with Blocking with Clock, SQLException, T] = {
+    stream(size).map((r: R) => mirror.fromProduct(r))
+  }
+
   @deprecated("this method will be removed, Use 'stream(size = 200)'", "0.9.5")
   def streamBatch(size: Int) = stream(size)
 
@@ -53,11 +68,3 @@ class Offset[M, R](model: M, coll: SelectCollector[R]) extends Limit(model, coll
     streamBatch(batchSize).buffer(bufferSize)
   }
 }
-
-
-
-
-
-
-
-

@@ -14,11 +14,12 @@
 * limitations under the License.
 */
 
-package kuzminki.delete
+package kuzminki.insert
 
 import java.sql.SQLException
+import scala.deriving.Mirror.ProductOf
 import kuzminki.api.{db, Kuzminki}
-import kuzminki.shape.{RowConv, ParamConv}
+import kuzminki.shape.{ParamConv, RowConv}
 import kuzminki.run.RunQueryParams
 import kuzminki.render.{
   RenderedOperation,
@@ -31,7 +32,7 @@ import zio.clock.Clock
 import zio.stream.{ZSink, ZTransducer}
 
 
-class StoredDelete[P](
+class StoredInsert[P](
   val statement: String,
   args: Vector[Any],
   paramConv: ParamConv[P]
@@ -51,6 +52,29 @@ class StoredDelete[P](
   def runList(paramList: Seq[P]): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Unit] =
     db.execList(paramList.map(render(_)))
 
+  def runType[T <: Product](value: T)(
+    using mirror: ProductOf[T],
+          ev: P <:< mirror.MirroredElemTypes
+  ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Unit] = {
+    run(Tuple.fromProductTyped(value).asInstanceOf[P])
+  }
+
+  def runNumType[T <: Product](value: T)(
+    using mirror: ProductOf[T],
+          ev: P <:< mirror.MirroredElemTypes
+  ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Int] = {
+    runNum(Tuple.fromProductTyped(value).asInstanceOf[P])
+  }
+
+  def runListType[T <: Product](values: Seq[T])(
+    using mirror: ProductOf[T],
+          ev: P <:< mirror.MirroredElemTypes
+  ): ZIO[Has[Kuzminki] with Blocking with Clock, SQLException, Unit] = {
+    runList(
+      values.map(v => Tuple.fromProductTyped(v).asInstanceOf[P])
+    )
+  }
+
   def collect(size: Int): ZTransducer[Any, Nothing, P, Chunk[P]] =
     ZTransducer.collectAllN[P](size)
 
@@ -63,20 +87,48 @@ class StoredDelete[P](
     }
   }
 
-  def printSql: StoredDelete[P] = {
+  def asTypeSink[T <: Product](
+    using mirror: ProductOf[T],
+          ev: P <:< mirror.MirroredElemTypes
+  ): ZSink[Has[Kuzminki] with Blocking with Clock, SQLException, T, T, Unit]= {
+    ZSink.foreach { (t: T) => 
+      db.exec(
+        render(
+          Tuple.fromProductTyped(t).asInstanceOf[P]
+        )
+      )
+    }
+  }
+
+  def asTypeChunkSink[T <: Product](
+    using mirror: ProductOf[T],
+          ev: P <:< mirror.MirroredElemTypes
+  ): ZSink[Has[Kuzminki] with Blocking with Clock, SQLException, Chunk[T], Chunk[T], Unit]= {
+    ZSink.foreach { (chunk: Chunk[T]) =>
+      db.execList(
+        chunk.toList.map { t =>
+          render(
+            Tuple.fromProductTyped(t).asInstanceOf[P]
+          )
+        }
+      )
+    }
+  }
+
+  def printSql: StoredInsert[P] = {
     println(statement)
     this
   }
   
-  def printSqlAndArgs(params: P): StoredDelete[P] =
+  def printSqlAndArgs(params: P): StoredInsert[P] =
     render(params).printStatementAndArgs(this)
   
-  def printSqlWithArgs(params: P): StoredDelete[P] =
+  def printSqlWithArgs(params: P): StoredInsert[P] =
     render(params).printStatementWithArgs(this)
 }
 
 
-class StoredDeleteReturning[P, R](
+class StoredInsertReturning[P, R](
   val statement: String,
   args: Vector[Any],
   paramConv: ParamConv[P],
@@ -89,8 +141,6 @@ class StoredDeleteReturning[P, R](
     rowConv
   )
 }
-
-
 
 
 

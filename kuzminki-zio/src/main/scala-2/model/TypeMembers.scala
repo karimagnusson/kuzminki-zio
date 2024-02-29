@@ -14,16 +14,15 @@
 * limitations under the License.
 */
 
-package kuzminki.shape
+package kuzminki.model
 
 import scala.util.matching.Regex
+import scala.reflect.runtime.universe._
 import kuzminki.api.KuzminkiError
 
 
 object TypeMembers {
 
-  import org.tpolecat.typename.TypeName
-  
   val regularValue: Regex = """^([a-zA-Z\.]+)$""".r
   val subTypeValue: Regex = """^([a-zA-Z\.]+)\[([a-zA-Z\.]+)\]$""".r
 
@@ -33,10 +32,24 @@ object TypeMembers {
     case v => throw KuzminkiError(s"invalid type: $v")
   }
 
-  inline def getTypes[T](using p: scala.deriving.Mirror.ProductOf[T]): Vector[String] = {
-    val x: Tuple.Map[p.MirroredElemTypes, TypeName] =
-      scala.compiletime.summonAll[Tuple.Map[p.MirroredElemTypes, TypeName]]
-    val y: List[TypeName[?]] = x.toList.asInstanceOf
-    y.map(_.value).map(standardize).toVector
+  def getTypes[T](implicit tag: TypeTag[T]): Vector[String] = {
+    typeOf[T]
+      .members
+      .sorted
+      .collect { case m: MethodSymbol if m.isCaseAccessor => m }
+      .map(_.returnType.toString)
+      .map(standardize)
+      .toVector
   }
 }
+
+
+
+
+
+
+
+
+
+
+
