@@ -6,13 +6,15 @@
 
 Kuzminki is feature-rich query builder and access library for PostgreSQL written in Scala. It focuses on productivity by providing readable transparent syntax and making Postgres features available through the API.
 
-The main goal of the latest version 0.9.5-RC4 is to provide support for Scala 3. It also has some import improvements and although it is a release candidate, it should be chosen over 0.9.4. This latest version adds a method to return rows as types (see at the bottom). Please report bugs if you find them and feel free to DM me on Twitter if you have any questions.
+The main goal of the latest version 0.9.5-RC4 is to provide support for Scala 3. It also has some import improvements and although it is a release candidate, it should be chosen over 0.9.4. Please report bugs if you find them and feel free to DM me on Twitter if you have any questions.
 
 This library is also available for ZIO 2 [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
 
 Take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)  
 
 See full documentation at [https://kuzminki.info/](https://kuzminki.info/)
+
+This latest version adds some methods to the API (see at the bottom).
 
 #### Sbt
 ```sbt
@@ -118,6 +120,19 @@ sql
     t.lastName
   ))
   .runHeadType[User]
+
+val stm = sql
+  .insert(user)
+  .cols2(t => (
+    t.name,
+    t.age
+  ))
+  .cache
+
+stm.runListType(List(
+  UserInfo("Bob", 25),
+  UserInfo("Jane", 23)
+))
 
 // streaming
 
