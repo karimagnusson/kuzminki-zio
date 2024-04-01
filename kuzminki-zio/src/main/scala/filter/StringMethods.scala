@@ -51,11 +51,6 @@ trait StringMethods extends TypeMethods[String] with InMethods[String] {
   def begins(value: String): Filter = FilterStartsWith(col, value)
   def ends(value: String): Filter = FilterEndsWith(col, value)
 
-  @deprecated("this method will be removed, Use 'begins'", "0.9.5")
-  def startsWith(value: String): Filter = FilterStartsWith(col, value)
-  @deprecated("this method will be removed, Use 'ends", "0.9.5")
-  def endsWith(value: String): Filter = FilterEndsWith(col, value)
-
   def ~(value: String): Filter = FilterReMatch(col, value)
   def ~*(value: String): Filter = FilterReIMatch(col, value)
   def !~(value: String): Filter = FilterReNotMatch(col, value)
@@ -68,11 +63,6 @@ trait StringMethods extends TypeMethods[String] with InMethods[String] {
 
   def begins(opt: Option[String]): Option[Filter] = opt.map(begins)
   def ends(opt: Option[String]): Option[Filter] = opt.map(ends)
-
-  @deprecated("this method will be removed, Use 'begins'", "0.9.5")
-  def startsWith(opt: Option[String]): Option[Filter] = opt.map(startsWith)
-  @deprecated("this method will be removed, Use 'ends'", "0.9.5")
-  def endsWith(opt: Option[String]): Option[Filter] = opt.map(endsWith)
 
   def ~(opt: Option[String]): Option[Filter] = opt.map(~)
   def ~*(opt: Option[String]): Option[Filter] = opt.map(~*)
@@ -93,11 +83,6 @@ case class StringCache(col: TypeCol[String]) extends TypeCache[String]
 
   def begins(arg: Arg) = CacheStartsWith(col, col.conv)
   def ends(arg: Arg) = CacheEndsWith(col, col.conv)
-
-  @deprecated("this method will be removed, Use 'begins'", "0.9.5")
-  def startsWith(arg: Arg) = CacheStartsWith(col, col.conv)
-  @deprecated("this method will be removed, Use 'ends'", "0.9.5")
-  def endsWith(arg: Arg) = CacheEndsWith(col, col.conv)
   
   def ~(arg: Arg) = CacheReMatch(col, col.conv)
   def ~*(arg: Arg) = CacheReIMatch(col, col.conv)

@@ -25,13 +25,6 @@ class Select[M <: Model](val model: M) {
     )
   }
 
-  @deprecated("this method will be removed, Use 'runType'", "0.9.5")
-  def colsType[R](pick: M => RowReader[R]) = {
-    next(
-      pick(model)
-    )
-  }
-
   def colsSeq(pick: M => Seq[TypeCol[_]]) = {
     next(
       new RowShapeSeq(pick(model))

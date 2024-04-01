@@ -16,13 +16,6 @@ abstract class PickUpdateReturning[M](model: M, coll: SectionCollector) {
     )
   }
 
-  @deprecated("this method will be removed, Use 'runType'", "0.9.5")
-  def returningType[R](pick: M => RowReader[R]) = {
-    next(
-      pick(model)
-    )
-  }
-
   def returningSeq(pick: M => Seq[TypeCol[_]]) = {
     next(
       new RowShapeSeq(pick(model))

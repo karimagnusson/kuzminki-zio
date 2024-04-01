@@ -36,11 +36,7 @@ object sql {
   }
 
   def select[A <: Model, B <: Model](a: A, b: B): SelectJoin[A, B] = {
-    select(DefaultJoin(a, b))
-  }
-
-  def select[A <: Model, B <: Model](join: Join[A, B]): SelectJoin[A, B] = {
-    new SelectJoin(join)
+    new SelectJoin(Join(a, b))
   }
 
   def count[M <: Model](model: M): Where[M, Long] = {
@@ -48,11 +44,7 @@ object sql {
   }
 
   def count[A <: Model, B <: Model](a: A, b: B): JoinOn[A, B, Long] = {
-    count(DefaultJoin(a, b))
-  }
-
-  def count[A <: Model, B <: Model](join: Join[A, B]): JoinOn[A, B, Long] = {
-    new SelectJoin(join).cols1(t => Count.all)
+    new SelectJoin(Join(a, b)).cols1(t => Count.all)
   }
 
   def insert[M <: Model](model: M): Insert[M] = {

@@ -46,12 +46,6 @@ class DbConfig(db: String) {
     this
   }
 
-  @deprecated("this method will be removed, Use 'withMaxPoolSize'", "0.9.5")
-  def withPoolSize(value: Int) = {
-    poolSize = value
-    this
-  }
-
   def withHost(value: String) = {
     host = value
     this
