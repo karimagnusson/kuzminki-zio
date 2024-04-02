@@ -4,7 +4,7 @@
 
 # kuzminki-zio
 
-Kuzminki is a feature-rich query builder and access library for PostgreSQL. It focuses on productivity by providing readable transparent syntax and making Postgres features available through the API.
+Kuzminki is a feature-rich query builder and access library for PostgreSQL. It focuses on productivity by providing readable transparent syntax and making Postgres features available through the API. Among those features are support for Array and Jsonb fields and streaming to and from the database.
 
 Please report bugs if you find them and feel free to DM me on Twitter if you have any questions.
 
