@@ -11,7 +11,7 @@ Please report bugs if you find them and feel free to DM me on Twitter if you hav
 This library is also available for ZIO [kuzminki-zio-2](https://github.com/karimagnusson/kuzminki-zio-2)  
 
 Take a look at [kuzminki-zhttp-demo](https://github.com/karimagnusson/kuzminki-zhttp-demo) for a example of a REST API using this library and [zio-http](https://github.com/dream11/zio-http)  
-See full documentation at [https://kuzminki.info/](https://kuzminki.info/)
+See full documentation at [https://kuzminki.kotturinn.com/](https://kuzminki.kotturinn.com/)
 
 #### Sbt
 ```sbt
