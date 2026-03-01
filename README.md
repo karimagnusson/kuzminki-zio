@@ -1,6 +1,36 @@
-| Discord | Twitter |
-| --- | --- |
-| [![badge-discord](https://img.shields.io/discord/629491597070827530?logo=discord)](https://discord.com/channels/629491597070827530/1063139826636963931) | [![Twitter Follow](https://img.shields.io/twitter/follow/kuzminki_lib?label=follow&style=flat&logo=twitter&color=brightgreen)](https://twitter.com/kuzminki_lib) |
+---
+
+> **Warning**
+> This project has moved to Slinq
+
+Kuzminki has been renamed and restructured as https://github.com/karimagnusson/slinq.
+
+All future development will continue in the new repository:
+- GitHub: https://github.com/karimagnusson/slinq
+- Documentation: https://slinq.kotturinn.com/
+
+**What changed?**
+
+- Renamed from Kuzminki to Slinq
+- Consolidated all versions (ZIO 2 and EC) into a single repository
+- Updated package names from kuzminki.* to slinq.pg.*
+- Scala 3 only (dropped Scala 2.13 and ZIO 1 support)
+
+**Migration**
+
+Update your imports:
+```scala
+// Old
+import kuzminki.api._
+
+// New
+import slinq.pg.zio.api.*
+import slinq.pg.zio.api.given
+```
+
+Thank you for using Kuzminki. See you at Slinq!
+
+---
 
 # Kuzminki
 
@@ -63,21 +93,21 @@ object ExampleApp extends zio.App {
       .cols2(t => (t.username, t.age))
       .values(("Joe", 35))
       .run
-    
+
     _ <- sql
       .update(client)
       .set(_.age ==> 24)
       .where(_.id === 4)
       .run
-    
+
     _ <- sql.delete(client).where(_.id === 7).run
-    
+
     clients <- sql
       .select(client)
       .cols3(_.all)
       .where(_.age > 25)
       .run
-    
+
   } yield clients
 
   val dbLayer = Kuzminki.layer(DbConfig.forDb("company"))
@@ -91,7 +121,6 @@ object ExampleApp extends zio.App {
 ## Resources
 
 - [Full documentation](https://kuzminki.kotturinn.com/)
-- [zio-http demo project](https://github.com/karimagnusson/kuzminki-zhttp-demo)
 - [ZIO 2 version](https://github.com/karimagnusson/kuzminki-zio-2)
 
 Please report bugs if you find them and feel free to DM me on Twitter if you have any questions.
