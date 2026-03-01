@@ -1,36 +1,4 @@
----
-
-> **Warning**
-> This project has moved to Slinq
-
-Kuzminki has been renamed and restructured as https://github.com/karimagnusson/slinq.
-
-All future development will continue in the new repository:
-- GitHub: https://github.com/karimagnusson/slinq
-- Documentation: https://slinq.kotturinn.com/
-
-**What changed?**
-
-- Renamed from Kuzminki to Slinq
-- Consolidated all versions (ZIO 2 and EC) into a single repository
-- Updated package names from kuzminki.* to slinq.pg.*
-- Scala 3 only (dropped Scala 2.13 and ZIO 1 support)
-
-**Migration**
-
-Update your imports:
-```scala
-// Old
-import kuzminki.api._
-
-// New
-import slinq.pg.zio.api.*
-import slinq.pg.zio.api.given
-```
-
-Thank you for using Kuzminki. See you at Slinq!
-
----
+> **Note:** This project has been renamed to [Slinq](https://github.com/karimagnusson/slinq). See the new repository for the latest version.
 
 # Kuzminki
 
